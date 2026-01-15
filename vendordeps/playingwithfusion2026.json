@@ -1,25 +1,25 @@
 {
-    "fileName": "REVLib.json",
-    "name": "REVLib",
-    "version": "2025.0.3",
-    "frcYear": "2025",
-    "uuid": "3f48eb8c-50fe-43a6-9cb7-44c86353c4cb",
+    "fileName": "playingwithfusion2026.json",
+    "name": "PlayingWithFusion",
+    "version": "2026.0.26",
+    "uuid": "14b8ad04-24df-11ea-978f-2e728ce88125",
+    "frcYear": "2026",
+    "jsonUrl": "https://www.playingwithfusion.com/frc/playingwithfusion2026.json",
     "mavenUrls": [
-        "https://maven.revrobotics.com/"
+        "https://www.playingwithfusion.com/frc/maven/"
     ],
-    "jsonUrl": "https://software-metadata.revrobotics.com/REVLib-2025.json",
     "javaDependencies": [
         {
-            "groupId": "com.revrobotics.frc",
-            "artifactId": "REVLib-java",
-            "version": "2025.0.3"
+            "groupId": "com.playingwithfusion.frc",
+            "artifactId": "PlayingWithFusion-java",
+            "version": "2026.0.26"
         }
     ],
     "jniDependencies": [
         {
-            "groupId": "com.revrobotics.frc",
-            "artifactId": "REVLib-driver",
-            "version": "2025.0.3",
+            "groupId": "com.playingwithfusion.frc",
+            "artifactId": "PlayingWithFusion-driver",
+            "version": "2026.0.26",
             "skipInvalidPlatforms": true,
             "isJar": false,
             "validPlatforms": [
@@ -34,10 +34,10 @@
     ],
     "cppDependencies": [
         {
-            "groupId": "com.revrobotics.frc",
-            "artifactId": "REVLib-cpp",
-            "version": "2025.0.3",
-            "libName": "REVLib",
+            "groupId": "com.playingwithfusion.frc",
+            "artifactId": "PlayingWithFusion-cpp",
+            "version": "2026.0.26",
+            "libName": "Vendor",
             "headerClassifier": "headers",
             "sharedLibrary": false,
             "skipInvalidPlatforms": true,
@@ -51,10 +51,10 @@
             ]
         },
         {
-            "groupId": "com.revrobotics.frc",
-            "artifactId": "REVLib-driver",
-            "version": "2025.0.3",
-            "libName": "REVLibDriver",
+            "groupId": "com.playingwithfusion.frc",
+            "artifactId": "PlayingWithFusion-driver",
+            "version": "2026.0.26",
+            "libName": "VendorDriver",
             "headerClassifier": "headers",
             "sharedLibrary": false,
             "skipInvalidPlatforms": true,
