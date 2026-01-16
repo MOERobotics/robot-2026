@@ -18,7 +18,7 @@ public class MOESparkLogger implements LoggableInputs {
     private final AbsoluteEncoder absoluteEncoder;
     private final SparkLimitSwitch forwardLimit, reverseLimit;
     private final RelativeEncoder relativeEncoder;
-    private final @Value @Builder class ConfigCache {
+    private final @Value @Builder static class ConfigCache {
         public boolean
             forwardLimitEnabled,
             reverseLimitEnabled,
