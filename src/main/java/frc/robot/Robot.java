@@ -10,16 +10,24 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.container.MiniBotContainer;
 import frc.robot.container.RobotContainer;
 import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.photonvision.PhotonCamera;
+
+import java.util.function.BooleanSupplier;
+
 import static edu.wpi.first.units.Units.*;
 
 
 public class Robot extends LoggedRobot {
 
-    public RobotContainer robot = null;
+    public RobotContainer robot = new MiniBotContainer();
     public Joystick driveJoystick = new Joystick(0);
     private CommandScheduler scheduler;
+
+   // PhotonCamera photonCamera = new PhotonCamera("PhotonCamera1");
 
     @Override
     public void robotInit() {
@@ -28,6 +36,8 @@ public class Robot extends LoggedRobot {
             DriverStation.silenceJoystickConnectionWarning(true);
 
         MOELogger.setupLogging(this);
+
+
         scheduler = CommandScheduler.getInstance();
     }
 
@@ -40,6 +50,8 @@ public class Robot extends LoggedRobot {
     public void robotPeriodic() {
         MOELogger.log();
         scheduler.run();
+       // boolean connected = photonCamera.isConnected();
+        // Logger.recordOutput("Camera Connected", connected);
     }
 
     @Override
@@ -65,6 +77,12 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopPeriodic() {
+        double joystickX= driveJoystick.getX();
+        double joystickY = -driveJoystick.getY();
+        double leftPow = joystickX+joystickY;
+        double rightPow = joystickY-joystickX;
+        robot.getTankDrive().drive(leftPow,rightPow);
+
     }
 
     @Override
