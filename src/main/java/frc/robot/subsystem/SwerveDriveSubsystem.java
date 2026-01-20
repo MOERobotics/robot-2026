@@ -6,7 +6,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 public interface SwerveDriveSubsystem {
     public SwerveModule[] getModules ();
-    public void setChassisSpeed(ChassisSpeeds robotChassisSpeed);
+    public void setChassisSpeed(ChassisSpeeds... robotChassisSpeed);
     public void setModuleStates(SwerveModuleState... robotModuleStates);
     public Pose2d getPose();
     public void setPose(Pose2d robotPose2D);
