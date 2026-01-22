@@ -5,6 +5,7 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.MOESubsystem;
@@ -31,6 +32,7 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
         this.leftEncoder = motorControlL.getEncoder();
         this.rightEncoder = motorControlR.getEncoder();
         this.pigeon2 = pigeon2;
+
 
         motorControlR.setInverted(true);
         motorControlL.setInverted(false);
@@ -68,6 +70,10 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
     public Angle getAngle(){
         return  pigeon2.getRotation2d().getMeasure();
 
+    }
+    @Override
+    public Pose2d setPose(Pose2d newPose){
+        return null;
     }
 
 }
