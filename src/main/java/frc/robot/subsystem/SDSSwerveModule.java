@@ -2,6 +2,7 @@ package frc.robot.subsystem;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.spark.SparkMax;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -25,6 +26,7 @@ public class SDSSwerveModule implements SwerveModule {
     private final CANcoder swerveModuleEncoder;
     public double xCordinate =0; // distance from robot center?;
     public double yCordinate =0; //distance from robot center?;
+    PIDController robotPivotPIDController = new PIDController(1/45.0,0,0);
 
     public SDSSwerveModule (SparkMax driveMotor, SparkMax pivotMotor, CANcoder swerveModuleEncoder) {
 
@@ -46,24 +48,19 @@ public class SDSSwerveModule implements SwerveModule {
 
 
     @Override
-    public void setSpeed(double moduleSpeed) {4
-        //driveMotor.set(speedWeWant);
+    public void setSpeed(double moduleSpeed) {
         driveMotor.set(moduleSpeed);
     }
 
     @Override
 
     public void setPivot(Rotation2d modulePivot) {
-        pivotMotor.set(pivotWeWant);
+        Angle currentWheelDirection = swerveModuleEncoder.getPosition().getValue();
+        Angle wheelTargetDirection = modulePivot.getMeasure();
+        Angle wheelError = currentWheelDirection.minus(wheelTargetDirection);
+        pivotMotor.set(robotPivotPIDController.calculate(wheelError.in(Degree)));
     }
 
-    public void setSpeedWeWant(double speed) {
-        speedWeWant = speed;
-    }
-
-    public void setPivotWeWant(double pivot) {
-        pivotWeWant = pivot;
-    }
     @Override
     public Translation2d getTranslation() {
         return new Translation2d(this.xCordinate, this.yCordinate);
