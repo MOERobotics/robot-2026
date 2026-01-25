@@ -20,6 +20,10 @@ public interface SwerveDriveSubsystem extends Subsystem, LoggableInputs {
     public static class SwerveDriveInputs {
         Angle robotAngle;
         ChassisSpeeds robotChassisSpeed;
+        SwerveModule moduleFL;
+        SwerveModule moduleFR;
+        SwerveModule moduleBL;
+        SwerveModule moduleBR;
         SwerveModule [] modules;
         Pose2d robotPose2D;
 
