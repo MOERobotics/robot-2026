@@ -83,17 +83,42 @@ public class Robot extends LoggedRobot {
         result = photonCamera.getAllUnreadResults();
         if (!result.isEmpty()) {
             PhotonPipelineResult latestResult = result.get(result.size() - 1);
-            Logger.recordOutput("Has Targets", latestResult.hasTargets());
+            Logger.recordOutput("HasTargets", latestResult.hasTargets());
+
             if (latestResult.hasTargets()) {
                 List<PhotonTrackedTarget> targets = latestResult.getTargets();
                 PhotonTrackedTarget bestTarget = latestResult.getBestTarget();
-                Logger.recordOutput("Target Area", targets.get(0).getArea());
+                Logger.recordOutput("Best Target Fiduciary ID", bestTarget.getFiducialId());
                 Logger.recordOutput("Best Target Area", bestTarget.getArea());
                 Logger.recordOutput("Best Target Yaw", bestTarget.getYaw());
                 Logger.recordOutput("Best Target Pitch", bestTarget.getPitch());
-                Logger.recordOutput("Best Target Fiducial Id", bestTarget.getFiducialId());
 
+                /*
+                var targetLog = new LogTable(System.nanoTime());
+                targetLog.put("pose", target.getPose());
+                Logger.recordOutput("Apriltag "+target.getFiduciaryID(), targetLog);
+               */
 
+                for (PhotonTrackedTarget target : targets) {
+                  int id = target.getFiducialId();
+                    Logger.recordOutput("Targets/" + id + "/Area", target.getArea() );
+                    Logger.recordOutput("Targets/" + id + "/Yaw", target.getYaw() );
+                    Logger.recordOutput("Targets/" + id + "/Pitch", target.getPitch() );
+                    Logger.recordOutput("Targets/" + id + "/Skew", target.getSkew() );
+
+                    Pose3d robotPose = new Pose3d();
+
+                    if (kTagLayout.getTagPose(target.getFiducialId()).isPresent()) {
+                        robotPose = PhotonUtils.estimateFieldToRobotAprilTag(
+                                target.getBestCameraToTarget(),
+                                kTagLayout.getTagPose(target.getFiducialId()).get(),
+                                kRobotToCam);
+                    }
+                    Logger.recordOutput("Targets/" + id + "/robotPose",  robotPose);
+
+                }
+
+        /*
                 Pose3d robotPose = new Pose3d();
 
                 if (kTagLayout.getTagPose(bestTarget.getFiducialId()).isPresent()) {
@@ -104,6 +129,8 @@ public class Robot extends LoggedRobot {
                 }
                 Logger.recordOutput("Robot Pose", robotPose);
             }
+
+         */
 
         /*
         Optional<EstimatedRobotPose> visionEst = Optional.empty();
@@ -136,9 +163,12 @@ public class Robot extends LoggedRobot {
 
 
          */
-            // boolean connected = photonCamera.isConnected();
-            // Logger.recordOutput("Camera Connected", connected);
+                // boolean connected = photonCamera.isConnected();
+                // Logger.recordOutput("Camera Connected", connected);
+            }
+
         }
+
 
     }
 
@@ -188,6 +218,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void simulationPeriodic() {
+
     }
 
 
