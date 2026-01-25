@@ -61,7 +61,7 @@ public class Robot extends LoggedRobot {
     public void robotPeriodic() {
         MOELogger.log();
         scheduler.run();
-
+/**
         Optional<EstimatedRobotPose> visionEst = Optional.empty();
         for (var result : photonCamera.getAllUnreadResults()) {
             visionEst = photonEstimator.estimateCoprocMultiTagPose(result);
@@ -69,7 +69,7 @@ public class Robot extends LoggedRobot {
                 visionEst = photonEstimator.estimateLowestAmbiguityPose(result);
             }
             updateEstimationStdDevs(visionEst, result.getTargets());
-/**
+
             if (Robot.isSimulation()) {
                 visionEst.ifPresentOrElse(
                         est ->
@@ -80,7 +80,7 @@ public class Robot extends LoggedRobot {
                             getSimDebugField().getObject("VisionEstimation").setPoses();
                         });
             }
-**/
+
             visionEst.ifPresent(
                     est -> {
                         // Change our trust in the measurement based on the tags we can see
@@ -89,9 +89,11 @@ public class Robot extends LoggedRobot {
                         estConsumer.accept(est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
                     });
         }
+**/
        // boolean connected = photonCamera.isConnected();
         // Logger.recordOutput("Camera Connected", connected);
     }
+
 
     @Override
     public void disabledInit() {

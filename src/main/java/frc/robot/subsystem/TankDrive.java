@@ -22,16 +22,14 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
 
     public RelativeEncoder leftEncoder;
 
-    public Pigeon2 pigeon2;
 
 
-    public TankDrive(SparkMax motorControlL, SparkMax motorControlR, Pigeon2 pigeon2){
+    public TankDrive(SparkMax motorControlL, SparkMax motorControlR){
         super(new DriveInputsAutoLogged());
         this.motorControlL = motorControlL;
         this.motorControlR = motorControlR;
         this.leftEncoder = motorControlL.getEncoder();
         this.rightEncoder = motorControlR.getEncoder();
-        this.pigeon2 = pigeon2;
 
 
         motorControlR.setInverted(true);
@@ -54,7 +52,7 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
     @Override
     public void drive(double leftPercent, double rightPercent) {
         motorControlL.set(leftPercent);
-        motorControlL.set(rightPercent);
+        motorControlR.set(rightPercent);
     }
     @Override
     public Distance getRightPosition(){
@@ -66,11 +64,13 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
         return Distance.ofRelativeUnits(leftEncoder.getPosition() * 4 * Math.PI / 20, Inches);
 
     }
+    /**
     @Override
     public Angle getAngle(){
         return  pigeon2.getRotation2d().getMeasure();
 
     }
+     **/
     @Override
     public Pose2d setPose(Pose2d newPose){
         return null;
