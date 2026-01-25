@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import frc.robot.MOESubsystem;
 import org.ejml.dense.row.misc.RrefGaussJordanRowPivot_DDRM;
 
 import java.util.Base64;
@@ -18,22 +19,41 @@ import static edu.wpi.first.hal.simulation.AnalogGyroDataJNI.getAngle;
 import static edu.wpi.first.units.Units.*;
 import static java.lang.Math.PI;
 
-public class SDSSwerveModule implements SwerveModule {
-    private double  speedWeWant = 0;
-     private double pivotWeWant=0;
+public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged> implements SwerveModule {
+
     private final SparkMax pivotMotor;
     private final SparkMax driveMotor;
     private final CANcoder swerveModuleEncoder;
-    public double xCordinate =0; // distance from robot center?;
-    public double yCordinate =0; //distance from robot center?;
+    public double xCordinate;
+    public double yCordinate;
     PIDController robotPivotPIDController = new PIDController(1/45.0,0,0);
 
-    public SDSSwerveModule (SparkMax driveMotor, SparkMax pivotMotor, CANcoder swerveModuleEncoder) {
-
+    public SDSSwerveModule (SparkMax driveMotor, SparkMax pivotMotor, CANcoder swerveModuleEncoder,double xCordinate, double yCordinate) {
+        super(new SwerveModuleInputsAutoLogged());
         this.driveMotor = driveMotor;
         this.pivotMotor = pivotMotor;
         this.swerveModuleEncoder = swerveModuleEncoder;
+        this.xCordinate = xCordinate;
+        this.yCordinate = yCordinate;
 
+    }
+
+    @Override
+    public void readSensors(SwerveModuleInputsAutoLogged sensors) {
+        sensors.moduleAngle = swerveModuleEncoder.getPosition().getValue();
+        sensors.robotDriveSpeed = driveMotor.get();
+        sensors.robotModuleState = new SwerveModuleState(InchesPerSecond.of(driveMotor.getEncoder().getVelocity()*(4* PI / (60.0*6.75))).in(MetersPerSecond),
+                new Rotation2d(getAngle()));
+        sensors.robotPivotSpeed = pivotMotor.get();
+        sensors.robotPosition = new SwerveModulePosition(
+                Inches.of(
+                        driveMotor.getEncoder().getPosition()*(4* PI / 6.75)
+                ).in(Meters),
+                new Rotation2d(
+                        getAngle()
+                )
+        );
+        sensors.robotTranslation = new Translation2d(this.xCordinate, this.yCordinate);
     }
 
     @Override

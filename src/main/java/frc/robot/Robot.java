@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.container.MiniSwerve;
 import frc.robot.container.RobotContainer;
 import org.littletonrobotics.junction.LoggedRobot;
 import static edu.wpi.first.units.Units.*;
@@ -17,7 +18,7 @@ import static edu.wpi.first.units.Units.*;
 
 public class Robot extends LoggedRobot {
 
-    public RobotContainer robot = null;
+    public RobotContainer robot = new MiniSwerve();
     public Joystick driveJoystick = new Joystick(0);
     private CommandScheduler scheduler;
 
