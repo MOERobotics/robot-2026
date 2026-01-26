@@ -9,6 +9,8 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,9 +26,12 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
+import org.photonvision.estimation.TargetModel;
+import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
-
+import org.photonvision.simulation.PhotonCameraSim;
+import org.photonvision.simulation.SimCameraProperties;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -51,15 +56,24 @@ public class Robot extends LoggedRobot {
         }
     }
 
+
     PhotonCamera photonCamera = new PhotonCamera("PhotonCamera1");
 
     List<PhotonPipelineResult> result;
     public static final Transform3d kRobotToCam =
-            new Transform3d(new Translation3d(0.0, 0.0, 0.0), new Rotation3d(0, 0, 0));
+            new Transform3d(new Translation3d( Inches.of(7).in(Meter), Inches.of(2).in(Meter), Inches.of(7).in(Meter)), new Rotation3d(15,0, 0));
     PhotonPoseEstimator photonEstimator = new PhotonPoseEstimator(kTagLayout, kRobotToCam);
+
+    VisionSystemSim visionSim;
+    PhotonCameraSim cameraSim;
+    SimCameraProperties cameraProps;
+
+
+
 
     @Override
     public void robotInit() {
+
 
         if (isSimulation())
             DriverStation.silenceJoystickConnectionWarning(true);
@@ -80,6 +94,8 @@ public class Robot extends LoggedRobot {
         MOELogger.log();
         scheduler.run();
 
+
+
         result = photonCamera.getAllUnreadResults();
         if (!result.isEmpty()) {
             PhotonPipelineResult latestResult = result.get(result.size() - 1);
@@ -93,11 +109,16 @@ public class Robot extends LoggedRobot {
                 Logger.recordOutput("Best Target Yaw", bestTarget.getYaw());
                 Logger.recordOutput("Best Target Pitch", bestTarget.getPitch());
 
-                /*
-                var targetLog = new LogTable(System.nanoTime());
-                targetLog.put("pose", target.getPose());
-                Logger.recordOutput("Apriltag "+target.getFiduciaryID(), targetLog);
-               */
+                Pose3d bestRobotPose = new Pose3d();
+
+                if (kTagLayout.getTagPose(bestTarget.getFiducialId()).isPresent()) {
+                    bestRobotPose = PhotonUtils.estimateFieldToRobotAprilTag(
+                            bestTarget.getBestCameraToTarget(),
+                            kTagLayout.getTagPose(bestTarget.getFiducialId()).get(),
+                            kRobotToCam);
+                }
+
+                Logger.recordOutput("Best Target Pose ",  bestRobotPose);
 
                 for (PhotonTrackedTarget target : targets) {
                   int id = target.getFiducialId();
@@ -214,11 +235,29 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void simulationInit() {
+        visionSim = new VisionSystemSim("main");
+
+        visionSim.addAprilTags(
+                kTagLayout
+        );
+        cameraProps = new SimCameraProperties();
+
+        cameraProps.setCalibration(640, 480, Rotation2d.fromDegrees(90));
+        cameraProps.setFPS(20);
+        cameraProps.setAvgLatencyMs(35);
+        cameraProps.setLatencyStdDevMs(5);
+
+        cameraSim = new PhotonCameraSim(photonCamera,cameraProps);
+
+
+
+        visionSim.addCamera(cameraSim,kRobotToCam);
     }
 
     @Override
     public void simulationPeriodic() {
-
+        Pose2d sim2Pose = robot.getTankDrive().getPose();
+        visionSim.update(sim2Pose);
     }
 
 

@@ -3,9 +3,12 @@ package frc.robot.container;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.sim.SparkMaxSim;
+import com.revrobotics.sim.SparkRelativeEncoderSim;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.subsystem.TankDrive;
 import frc.robot.subsystem.TankDriveSubsystem;
 import lombok.Data;
@@ -18,6 +21,7 @@ public abstract @Data class RobotContainer implements LoggableInputs {
     public SparkMax motorControlL = new SparkMax(1, SparkLowLevel.MotorType.kBrushless);
 
     public SparkMax motorControlR = new SparkMax(2, SparkLowLevel.MotorType.kBrushless);
+
 
 
     public RobotContainer() {
