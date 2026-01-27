@@ -5,17 +5,11 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import frc.robot.MOESubsystem;
-import org.ejml.dense.row.misc.RrefGaussJordanRowPivot_DDRM;
 
-import java.util.Base64;
-
-import static edu.wpi.first.hal.simulation.AnalogGyroDataJNI.getAngle;
 import static edu.wpi.first.units.Units.*;
 import static java.lang.Math.PI;
 
@@ -26,9 +20,16 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
     private final CANcoder swerveModuleEncoder;
     public double xCordinate;
     public double yCordinate;
-    PIDController robotPivotPIDController = new PIDController(1/45.0,0,0);
+    PIDController miniPivotPIDController = new PIDController(1/45.0,0,0);
+    PIDController submoePivotPIDController = new PIDController(0.5,0,0);
 
-    public SDSSwerveModule (SparkMax driveMotor, SparkMax pivotMotor, CANcoder swerveModuleEncoder,double xCordinate, double yCordinate) {
+    public SDSSwerveModule (
+        SparkMax driveMotor,
+        SparkMax pivotMotor,
+        CANcoder swerveModuleEncoder,
+        double xCordinate,
+        double yCordinate
+    ) {
         super(new SwerveModuleInputsAutoLogged());
         this.driveMotor = driveMotor;
         this.pivotMotor = pivotMotor;
@@ -78,7 +79,7 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
         Angle currentWheelDirection = swerveModuleEncoder.getPosition().getValue();
         Angle wheelTargetDirection = modulePivot.getMeasure();
         Angle wheelError = currentWheelDirection.minus(wheelTargetDirection);
-        pivotMotor.set(robotPivotPIDController.calculate(wheelError.in(Degree)));
+        pivotMotor.set(submoePivotPIDController.calculate(wheelError.in(Degree)));
     }
 
     @Override

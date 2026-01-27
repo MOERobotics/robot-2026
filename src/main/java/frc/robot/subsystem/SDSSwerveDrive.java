@@ -32,7 +32,10 @@ SwerveDriveKinematics robotKinematics;
         sensors.robotChassisSpeed = robotKinematics.toChassisSpeeds(Arrays.stream(swerveModules).map(SwerveModule::getState).toArray(SwerveModuleState[]::new));
         sensors.robotPose2D = robotOdometry.update(robotGyro.getRotation2d(),
                 Arrays.stream(swerveModules).map(SwerveModule::getPosition).toArray(SwerveModulePosition[]::new));
-        sensors.modules = swerveModules;
+        sensors.moduleFL = swerveModules[0];
+        sensors.moduleFR = swerveModules[1];
+        sensors.moduleBL = swerveModules[2];
+        sensors.moduleBR = swerveModules[3];
     }
 
     @Override

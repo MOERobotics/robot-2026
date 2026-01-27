@@ -12,6 +12,25 @@ import frc.robot.subsystem.SwerveModule;
 
 public class MiniSwerve extends RobotContainer{
     public MiniSwerve(){
+
+        double pivotkP = 1/45.0;
+        double pivotkI = 0.001;
+        double pivotkD = 0.003;
+        double pivotkIMax = 1;
+
+        double drivekP = 1e-3;
+        double drivekI = 0;
+        double drivekD = 0;
+
+        double drivekS = 0.19959;
+        double drivekV = 0.1233;
+        double drivekA = 0.019658;
+
+        PIDConstants pivotFeedback = new PIDConstants(pivotkP, pivotkI, pivotkD, pivotkIMax);
+        PIDConstants driveFeedback = new PIDConstants(drivekP, drivekI, drivekD);
+        FeedforwardConstants driveFeedForward = new FeedforwardConstants(drivekS, drivekV, drivekA
+
+
         Pigeon2 robotGyro = new Pigeon2(0);
         SparkMax driveMotor = new SparkMax(1, SparkLowLevel.MotorType.kBrushless);
         SparkMax pivotMotor = new SparkMax(2, SparkLowLevel.MotorType.kBrushless);
