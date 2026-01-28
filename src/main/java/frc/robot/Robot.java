@@ -33,6 +33,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
@@ -48,6 +49,9 @@ public class Robot extends LoggedRobot {
 
     public static final AprilTagFieldLayout kTagLayout;
 
+
+    DriverStation driverStation;
+
     static {
         try {
             kTagLayout = new AprilTagFieldLayout("2026-rebuilt-welded.json");
@@ -61,19 +65,17 @@ public class Robot extends LoggedRobot {
 
     List<PhotonPipelineResult> result;
     public static final Transform3d kRobotToCam =
-            new Transform3d(new Translation3d( Inches.of(7).in(Meter), Inches.of(2).in(Meter), Inches.of(7).in(Meter)), new Rotation3d(15,0, 0));
+            new Transform3d(new Translation3d(Inches.of(7).in(Meter), Inches.of(2).in(Meter), Inches.of(7).in(Meter)), new Rotation3d(15, 0, 0));
     PhotonPoseEstimator photonEstimator = new PhotonPoseEstimator(kTagLayout, kRobotToCam);
+
 
     VisionSystemSim visionSim;
     PhotonCameraSim cameraSim;
     SimCameraProperties cameraProps;
 
 
-
-
     @Override
     public void robotInit() {
-
 
         if (isSimulation())
             DriverStation.silenceJoystickConnectionWarning(true);
@@ -95,11 +97,19 @@ public class Robot extends LoggedRobot {
         scheduler.run();
 
 
-
         result = photonCamera.getAllUnreadResults();
         if (!result.isEmpty()) {
             PhotonPipelineResult latestResult = result.get(result.size() - 1);
             Logger.recordOutput("HasTargets", latestResult.hasTargets());
+
+            List<Pose3d> targetPoses = new ArrayList<>();
+            Optional<EstimatedRobotPose> estimatedPose = photonEstimator.estimateCoprocMultiTagPose(latestResult);
+
+            if (estimatedPose.isPresent()) {
+                Pose3d pose = estimatedPose.get().estimatedPose;
+                Logger.recordOutput("Vision/EstimatedPose", pose);
+            }
+
 
             if (latestResult.hasTargets()) {
                 List<PhotonTrackedTarget> targets = latestResult.getTargets();
@@ -118,14 +128,14 @@ public class Robot extends LoggedRobot {
                             kRobotToCam);
                 }
 
-                Logger.recordOutput("Best Target Pose ",  bestRobotPose);
+                Logger.recordOutput("Best Target Pose ", bestRobotPose);
 
                 for (PhotonTrackedTarget target : targets) {
-                  int id = target.getFiducialId();
-                    Logger.recordOutput("Targets/" + id + "/Area", target.getArea() );
-                    Logger.recordOutput("Targets/" + id + "/Yaw", target.getYaw() );
-                    Logger.recordOutput("Targets/" + id + "/Pitch", target.getPitch() );
-                    Logger.recordOutput("Targets/" + id + "/Skew", target.getSkew() );
+                    int id = target.getFiducialId();
+                    Logger.recordOutput("Targets/" + id + "/Area", target.getArea());
+                    Logger.recordOutput("Targets/" + id + "/Yaw", target.getYaw());
+                    Logger.recordOutput("Targets/" + id + "/Pitch", target.getPitch());
+                    Logger.recordOutput("Targets/" + id + "/Skew", target.getSkew());
 
                     Pose3d robotPose = new Pose3d();
 
@@ -135,63 +145,113 @@ public class Robot extends LoggedRobot {
                                 kTagLayout.getTagPose(target.getFiducialId()).get(),
                                 kRobotToCam);
                     }
-                    Logger.recordOutput("Targets/" + id + "/robotPose",  robotPose);
+                    Logger.recordOutput("Targets/" + id + "/robotPose", robotPose);
+                    targetPoses.add(robotPose);
 
                 }
 
-        /*
-                Pose3d robotPose = new Pose3d();
-
-                if (kTagLayout.getTagPose(bestTarget.getFiducialId()).isPresent()) {
-                    robotPose = PhotonUtils.estimateFieldToRobotAprilTag(
-                            bestTarget.getBestCameraToTarget(),
-                            kTagLayout.getTagPose(bestTarget.getFiducialId()).get(),
-                            kRobotToCam);
-                }
-                Logger.recordOutput("Robot Pose", robotPose);
-            }
-
-         */
-
-        /*
-        Optional<EstimatedRobotPose> visionEst = Optional.empty();
-        for (var result : photonCamera.getAllUnreadResults()) {
-            visionEst = photonEstimator.estimateCoprocMultiTagPose(result);
-            if (visionEst.isEmpty()) {
-                visionEst = photonEstimator.estimateLowestAmbiguityPose(result);
-            }
-            updateEstimationStdDevs(visionEst, result.getTargets());
-
-            if (Robot.isSimulation()) {
-                visionEst.ifPresentOrElse(
-                        est ->
-                                getSimDebugField()
-                                        .getObject("VisionEstimation")
-                                        .setPose(est.estimatedPose.toPose2d()),
-                        () -> {
-                            getSimDebugField().getObject("VisionEstimation").setPoses();
-                        });
-            }
-
-            visionEst.ifPresent(
-                    est -> {
-                        // Change our trust in the measurement based on the tags we can see
-                        var estStdDevs = getEstimationStdDevs();
-
-                        estConsumer.accept(est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
-                    });
-        }
 
 
-         */
-                // boolean connected = photonCamera.isConnected();
-                // Logger.recordOutput("Camera Connected", connected);
             }
 
         }
+
+        double matchTime = DriverStation.getMatchTime();
+        SmartDashboard.putNumber("Match Time", matchTime);
+
+        Optional<DriverStation.Alliance> allianceOpt = DriverStation.getAlliance();
+
+        String allianceStr = " ";
+
+        if (allianceOpt.isPresent()) {
+            if (allianceOpt.get() == DriverStation.Alliance.Red) {
+                allianceStr = "Red";
+            } else if (allianceOpt.get() == DriverStation.Alliance.Blue) {
+                allianceStr = "Blue";
+            }
+        }
+
+        SmartDashboard.putString("Match Alliance", allianceStr);
+
+
+        String gameData = DriverStation.getGameSpecificMessage();
+        char autoLoser =  ' ';
+        if(!gameData.isEmpty()){
+            autoLoser = gameData.charAt(0);
+        }
+
+        if (autoLoser == 'R') {
+            SmartDashboard.putString("First Inactive", "Red");
+        } else if (autoLoser == 'B')
+            SmartDashboard.putString("First Inactive", "Blue");
+
+        else {
+            SmartDashboard.putString("First Inactive", "None");
+        }
+
+        int shift = 0;
+
+        if (matchTime <= 135 && matchTime > 110) {
+            shift = 1;
+
+        } else if(matchTime <= 110 && matchTime > 85){
+            shift = 2;
+
+    } else if(matchTime <=85&&matchTime >60){
+            shift =3;
+    }else if (matchTime <= 60 && matchTime > 35) {
+            shift = 4;
+        }
+
+        SmartDashboard.putNumber("Current Shift", shift);
+
+
+        boolean redHubActive = true;
+        boolean blueHubActive = true;
+
+        if (shift != 0 && (autoLoser == 'R' || autoLoser == 'B')) {
+
+            boolean redActiveThisShift;
+
+            if (shift == 2 || shift == 4){
+                redActiveThisShift=true;
+            }else{
+                redActiveThisShift=false;
+            }
+
+
+            if (autoLoser == 'R') {
+                redHubActive = redActiveThisShift;
+                blueHubActive = !redActiveThisShift;
+            } else {
+                blueHubActive = redActiveThisShift;
+                redHubActive = !redActiveThisShift;
+            }
+
+        }
+
+        SmartDashboard.putBoolean("Red Hub Active", redHubActive);
+        SmartDashboard.putBoolean("Blue Hub Active", blueHubActive);
+
+        boolean ourHubActive = false;
+
+        if (allianceOpt.isPresent()) {
+            if (allianceOpt.get() == DriverStation.Alliance.Red && redHubActive) {
+
+                ourHubActive = true;
+
+            } else if (allianceOpt.get() == DriverStation.Alliance.Blue && blueHubActive) {
+
+                ourHubActive = true;
+            }
+        }
+
+        SmartDashboard.putBoolean("Our Hub Active", ourHubActive);
+
 
 
     }
+
 
 
     @Override
