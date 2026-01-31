@@ -4,29 +4,20 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.*;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.commands.HubLoggingCommand;
 import frc.robot.container.MiniBotContainer;
 import frc.robot.container.RobotContainer;
-import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
-import org.photonvision.estimation.TargetModel;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -36,7 +27,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BooleanSupplier;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -49,9 +39,10 @@ public class Robot extends LoggedRobot {
 
     public static final AprilTagFieldLayout kTagLayout;
 
+    public Command hubLogging = new HubLoggingCommand();
 
-    DriverStation driverStation;
 
+    // imported field layout
     static {
         try {
             kTagLayout = new AprilTagFieldLayout("2026-rebuilt-welded.json");
@@ -96,22 +87,27 @@ public class Robot extends LoggedRobot {
         MOELogger.log();
         scheduler.run();
 
-
+        //reading all results from photon camera
         result = photonCamera.getAllUnreadResults();
         if (!result.isEmpty()) {
+            // get latest results
             PhotonPipelineResult latestResult = result.get(result.size() - 1);
+
             Logger.recordOutput("HasTargets", latestResult.hasTargets());
-
+            // creates list of poses seen by latest result of the camera
             List<Pose3d> targetPoses = new ArrayList<>();
-            Optional<EstimatedRobotPose> estimatedPose = photonEstimator.estimateCoprocMultiTagPose(latestResult);
 
+            // finds estimated pose with multi target strategy
+            Optional<EstimatedRobotPose> estimatedPose = photonEstimator.estimateCoprocMultiTagPose(latestResult);
             if (estimatedPose.isPresent()) {
                 Pose3d pose = estimatedPose.get().estimatedPose;
-                Logger.recordOutput("Vision/EstimatedPose", pose);
+                Logger.recordOutput("EstimatedPose", pose);
             }
 
-
+            // makes list of targets and their data in advantage kit
             if (latestResult.hasTargets()) {
+
+                // lists data for the best target
                 List<PhotonTrackedTarget> targets = latestResult.getTargets();
                 PhotonTrackedTarget bestTarget = latestResult.getBestTarget();
                 Logger.recordOutput("Best Target Fiduciary ID", bestTarget.getFiducialId());
@@ -130,6 +126,7 @@ public class Robot extends LoggedRobot {
 
                 Logger.recordOutput("Best Target Pose ", bestRobotPose);
 
+                // logs all target data
                 for (PhotonTrackedTarget target : targets) {
                     int id = target.getFiducialId();
                     Logger.recordOutput("Targets/" + id + "/Area", target.getArea());
@@ -155,100 +152,7 @@ public class Robot extends LoggedRobot {
             }
 
         }
-
-        double matchTime = DriverStation.getMatchTime();
-        SmartDashboard.putNumber("Match Time", matchTime);
-
-        Optional<DriverStation.Alliance> allianceOpt = DriverStation.getAlliance();
-
-        String allianceStr = " ";
-
-        if (allianceOpt.isPresent()) {
-            if (allianceOpt.get() == DriverStation.Alliance.Red) {
-                allianceStr = "Red";
-            } else if (allianceOpt.get() == DriverStation.Alliance.Blue) {
-                allianceStr = "Blue";
-            }
-        }
-
-        SmartDashboard.putString("Match Alliance", allianceStr);
-
-
-        String gameData = DriverStation.getGameSpecificMessage();
-        char autoLoser =  ' ';
-        if(!gameData.isEmpty()){
-            autoLoser = gameData.charAt(0);
-        }
-
-        if (autoLoser == 'R') {
-            SmartDashboard.putString("First Inactive", "Red");
-        } else if (autoLoser == 'B')
-            SmartDashboard.putString("First Inactive", "Blue");
-
-        else {
-            SmartDashboard.putString("First Inactive", "None");
-        }
-
-        int shift = 0;
-
-        if (matchTime <= 135 && matchTime > 110) {
-            shift = 1;
-
-        } else if(matchTime <= 110 && matchTime > 85){
-            shift = 2;
-
-    } else if(matchTime <=85&&matchTime >60){
-            shift =3;
-    }else if (matchTime <= 60 && matchTime > 35) {
-            shift = 4;
-        }
-
-        SmartDashboard.putNumber("Current Shift", shift);
-
-
-        boolean redHubActive = true;
-        boolean blueHubActive = true;
-
-        if (shift != 0 && (autoLoser == 'R' || autoLoser == 'B')) {
-
-            boolean redActiveThisShift;
-
-            if (shift == 2 || shift == 4){
-                redActiveThisShift=true;
-            }else{
-                redActiveThisShift=false;
-            }
-
-
-            if (autoLoser == 'R') {
-                redHubActive = redActiveThisShift;
-                blueHubActive = !redActiveThisShift;
-            } else {
-                blueHubActive = redActiveThisShift;
-                redHubActive = !redActiveThisShift;
-            }
-
-        }
-
-        SmartDashboard.putBoolean("Red Hub Active", redHubActive);
-        SmartDashboard.putBoolean("Blue Hub Active", blueHubActive);
-
-        boolean ourHubActive = false;
-
-        if (allianceOpt.isPresent()) {
-            if (allianceOpt.get() == DriverStation.Alliance.Red && redHubActive) {
-
-                ourHubActive = true;
-
-            } else if (allianceOpt.get() == DriverStation.Alliance.Blue && blueHubActive) {
-
-                ourHubActive = true;
-            }
-        }
-
-        SmartDashboard.putBoolean("Our Hub Active", ourHubActive);
-
-
+        scheduler.schedule(hubLogging);
 
     }
 
@@ -308,9 +212,6 @@ public class Robot extends LoggedRobot {
         cameraProps.setLatencyStdDevMs(5);
 
         cameraSim = new PhotonCameraSim(photonCamera,cameraProps);
-
-
-
         visionSim.addCamera(cameraSim,kRobotToCam);
     }
 
