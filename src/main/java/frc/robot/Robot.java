@@ -42,21 +42,24 @@ public class Robot extends LoggedRobot {
     public Command hubLogging = new HubLoggingCommand();
 
 
+
+
+
     // imported field layout
     static {
         try {
-            kTagLayout = new AprilTagFieldLayout("2026-rebuilt-welded.json");
+            kTagLayout = new AprilTagFieldLayout(Filesystem.getDeployDirectory().getPath() + "/2026-rebuilt-welded.json");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
 
-    PhotonCamera photonCamera = new PhotonCamera("PhotonCamera1");
+    PhotonCamera photonCamera = new PhotonCamera("HD_Camera");
 
     List<PhotonPipelineResult> result;
     public static final Transform3d kRobotToCam =
-            new Transform3d(new Translation3d(Inches.of(7).in(Meter), Inches.of(2).in(Meter), Inches.of(7).in(Meter)), new Rotation3d(15, 0, 0));
+            new Transform3d(new Translation3d(0,0,0), new Rotation3d());
     PhotonPoseEstimator photonEstimator = new PhotonPoseEstimator(kTagLayout, kRobotToCam);
 
 
@@ -104,16 +107,23 @@ public class Robot extends LoggedRobot {
                 Logger.recordOutput("EstimatedPose", pose);
             }
 
+
+
             // makes list of targets and their data in advantage kit
             if (latestResult.hasTargets()) {
 
                 // lists data for the best target
                 List<PhotonTrackedTarget> targets = latestResult.getTargets();
                 PhotonTrackedTarget bestTarget = latestResult.getBestTarget();
+
                 Logger.recordOutput("Best Target Fiduciary ID", bestTarget.getFiducialId());
                 Logger.recordOutput("Best Target Area", bestTarget.getArea());
                 Logger.recordOutput("Best Target Yaw", bestTarget.getYaw());
                 Logger.recordOutput("Best Target Pitch", bestTarget.getPitch());
+
+                Logger.recordOutput("Best Camera to Target Translation",  bestTarget.getBestCameraToTarget());
+
+
 
                 Pose3d bestRobotPose = new Pose3d();
 
@@ -152,6 +162,8 @@ public class Robot extends LoggedRobot {
             }
 
         }
+
+
         scheduler.schedule(hubLogging);
 
     }
@@ -200,6 +212,7 @@ public class Robot extends LoggedRobot {
     @Override
     public void simulationInit() {
         visionSim = new VisionSystemSim("main");
+
 
         visionSim.addAprilTags(
                 kTagLayout

@@ -52,6 +52,9 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
 
     public Pose2d simPose = new Pose2d(0,0,Rotation2d.fromDegrees(0));
 
+    public Pose2d realPose = new Pose2d(0,0,Rotation2d.fromDegrees(0));
+
+
     Pigeon2SimState pigeonSim;
 
 
@@ -109,6 +112,16 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
         DifferentialDriveWheelPositions differentialDriveWheelPositions = new DifferentialDriveWheelPositions
                 (Units.inchesToMeters(getLeftPosition().in(Inches)),
                         Units.inchesToMeters(getRightPosition().in(Inches)));
+
+        realPose = driveOdometry.update(
+                pigeon2.getRotation2d(),
+                new DifferentialDriveWheelPositions(
+                        Units.inchesToMeters(getLeftPosition().in(Inches)),
+                        Units.inchesToMeters(getRightPosition().in(Inches))
+                )
+        );
+
+        Logger.recordOutput("updated drive Pos", realPose);
 
     }
 
