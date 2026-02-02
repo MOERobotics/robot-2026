@@ -2,6 +2,7 @@ package frc.robot.container;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.pathplanner.lib.config.PIDConstants;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.wpilibj.CAN;
@@ -28,7 +29,7 @@ public class MiniSwerve extends RobotContainer{
 
         PIDConstants pivotFeedback = new PIDConstants(pivotkP, pivotkI, pivotkD, pivotkIMax);
         PIDConstants driveFeedback = new PIDConstants(drivekP, drivekI, drivekD);
-        FeedforwardConstants driveFeedForward = new FeedforwardConstants(drivekS, drivekV, drivekA
+        //FeedforwardConstants driveFeedForward = new FeedforwardConstants(drivekS, drivekV, drivekA);
 
 
         Pigeon2 robotGyro = new Pigeon2(0);

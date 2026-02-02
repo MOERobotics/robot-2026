@@ -6,6 +6,8 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -21,6 +23,7 @@ public class Robot extends LoggedRobot {
     public RobotContainer robot = new MiniSwerve();
     public Joystick driveJoystick = new Joystick(0);
     private CommandScheduler scheduler;
+    // public ChassisSpeeds robotSpeed = new ChassisSpeeds(driveJoystick.getRawAxis(5), driveJoystick.getRawAxis(0), driveJoystick.getRawAxis(6));
 
     @Override
     public void robotInit() {
@@ -30,6 +33,8 @@ public class Robot extends LoggedRobot {
 
         MOELogger.setupLogging(this);
         scheduler = CommandScheduler.getInstance();
+
+
     }
 
 
@@ -39,8 +44,11 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void robotPeriodic() {
+
         MOELogger.log();
         scheduler.run();
+
+
     }
 
     @Override
@@ -66,6 +74,12 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopPeriodic() {
+         ChassisSpeeds robotSpeed = new ChassisSpeeds(
+                 driveJoystick.getRawAxis(5) * -1,
+                 driveJoystick.getRawAxis(0),
+                 driveJoystick.getRawAxis(6)
+         );
+        robot.getRobotSwerveDrive().robotDrive(robotSpeed);
     }
 
     @Override

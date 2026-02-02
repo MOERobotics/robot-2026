@@ -1,13 +1,21 @@
 package frc.robot.subsystem;
 
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.Pigeon2;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.sim.SparkMaxSim;
+import com.revrobotics.sim.SparkRelativeEncoderSim;
+import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.MOESubsystem;
 
 import static edu.wpi.first.units.Units.*;
@@ -15,13 +23,18 @@ import static java.lang.Math.PI;
 
 public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged> implements SwerveModule {
 
-    private final SparkMax pivotMotor;
-    private final SparkMax driveMotor;
+    private final SparkMax pivotMotor = null;
+    private final SparkMax driveMotor = null;
     private final CANcoder swerveModuleEncoder;
     public double xCordinate;
     public double yCordinate;
     PIDController miniPivotPIDController = new PIDController(1/45.0,0,0);
     PIDController submoePivotPIDController = new PIDController(0.5,0,0);
+
+    public RelativeEncoder driveMotorEncoder = driveMotor.getEncoder();
+    public RelativeEncoder pivotMotorEncoder = pivotMotor.getEncoder();
+    SparkMaxSim pivotMotorSimulator, driveMotorSimulator;
+    // SparkRelativeEncoderSim pivotMotorEncoder, driveMotorEncoder;
 
     public SDSSwerveModule (
         SparkMax driveMotor,
@@ -43,8 +56,10 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
     public void readSensors(SwerveModuleInputsAutoLogged sensors) {
         sensors.moduleAngle = swerveModuleEncoder.getPosition().getValue();
         sensors.robotDriveSpeed = driveMotor.get();
-        sensors.robotModuleState = new SwerveModuleState(InchesPerSecond.of(driveMotor.getEncoder().getVelocity()*(4* PI / (60.0*6.75))).in(MetersPerSecond),
-                new Rotation2d(getAngle()));
+        sensors.robotModuleState = new SwerveModuleState(
+                InchesPerSecond.of(driveMotor.getEncoder().getVelocity()*(4* PI / (60.0*6.75))).in(MetersPerSecond),
+                new Rotation2d(getAngle())
+        );
         sensors.robotPivotSpeed = pivotMotor.get();
         sensors.robotPosition = new SwerveModulePosition(
                 Inches.of(
@@ -99,6 +114,6 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
                     getAngle()
                 )
         );
-    }
-}
+    }}
+
 

@@ -36,6 +36,8 @@ SwerveDriveKinematics robotKinematics;
         sensors.moduleFR = swerveModules[1];
         sensors.moduleBL = swerveModules[2];
         sensors.moduleBR = swerveModules[3];
+        sensors.modulePositions = Arrays.stream(swerveModules).map(SwerveModule::getPosition).toArray(SwerveModulePosition[]::new);
+        sensors.moduleStates = Arrays.stream(swerveModules).map(SwerveModule::getState).toArray(SwerveModuleState[]::new);
     }
 
     @Override
@@ -44,7 +46,7 @@ SwerveDriveKinematics robotKinematics;
     }
 
     @Override
-    public void setChassisSpeed(ChassisSpeeds robotChassisSpeed) {
+    public void robotDrive(ChassisSpeeds robotChassisSpeed) {
         SwerveModuleState[] robotModuleStateToChassisSpeed = robotKinematics.toSwerveModuleStates(robotChassisSpeed);
         this.setModuleStates(robotModuleStateToChassisSpeed);
     }
@@ -53,6 +55,8 @@ SwerveDriveKinematics robotKinematics;
     public void setModuleStates(SwerveModuleState... robotModuleStates) {
         for (int i = 0; i < swerveModules.length; i++) {
             SwerveModuleState moduleState = robotModuleStates[i];
+            moduleState.optimize(swerveModules[i].getPosition().angle);
+
             swerveModules[i].setPivot(moduleState.angle);
             swerveModules[i].setSpeed(moduleState.speedMetersPerSecond);
         }
