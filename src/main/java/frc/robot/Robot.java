@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.container.MiniBotContainer;
 import frc.robot.container.RobotContainer;
+import frc.robot.subsystem.Vision;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
@@ -35,24 +36,24 @@ public class Robot extends LoggedRobot {
     public Joystick driveJoystick = new Joystick(0);
     private CommandScheduler scheduler;
 
-    public static final AprilTagFieldLayout kTagLayout;
-
+    //public static final AprilTagFieldLayout kTagLayout;
+/*
     static {
         try {
-            kTagLayout = new AprilTagFieldLayout("2026-rebuilt-welded.json");
+            kTagLayout = new AprilTagFieldLayout(Filesystem.getDeployDirectory() + "/2026-rebuilt-welded.json");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
+ */
 
-    PhotonCamera frontCam = new PhotonCamera("PhotonCamera1");
+
+
     PhotonCamera rearCam = new PhotonCamera("PhotonCamera2");
 
     List<PhotonPipelineResult> result;
-    public static final Transform3d kRobotToCamFront =
-            new Transform3d(new Translation3d( Inches.of(0).in(Meter), Inches.of(0).in(Meter), Inches.of(7).in(Meter)), new Rotation3d(0,0, 0));
-    PhotonPoseEstimator photonEstimator = new PhotonPoseEstimator(kTagLayout, kRobotToCamFront);
+    //PhotonPoseEstimator photonEstimator = new PhotonPoseEstimator(kTagLayout, kRobotToCamFront);
     public static final Transform3d kRobotToCamRear =
             new Transform3d(new Translation3d( Inches.of(0).in(Meter), Inches.of(0).in(Meter), Inches.of(7).in(Meter)), new Rotation3d(0,0, Math.PI));
 
@@ -64,6 +65,10 @@ public class Robot extends LoggedRobot {
     List<Pose3d> frontTargetPoses;
     List<Pose3d> rearTargetPoses;
 
+    Vision visionSubsystem = new Vision();
+
+    public Robot() throws IOException {
+    }
 
 
     @Override
@@ -114,36 +119,19 @@ public class Robot extends LoggedRobot {
         scheduler.run();
 
         List<Optional<Pose3d>> cameraPoses = List.of(
-                photonFunction(frontCam, kRobotToCamFront, kTagLayout, frontTargetPoses),
-                photonFunction(rearCam, kRobotToCamRear, kTagLayout, rearTargetPoses)
+            visionSubsystem.photonFunction()
+                //,photonFunction(rearCam, kRobotToCamRear, kTagLayout, rearTargetPoses)
         );
         List<Pose3d> validPoses = cameraPoses.stream()
                 .flatMap(Optional::stream) // removes empty optionals
                 .toList();
         Pose3d totalAveragePose = null;
         if (!validPoses.isEmpty()) {
-            totalAveragePose = averagePoseMaker(validPoses);
+            totalAveragePose = visionSubsystem.poseAverage(validPoses);
         }
 
 
         Logger.recordOutput("TotalPose", totalAveragePose);
-
-
-        /*
-                Pose3d robotPose = new Pose3d();
-
-                if (kTagLayout.getTagPose(bestTarget.getFiducialId()).isPresent()) {
-                    robotPose = PhotonUtils.estimateFieldToRobotAprilTag(
-                            bestTarget.getBestCameraToTarget(),
-                            kTagLayout.getTagPose(bestTarget.getFiducialId()).get(),
-                            kRobotToCam);
-                }
-                Logger.recordOutput("Robot Pose", robotPose);
-            }
-
-         */
-
-
     }
 
 
@@ -190,26 +178,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void simulationInit() {
-        visionSim = new VisionSystemSim("main");
-
-        visionSim.addAprilTags(
-                kTagLayout
-        );
-        cameraProps = new SimCameraProperties();
-
-        cameraProps.setCalibration(640, 480, Rotation2d.fromDegrees(90));
-        cameraProps.setFPS(20);
-        cameraProps.setAvgLatencyMs(35);
-        cameraProps.setLatencyStdDevMs(5);
-
-        frontCameraSim = new PhotonCameraSim(frontCam,cameraProps);
-        rearCameraSim = new PhotonCameraSim(rearCam,cameraProps);
-
-
-
-
-        visionSim.addCamera(frontCameraSim, kRobotToCamFront);
-        visionSim.addCamera(rearCameraSim, kRobotToCamFront);
+    visionSubsystem.simulationInit();
     }
 
     @Override
@@ -217,91 +186,5 @@ public class Robot extends LoggedRobot {
         Pose2d sim2Pose = robot.getTankDrive().getPose();
         visionSim.update(sim2Pose);
     }
-    public Pose3d averagePoseMaker(List<Pose3d> listToAverage){
-        double totalX = 0.0;
-        double totalY = 0.0;
-        double totalZ = 0.0;
-        double totalSin = 0.0;
-        double totalCos = 0.0;
 
-        for (Pose3d pose : listToAverage) {
-            totalX += pose.getX();
-            totalY += pose.getY();
-            totalZ += pose.getZ();
-
-            double yaw = pose.getRotation().getZ();
-            totalSin += Math.sin(yaw);
-            totalCos += Math.cos(yaw);
-        }
-
-
-        Translation3d averageTranslation =
-                new Translation3d(
-                        totalX / listToAverage.size(),
-                        totalY / listToAverage.size(),
-                        totalZ / listToAverage.size());
-
-        double avgYaw = Math.atan2(
-                totalSin / listToAverage.size(),
-                totalCos / listToAverage.size());
-
-        Rotation3d averageRotation =
-                new Rotation3d(0.0, 0.0, avgYaw);
-
-        return new Pose3d(averageTranslation, averageRotation);
-
-    }
-    public Optional<Pose3d> photonFunction(PhotonCamera camera, Transform3d robotToCam, AprilTagFieldLayout tagLayout, List<Pose3d> targetsStoreList) {
-        targetsStoreList.clear();
-        result = camera.getAllUnreadResults();
-        if (!result.isEmpty()) {
-            PhotonPipelineResult latestResult = result.get(result.size() - 1);
-            Logger.recordOutput(camera.getName() + "HasTargets", latestResult.hasTargets());
-
-            if (latestResult.hasTargets()) {
-                List<PhotonTrackedTarget> targets = latestResult.getTargets();
-                PhotonTrackedTarget bestTarget = latestResult.getBestTarget();
-                Logger.recordOutput(camera.getName() + "Best Target Fiduciary ID", bestTarget.getFiducialId());
-                Logger.recordOutput(camera.getName() + "Best Target Area", bestTarget.getArea());
-                Logger.recordOutput(camera.getName() + "Best Target Yaw", bestTarget.getYaw());
-                Logger.recordOutput(camera.getName() + "Best Target Pitch", bestTarget.getPitch());
-
-                Pose3d bestRobotPose = new Pose3d();
-
-                if (tagLayout.getTagPose(bestTarget.getFiducialId()).isPresent()) {
-                    bestRobotPose = PhotonUtils.estimateFieldToRobotAprilTag(
-                            bestTarget.getBestCameraToTarget(),
-                            tagLayout.getTagPose(bestTarget.getFiducialId()).get(),
-                            robotToCam);
-                }
-
-                Logger.recordOutput(camera.getName() + "Best Target Pose ", bestRobotPose);
-
-                for (PhotonTrackedTarget target : targets) {
-                    int id = target.getFiducialId();
-                    Logger.recordOutput(camera.getName() + "Targets/" + id + "/Area", target.getArea());
-                    Logger.recordOutput(camera.getName() + "Targets/" + id + "/Yaw", target.getYaw());
-                    Logger.recordOutput(camera.getName() + "Targets/" + id + "/Pitch", target.getPitch());
-                    Logger.recordOutput(camera.getName() + "Targets/" + id + "/Skew", target.getSkew());
-
-                    Pose3d robotPose = new Pose3d();
-
-                    if (tagLayout.getTagPose(target.getFiducialId()).isPresent()) {
-                        robotPose = PhotonUtils.estimateFieldToRobotAprilTag(
-                                target.getBestCameraToTarget(),
-                                tagLayout.getTagPose(target.getFiducialId()).get(),
-                                robotToCam);
-                    }
-                    Logger.recordOutput(camera.getName() + "Targets/" + id + "/robotPose", robotPose);
-                    targetsStoreList.add(robotPose);
-                }
-                Pose3d averagePose = averagePoseMaker(targetsStoreList);
-
-                Logger.recordOutput(camera.getName() + "AveragePose", averagePose);
-                targetsStoreList.clear();
-                return Optional.of(averagePose);
-            }
-        }
-        return Optional.empty();
-    }
 }

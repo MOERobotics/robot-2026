@@ -54,4 +54,6 @@ public abstract class MOESubsystem<SensorType extends LoggableInputs> extends Su
     public void fromLog(LogTable table) {
         sensors.fromLog(table);
     }
+
+    public abstract void simulationInit();
 }
