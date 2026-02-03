@@ -23,16 +23,16 @@ import static java.lang.Math.PI;
 
 public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged> implements SwerveModule {
 
-    private final SparkMax pivotMotor = null;
-    private final SparkMax driveMotor = null;
+    private final SparkMax pivotMotor;
+    private final SparkMax driveMotor;
     private final CANcoder swerveModuleEncoder;
     public double xCordinate;
     public double yCordinate;
     PIDController miniPivotPIDController = new PIDController(1/45.0,0,0);
     PIDController submoePivotPIDController = new PIDController(0.5,0,0);
 
-    public RelativeEncoder driveMotorEncoder = driveMotor.getEncoder();
-    public RelativeEncoder pivotMotorEncoder = pivotMotor.getEncoder();
+    public RelativeEncoder driveMotorEncoder;
+    public RelativeEncoder pivotMotorEncoder;
     SparkMaxSim pivotMotorSimulator, driveMotorSimulator;
     // SparkRelativeEncoderSim pivotMotorEncoder, driveMotorEncoder;
 
@@ -45,7 +45,9 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
     ) {
         super(new SwerveModuleInputsAutoLogged());
         this.driveMotor = driveMotor;
+        this.driveMotorEncoder = driveMotor.getEncoder();
         this.pivotMotor = pivotMotor;
+        this.pivotMotorEncoder = pivotMotor.getEncoder();
         this.swerveModuleEncoder = swerveModuleEncoder;
         this.xCordinate = xCordinate;
         this.yCordinate = yCordinate;
@@ -114,6 +116,34 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
                     getAngle()
                 )
         );
-    }}
+    }
+    public double DriveSystem(){
+        pivotMotorSimulator = new SparkMaxSim(pivotMotor, DCMotor.getNEO(1));
+        driveMotorSimulator = new SparkMaxSim(driveMotor, DCMotor.getNEO(1));
+
+        //pivotMotorEncoder = pivotMotorSimulator.getRelativeEncoderSim();
+        //driveMotorEncoder = driveMotorSimulator.getRelativeEncoderSim();
+
+   /*    // pivotMotorSystem = new DCMotorSim(
+                LinearSystemId.createDCMotorSystem(
+                        DCMotor.getNEO(1),
+                        0.005,
+                        25.0
+                ),
+                DCMotor.getNEO(1)
+        );
+
+       // driveMotorSimulator = new DCMotorSim(
+                LinearSystemId.createDCMotorSystem(
+                        DCMotor.getNEO(1),
+                        0.005,
+                        25.0
+                ),
+                DCMotor.getNEO(1)
+        );
+    */
+        return 0;
+    }
+}
 
 
