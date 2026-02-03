@@ -3,6 +3,9 @@ package frc.robot.subsystem;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.sim.Pigeon2SimState;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPLTVController;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.sim.SparkRelativeEncoderSim;
@@ -12,14 +15,13 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
-import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.math.kinematics.DifferentialDriveWheelPositions;
+import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.MOESubsystem;
 import lombok.Getter;
@@ -29,6 +31,7 @@ import org.littletonrobotics.junction.Logger;
 import static edu.wpi.first.units.Units.*;
 
 public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements TankDriveSubsystem{
+
 
     public SparkMax motorControlL;
     public SparkMax motorControlR;
@@ -54,12 +57,16 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
 
     public Pose2d realPose = new Pose2d(0,0,Rotation2d.fromDegrees(0));
 
+    DifferentialDriveWheelPositions differentialDriveWheelPositions;
+
 
     Pigeon2SimState pigeonSim;
 
+    DifferentialDriveWheelSpeeds differentialDriveWheelSpeeds;
 
 
-    public TankDrive(SparkMax motorControlL, SparkMax motorControlR){
+
+    public TankDrive(SparkMax motorControlL, SparkMax motorControlR) {
         super(new DriveInputsAutoLogged());
         this.motorControlL = motorControlL;
         this.motorControlR = motorControlR;
@@ -72,11 +79,17 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
         getSensors().rightPosition = getRightPosition();
         getSensors().simPose = getPose();
 
+        differentialDriveWheelSpeeds = new DifferentialDriveWheelSpeeds(leftEncoder.getVelocity(), rightEncoder.getVelocity());
+
         leftMotorSimulator = new SparkMaxSim(motorControlL, DCMotor.getNEO(1));
         rightMotorSimulator = new SparkMaxSim(motorControlR, DCMotor.getNEO(1));
 
         leftEncoderSimulator = leftMotorSimulator.getRelativeEncoderSim();
         rightEncoderSimulator = rightMotorSimulator.getRelativeEncoderSim();
+
+         differentialDriveWheelSpeeds = new DifferentialDriveWheelSpeeds
+                (Units.inchesToMeters(getLeftPosition().in(Inches)),
+                        Units.inchesToMeters(getLeftPosition().in(Inches)));
 
         leftMotorSystem = new DCMotorSim(
                 LinearSystemId.createDCMotorSystem(
@@ -98,8 +111,23 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
 
         pigeonSim = pigeon2.getSimState();
 
-        driveOdometry =  new DifferentialDriveOdometry(pigeon2.getRotation2d(),getLeftPosition(),getRightPosition());
+        driveOdometry = new DifferentialDriveOdometry(pigeon2.getRotation2d(), getLeftPosition(), getRightPosition());
+        RobotConfig config = null;
+        try{
+            config = RobotConfig.fromGUISettings();
+        } catch (Exception e) {
+            // Handle exception as needed
+            e.printStackTrace();
+        }
 
+        // Configure AutoBuilder last
+
+
+    }
+
+
+    public ChassisSpeeds getRobotRelativeSpeeds() {
+        return  driveKinematics.toChassisSpeeds(differentialDriveWheelSpeeds);
     }
 
     @Override
@@ -122,6 +150,8 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
         );
 
         Logger.recordOutput("updated drive Pos", realPose);
+
+
 
     }
 
