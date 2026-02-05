@@ -109,7 +109,7 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
     }
 
     @Override
-    public SwerveModuleState getState() {
+    public SwerveModuleState getSpeedNDirectionOfMod() {
         return new SwerveModuleState(InchesPerSecond.of(driveMotor.getEncoder().getVelocity()*(4* PI / (60.0*6.75))).in(MetersPerSecond),
                 new Rotation2d(getAngle()));
     }
@@ -134,13 +134,13 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
     }
 
     @Override
-    public Translation2d getTranslation() {
+    public Translation2d getCoordsOfModule() {
         return new Translation2d(this.xCordinate, this.yCordinate);
 
     }
 
     @Override
-    public SwerveModulePosition getPosition() {
+    public SwerveModulePosition getTravelDistanceNRobotAngle() {
 
         return new SwerveModulePosition(
                 Inches.of(
