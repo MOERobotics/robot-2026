@@ -43,6 +43,7 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
     public CANcoderSimState pivotEncoderSim;
 
 
+
     // SparkRelativeEncoderSim pivotMotorEncoder, driveMotorEncoder;
 
     public SDSSwerveModule (
@@ -120,7 +121,7 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
 
     @Override
     public void setSpeed(double moduleSpeed) {
-        driveMotor.set(moduleSpeed);
+        driveMotor.set(-moduleSpeed);
     }
 
     @Override
@@ -153,14 +154,14 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
     public void simulate(){
         driveMotorSystem.setInputVoltage(driveMotor.getBusVoltage()*driveMotor.get());
         pivotMotorSystem.setInputVoltage(-pivotMotor.getBusVoltage()*pivotMotor.get());
-
         driveMotorSystem.setAngularVelocity(MOESimulator.decelerate(driveMotorSystem.getAngularVelocity(),60).in(RadiansPerSecond));
         pivotMotorSystem.setAngularVelocity(MOESimulator.decelerate(pivotMotorSystem.getAngularVelocity(),60).in(RadiansPerSecond));
+
         driveMotorSystem.update(.02);
         pivotMotorSystem.update(.02);
 
         driveMotorSimulator.iterate(driveMotorSystem.getAngularVelocityRPM()*6.75, 12.0, .02);
-        pivotMotorSimulator.iterate(pivotMotorSystem.getAngularVelocityRPM()*(150.0/7.0), 12.0, .02);
+        pivotMotorSimulator.iterate(-pivotMotorSystem.getAngularVelocityRPM()*(150.0/7.0), 12.0, .02);
         pivotEncoderSim.setRawPosition(pivotMotorSystem.getAngularPosition().unaryMinus());
         pivotEncoderSim.setVelocity(pivotMotorSystem.getAngularVelocity().unaryMinus());
     }
