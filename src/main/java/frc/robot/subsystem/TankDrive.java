@@ -121,6 +121,11 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
     }
 
     @Override
+    public void simulationInit() {
+
+    }
+
+    @Override
     public void drive(double leftPercent, double rightPercent) {
         motorControlL.set(leftPercent);
         motorControlR.set(rightPercent);

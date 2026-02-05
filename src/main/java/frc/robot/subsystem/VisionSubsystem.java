@@ -22,16 +22,7 @@ public interface VisionSubsystem extends Subsystem, LoggableInputs {
 
     @AutoLog
     class CameraInputs {
-/*
-         boolean hasTargets;
-         double yaw;
-         double pitch;
-         double area;
-         int id;
-         Transform3d cameraToRobot;
-
- */
-
+        //Optional<Pose3d> averagePose;
              }
     public Optional<Pose3d> photonPoseEstimator();
 

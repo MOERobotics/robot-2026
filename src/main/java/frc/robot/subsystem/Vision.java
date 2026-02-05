@@ -4,6 +4,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.MOESubsystem;
+import lombok.SneakyThrows;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
@@ -28,8 +29,11 @@ public class Vision extends MOESubsystem<CameraInputsAutoLogged> implements Visi
     public AprilTagFieldLayout tagFieldLayout;
     public List<Pose3d> targetPoses;
     public VisionSystemSim visionSim;
+    public Pose3d averagePose;
 
-    public Vision () throws IOException {
+    @SneakyThrows
+    public Vision ()  {
+
         super(new CameraInputsAutoLogged());
         this.camera  = new PhotonCamera("HDCamera");
         this.camToRobot = new Transform3d(
@@ -38,21 +42,42 @@ public class Vision extends MOESubsystem<CameraInputsAutoLogged> implements Visi
                         Inches.of(0).in(Meter),
                         Inches.of(7).in(Meter)),
                 new Rotation3d(0,0, 0));
-        this.tagFieldLayout  = new AprilTagFieldLayout(Filesystem.getDeployDirectory() +
+        this.tagFieldLayout  = new AprilTagFieldLayout(Filesystem.getDeployDirectory().getPath()
+                +
                 "/2026-rebuilt-welded.json");
-        /*
-        static {
+/*
             try {
                 tagFieldLayout  = new AprilTagFieldLayout(
-                        Filesystem.getDeployDirectory() +
+                        Filesystem.getDeployDirectory().getPath() +
                                 "/2026-rebuilt-welded.json");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }
 */
+
+
         this.targetPoses = new ArrayList<>();
         this.visionSim = new VisionSystemSim("main");
+        this.averagePose = Pose3d.kZero;
+
+    }
+    @Override
+    public void periodic(){
+        List<Optional<Pose3d>> cameraPoses = List.of(
+                photonFunction()
+                //,photonFunction(rearCam, kRobotToCamRear, kTagLayout, rearTargetPoses)
+        );
+        List<Pose3d> validPoses = cameraPoses.stream()
+                .flatMap(Optional::stream) // removes empty optionals
+                .toList();
+        Pose3d totalAveragePose = null;
+        if (!validPoses.isEmpty()) {
+            totalAveragePose = poseAverage(validPoses);
+        }
+
+
+        Logger.recordOutput(camera.getName()+"/TotalPose", totalAveragePose);
+
     }
 
     @Override
@@ -96,7 +121,7 @@ public class Vision extends MOESubsystem<CameraInputsAutoLogged> implements Visi
                     Logger.recordOutput(camera.getName() + "/Targets/" +  target.getFiducialId() + "/robotPose", robotPose);
                     targetPoses.add(robotPose);
                 }
-                Pose3d averagePose = poseAverage(targetPoses);
+                averagePose = poseAverage(targetPoses);
 
                 Logger.recordOutput(camera.getName() + "/AveragePose", averagePose);
                 targetPoses.clear();
@@ -166,6 +191,12 @@ public class Vision extends MOESubsystem<CameraInputsAutoLogged> implements Visi
 
         visionSim.addCamera(cameraSim, camToRobot);
         //visionSim.addCamera(rearCameraSim, kRobotToCamFront);
+    }
+    public void readSensors(CameraInputsAutoLogged sensors) {
+        //sensors.averagePose = photonFunction();
+    }
+    public Pose3d getPose(){
+        return averagePose;
     }
 
 }

@@ -16,7 +16,7 @@ import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public abstract @Data class RobotContainer implements LoggableInputs {
-    private TankDriveSubsystem tankDrive;
+    public TankDriveSubsystem tankDrive;
     private PowerDistribution pdh;
     public SparkMax motorControlL = new SparkMax(1, SparkLowLevel.MotorType.kBrushless);
 

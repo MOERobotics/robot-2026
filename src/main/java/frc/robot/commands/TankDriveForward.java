@@ -9,57 +9,59 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystem.TankDrive;
+import frc.robot.subsystem.Vision;
 import org.littletonrobotics.junction.Logger;
 
 public class TankDriveForward extends Command {
     public TankDrive localDriveSystem;
-    public Distance desiredDistance;
-    public Distance initDistanceR;
-    public Distance initDistanceL;
+    public double desiredDistance;
     public PIDController drivePID = new PIDController(0.2,0,0);
-    public Pose3d currentPose;
+    public Pose3d finalPose;
     public Pose3d initPose;
-    public Pose3d desiredPose = new Pose3d(new Translation3d(
-            currentPose.getTranslation().getX() + initPose.getTranslation().getX(),
-            currentPose.getTranslation().getY() + initPose.getTranslation().getY(),
-            currentPose.getTranslation().getZ() + initPose.getTranslation().getZ()),
-    new Rotation3d(currentPose.getRotation().getX() + initPose.getRotation().getX(),
-            currentPose.getRotation().getY() + initPose.getRotation().getY(),
-            currentPose.getRotation().getZ() + initPose.getRotation().getZ()
-            ));
+    public Vision localVisionSubsystem;
+
     public double localPower;
-    public TankDriveForward(TankDrive driveSystem, Distance travelInFeet, double power, Pose3d initalPose, Pose3d currentPose1){
-        desiredDistance = travelInFeet;
+    public TankDriveForward(TankDrive driveSystem, double travelInInches, double power, Pose3d inputPose, Vision visionSubsystem){
+        desiredDistance = travelInInches;
         localDriveSystem = driveSystem;
         localPower = power;
-        initPose = initalPose;
-        currentPose = currentPose1;
+        initPose = inputPose;
+        finalPose = new Pose3d(new Translation3d(2+initPose.getTranslation().getX(),//+Units.Inches.of(desiredDistance).in(Units.Meters),
+                initPose.getTranslation().getY(),
+                initPose.getTranslation().getZ()),
+                initPose.getRotation()
+                );
+        localVisionSubsystem = visionSubsystem;
         addRequirements(localDriveSystem);
+
     }
 
     @Override
     public void initialize() {
-        initDistanceR = Units.Inches.of(localDriveSystem.motorControlR.getEncoder().getPosition());
-        initDistanceL = Units.Inches.of(localDriveSystem.motorControlL.getEncoder().getPosition());
+
         drivePID.reset();
         //drivePID.setTolerance(0.04);
     }
 
     @Override
     public void execute() {
-        Distance endDistanceL = initDistanceL.plus(desiredDistance);
-        Distance endDistanceR = initDistanceR.plus(desiredDistance);
+        localDriveSystem.drive(localPower, localPower);
+        /*
         double pidOffsetL = MathUtil.clamp(drivePID.calculate(localDriveSystem.motorControlL.getEncoder().getPosition(), endDistanceL.in(Units.Inches)),-1,1);
         double pidOffsetR = MathUtil.clamp(drivePID.calculate(localDriveSystem.motorControlR.getEncoder().getPosition(), endDistanceR.in(Units.Inches)),-1,1);
         localDriveSystem.drive(localPower*pidOffsetR, localPower*pidOffsetL);
         Logger.recordOutput("Power Output R (w/ PID)", localPower*pidOffsetR);
         Logger.recordOutput("Power Output L (w/ PID)", localPower*pidOffsetL);
         Logger.recordOutput("End Distance R: ", endDistanceR);
+
+         */
     }
 
     @Override
     public boolean isFinished() {
-        return drivePID.atSetpoint();
+        return localVisionSubsystem.getPose().getTranslation().getX() == finalPose.getTranslation().getX();
+        //if ()
+        //return drivePID.atSetpoint();
         /*
         boolean isForward = desiredDistance.gt(Inches.of(0));
         if (isForward &&

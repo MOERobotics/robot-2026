@@ -8,9 +8,12 @@ import com.fasterxml.jackson.databind.util.Converter;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.TankDriveForward;
 import frc.robot.container.MiniBotContainer;
 import frc.robot.container.RobotContainer;
+import frc.robot.subsystem.TankDrive;
 import frc.robot.subsystem.Vision;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -36,18 +39,6 @@ public class Robot extends LoggedRobot {
     public Joystick driveJoystick = new Joystick(0);
     private CommandScheduler scheduler;
 
-    //public static final AprilTagFieldLayout kTagLayout;
-/*
-    static {
-        try {
-            kTagLayout = new AprilTagFieldLayout(Filesystem.getDeployDirectory() + "/2026-rebuilt-welded.json");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
- */
-
 
 
     PhotonCamera rearCam = new PhotonCamera("PhotonCamera2");
@@ -55,7 +46,9 @@ public class Robot extends LoggedRobot {
     List<PhotonPipelineResult> result;
     //PhotonPoseEstimator photonEstimator = new PhotonPoseEstimator(kTagLayout, kRobotToCamFront);
     public static final Transform3d kRobotToCamRear =
-            new Transform3d(new Translation3d( Inches.of(0).in(Meter), Inches.of(0).in(Meter), Inches.of(7).in(Meter)), new Rotation3d(0,0, Math.PI));
+            new Transform3d(new Translation3d( Inches.of(0).in(Meter),
+                    Inches.of(0).in(Meter), Inches.of(7).in(Meter)),
+                    new Rotation3d(0,0, Math.PI));
 
     VisionSystemSim visionSim;
     PhotonCameraSim frontCameraSim;
@@ -66,8 +59,10 @@ public class Robot extends LoggedRobot {
     List<Pose3d> rearTargetPoses;
 
     Vision visionSubsystem = new Vision();
+   // public TankDriveForward driveForward = new TankDriveForward((TankDrive) robot.tankDrive,
+    //        24, 0.1, visionSubsystem.getPose(), visionSubsystem);
 
-    public Robot() throws IOException {
+    public Robot() {
     }
 
 
@@ -118,20 +113,6 @@ public class Robot extends LoggedRobot {
         MOELogger.log();
         scheduler.run();
 
-        List<Optional<Pose3d>> cameraPoses = List.of(
-            visionSubsystem.photonFunction()
-                //,photonFunction(rearCam, kRobotToCamRear, kTagLayout, rearTargetPoses)
-        );
-        List<Pose3d> validPoses = cameraPoses.stream()
-                .flatMap(Optional::stream) // removes empty optionals
-                .toList();
-        Pose3d totalAveragePose = null;
-        if (!validPoses.isEmpty()) {
-            totalAveragePose = visionSubsystem.poseAverage(validPoses);
-        }
-
-
-        Logger.recordOutput("TotalPose", totalAveragePose);
     }
 
 
@@ -148,6 +129,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousInit() {
+       // scheduler.schedule(driveForward);
     }
 
     @Override
@@ -184,7 +166,7 @@ public class Robot extends LoggedRobot {
     @Override
     public void simulationPeriodic() {
         Pose2d sim2Pose = robot.getTankDrive().getPose();
-        visionSim.update(sim2Pose);
+        visionSubsystem.visionSim.update(sim2Pose);
     }
 
 }
