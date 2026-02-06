@@ -19,7 +19,19 @@ public interface PhotonCameraSubsystem extends Subsystem, LoggableInputs {
         public double bestPitch = 0.0;
         public double bestArea = 0.0;
         public Pose3d estimatedPose = Pose3d.kZero;
-        public boolean hasMultiEstimatedPose = false;
+
+        public boolean hasEstimatedPose = false;
+
+        public Pose3d multiTagPose = Pose3d.kZero;
+        public boolean hasMultiTagPose = false;
+
+        public Pose3d singleTagPose = Pose3d.kZero;
+        public boolean hasSingleTagPose = false;
+
+        public Pose3d finalVisionPose = Pose3d.kZero;
+        public String finalPoseSource = "NONE";
+
+
 
 
     }
@@ -32,17 +44,35 @@ public interface PhotonCameraSubsystem extends Subsystem, LoggableInputs {
         return getSensors().hasTargets;
     }
 
-
     default Optional<Pose3d> getEstimatedPose() {
-            return Optional.ofNullable(getSensors().estimatedPose);
+
+        if( getSensors().hasEstimatedPose){
+           return Optional.of(getSensors().estimatedPose);
+        }else {
+            return Optional.empty();
+        }
 
     }
 
+    default boolean hasMultiTagPose() {
+        return getSensors().hasEstimatedPose;
+    }
 
+    default int getBestFiducialId() {
+        return getSensors().bestFiducialId;
+    }
 
+    default double getBestYaw() {
+        return getSensors().bestYaw;
+    }
 
+    default double getBestPitch() {
+        return getSensors().bestPitch;
+    }
 
-
+    default double getBestArea() {
+        return getSensors().bestArea;
+    }
 
 
 

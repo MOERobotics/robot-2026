@@ -16,23 +16,18 @@ import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public abstract @Data class RobotContainer implements LoggableInputs {
-    private TankDriveSubsystem tankDrive;
     private PowerDistribution pdh;
-    public SparkMax motorControlL = new SparkMax(1, SparkLowLevel.MotorType.kBrushless);
 
-    public SparkMax motorControlR = new SparkMax(2, SparkLowLevel.MotorType.kBrushless);
-
+    TankDrive tankDrive;
 
 
     public RobotContainer() {
         System.out.println("Constructed RobotContainer type: " + getClass());
-        tankDrive = new TankDrive(motorControlL, motorControlR);
     }
 
     @Override
     public void toLog(LogTable table) {
         table.put("TankDrive", tankDrive);
-        table.put("rightPower", tankDrive);
     }
 
     @Override

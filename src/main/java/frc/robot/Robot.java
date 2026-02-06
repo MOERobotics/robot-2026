@@ -4,32 +4,20 @@
 
 package frc.robot;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.FaceTargetCommand;
 import frc.robot.commands.HubLoggingCommand;
 import frc.robot.container.MiniBotContainer;
 import frc.robot.container.RobotContainer;
-import frc.robot.subsystem.PhotonCameraObject;
+import frc.robot.subsystem.CameraControl;
+import frc.robot.subsystem.TankDrive;
 import org.littletonrobotics.junction.LoggedRobot;
-import org.littletonrobotics.junction.Logger;
-import org.photonvision.EstimatedRobotPose;
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonUtils;
 import org.photonvision.simulation.VisionSystemSim;
-import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static edu.wpi.first.units.Units.*;
 
 
 public class Robot extends LoggedRobot {
@@ -49,13 +37,15 @@ public class Robot extends LoggedRobot {
 
 
 
-    PhotonCameraObject photonCameraObject = new PhotonCameraObject("HD_Camera");
-    List<PhotonPipelineResult> result;
+    CameraControl photonCameraObject = new CameraControl(new Transform3d( new Translation3d(0,0,0), new Rotation3d(0,0,0)),"HD_Camera");
 
 
     VisionSystemSim visionSim;
     PhotonCameraSim cameraSim;
     SimCameraProperties cameraProps;
+
+    public Command faceTargetCommand = new FaceTargetCommand(1.0, (TankDrive)robot.getTankDrive(), photonCameraObject);
+
 
 
     @Override
@@ -106,6 +96,8 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousPeriodic() {
+        scheduler.schedule(faceTargetCommand);
+
     }
 
     @Override
@@ -119,6 +111,13 @@ public class Robot extends LoggedRobot {
         double leftPow = joystickX+joystickY;
         double rightPow = joystickY-joystickX;
         robot.getTankDrive().drive(leftPow,rightPow);
+
+        if (driveJoystick.getRawButton(2)) {
+            scheduler.schedule(faceTargetCommand);
+        } else {
+            faceTargetCommand.cancel();
+        }
+
 
     }
 
@@ -145,8 +144,9 @@ public class Robot extends LoggedRobot {
         cameraProps.setAvgLatencyMs(35);
         cameraProps.setLatencyStdDevMs(5);
 
+
         cameraSim = new PhotonCameraSim(photonCameraObject.camera,cameraProps);
-        visionSim.addCamera(cameraSim,photonCameraObject.kRobotToCam);
+        visionSim.addCamera(cameraSim,photonCameraObject.robotToCam);
     }
 
     @Override

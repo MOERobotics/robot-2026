@@ -68,6 +68,7 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
 
     public TankDrive(SparkMax motorControlL, SparkMax motorControlR) {
         super(new DriveInputsAutoLogged());
+
         this.motorControlL = motorControlL;
         this.motorControlR = motorControlR;
         this.leftEncoder = motorControlL.getEncoder();
@@ -78,6 +79,8 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
         getSensors().leftPosition = getLeftPosition();
         getSensors().rightPosition = getRightPosition();
         getSensors().simPose = getPose();
+
+        differentialDriveWheelPositions =  new DifferentialDriveWheelPositions(Units.inchesToMeters(getLeftPosition().in(Inches)), Units.inchesToMeters(getRightPosition().in(Inches)));
 
         differentialDriveWheelSpeeds = new DifferentialDriveWheelSpeeds(leftEncoder.getVelocity(), rightEncoder.getVelocity());
 
@@ -112,16 +115,6 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
         pigeonSim = pigeon2.getSimState();
 
         driveOdometry = new DifferentialDriveOdometry(pigeon2.getRotation2d(), getLeftPosition(), getRightPosition());
-        RobotConfig config = null;
-        try{
-            config = RobotConfig.fromGUISettings();
-        } catch (Exception e) {
-            // Handle exception as needed
-            e.printStackTrace();
-        }
-
-        // Configure AutoBuilder last
-
 
     }
 
@@ -217,9 +210,9 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
         );
         pigeonSim.addYaw(Radian.of(twist1.dtheta));
 
-        rightMotorSimulator.iterate(velocityLeft*60.0, 12, 0.02);
+        rightMotorSimulator.iterate(velocityRight*60.0, 12, 0.02);
 
-        leftMotorSimulator.iterate(velocityRight*60.0, 12, 0.02);
+        leftMotorSimulator.iterate(velocityLeft*60.0, 12, 0.02);
         simPose = driveOdometry.update(
                 pigeon2.getRotation2d(),
                 new DifferentialDriveWheelPositions(

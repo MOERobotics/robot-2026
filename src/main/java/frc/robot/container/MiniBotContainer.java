@@ -12,12 +12,15 @@ import org.littletonrobotics.junction.LogTable;
 
 public class MiniBotContainer extends RobotContainer {
 
-    public TankDriveSubsystem tankDrive;
-    private PowerDistribution pdh;
+    public SparkMax motorControlL;
+
+    public SparkMax motorControlR;
+
 
     public MiniBotContainer() {
-        System.out.println("Constructed RobotContainer type: " + getClass());
-
+        motorControlL = new SparkMax(1, SparkLowLevel.MotorType.kBrushless);
+        motorControlR = new SparkMax(2, SparkLowLevel.MotorType.kBrushless);
+        this.setTankDrive(new TankDrive(motorControlL, motorControlR));
     }
 
 
