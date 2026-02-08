@@ -10,6 +10,8 @@ import frc.robot.subsystem.SDSSwerveModule;
 import frc.robot.subsystem.SwerveDriveSubsystem;
 import frc.robot.subsystem.SwerveModule;
 
+import static edu.wpi.first.units.Units.Inches;
+
 public class SubMOErine extends RobotContainer {
     public SubMOErine() {
         double pivotkP = 0.50;
@@ -50,8 +52,8 @@ public class SubMOErine extends RobotContainer {
                 driveMotorFL,
                 pivotMotorFL,
                 swerveModuleEncoderFL,
-                4,
-                4,
+                Inches.of(4),
+                Inches.of(4),
                 pivotFeedback,
                 driveFeedback
         );
@@ -59,8 +61,8 @@ public class SubMOErine extends RobotContainer {
                 driveMotorFR,
                 pivotMotorFR,
                 swerveModuleEncoderFR,
-                4,
-                -4,
+                Inches.of(4),
+                Inches.of(-4),
                 pivotFeedback,
                 driveFeedback
         );
@@ -68,8 +70,8 @@ public class SubMOErine extends RobotContainer {
                 driveMotorBL,
                 pivotMotorBL,
                 swerveModuleEncoderBL,
-                -4,
-                4,
+                Inches.of(-4),
+                Inches.of(4),
                 pivotFeedback,
                 driveFeedback
         );
@@ -77,8 +79,8 @@ public class SubMOErine extends RobotContainer {
                 driveMotorBR,
                 pivotMotorBR,
                 swerveModuleEncoder4BR,
-                -4,
-                -4,
+                Inches.of(-4),
+                Inches.of(-4),
                 pivotFeedback,
                 driveFeedback
         );

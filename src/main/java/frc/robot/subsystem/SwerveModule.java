@@ -10,7 +10,7 @@ import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public interface SwerveModule extends Subsystem, LoggableInputs {
-    public SwerveModuleState getSpeedNDirectionOfMod(); // check if state is correct
+    public SwerveModuleState getSpeedNDirectionOfMod();// check if state is correct
     public void setSpeed(double moduleSpeed);
     public void setPivot(Rotation2d modulePivot);
     public Translation2d getCoordsOfModule();

@@ -10,7 +10,10 @@ import frc.robot.subsystem.SDSSwerveModule;
 import frc.robot.subsystem.SwerveDriveSubsystem;
 import frc.robot.subsystem.SwerveModule;
 
-public class ProMOEtheus { public ProMOEtheus() {
+import static edu.wpi.first.units.Units.Inches;
+
+public class ProMOEtheus extends RobotContainer { public ProMOEtheus() {
+
     double pivotkP = 0.50;
     double pivotkI = 0.001;
     double pivotkD = 0.003;
@@ -49,8 +52,8 @@ public class ProMOEtheus { public ProMOEtheus() {
             driveMotorFL,
             pivotMotorFL,
             swerveModuleEncoderFL,
-            4,
-            4,
+            Inches.of(4),
+            Inches.of(4),
             pivotFeedback,
             driveFeedback
     );
@@ -58,8 +61,8 @@ public class ProMOEtheus { public ProMOEtheus() {
             driveMotorFR,
             pivotMotorFR,
             swerveModuleEncoderFR,
-            4,
-            -4,
+            Inches.of(4),
+            Inches.of(-4),
             pivotFeedback,
             driveFeedback
     );
@@ -67,8 +70,8 @@ public class ProMOEtheus { public ProMOEtheus() {
             driveMotorBL,
             pivotMotorBL,
             swerveModuleEncoderBL,
-            -4,
-            4,
+            Inches.of(-4),
+            Inches.of(4),
             pivotFeedback,
             driveFeedback
     );
@@ -76,8 +79,8 @@ public class ProMOEtheus { public ProMOEtheus() {
             driveMotorBR,
             pivotMotorBR,
             swerveModuleEncoder4BR,
-            -4,
-            -4,
+            Inches.of(-4),
+            Inches.of(-4),
             pivotFeedback,
             driveFeedback
     );

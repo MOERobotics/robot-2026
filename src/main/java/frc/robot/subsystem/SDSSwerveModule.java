@@ -15,6 +15,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.MOESimulator;
 import frc.robot.MOESubsystem;
@@ -27,8 +28,8 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
     private final SparkMax pivotMotor;
     private final SparkMax driveMotor;
     private final CANcoder swerveModuleEncoder;
-    public double xCordinate;
-    public double yCordinate;
+    public Distance xCordinate;
+    public Distance yCordinate;
     PIDController pidPivotController;
     PIDController pidDriveController;
 
@@ -54,8 +55,8 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
         SparkMax driveMotor,
         SparkMax pivotMotor,
         CANcoder swerveModuleEncoder,
-        double xCordinate,
-        double yCordinate,
+        Distance xCordinate,
+        Distance yCordinate,
         PIDConstants pivotFeedback,
         PIDConstants driveFeedback
     ) {
