@@ -1,7 +1,6 @@
 package frc.robot.subsystem;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.Angle;
@@ -16,15 +15,18 @@ public interface SwerveModule extends Subsystem, LoggableInputs {
     public Translation2d getCoordsOfModule();
     public SwerveModulePosition getTravelDistanceNRobotAngle();
     public SwerveModuleInputsAutoLogged getSensors();
+    public boolean invertPivotmotor();
 
     @AutoLog
     public class SwerveModuleInputs {
         Angle moduleAngle;
+        Angle moduleTargetAngle;
         Translation2d robotTranslation;
         SwerveModulePosition robotPosition;
         SwerveModuleState robotModuleState;
         double robotPivotSpeed;
         double robotDriveSpeed;
+        double robotError;
 
     }
 }

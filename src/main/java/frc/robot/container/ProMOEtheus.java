@@ -10,6 +10,7 @@ import frc.robot.subsystem.SDSSwerveModule;
 import frc.robot.subsystem.SwerveDriveSubsystem;
 import frc.robot.subsystem.SwerveModule;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 
 public class ProMOEtheus extends RobotContainer { public ProMOEtheus() {
@@ -55,7 +56,9 @@ public class ProMOEtheus extends RobotContainer { public ProMOEtheus() {
             Inches.of(4),
             Inches.of(4),
             pivotFeedback,
-            driveFeedback
+            driveFeedback,
+            Degrees.of(0),
+            true
     );
     SwerveModule frontRightCorner = new SDSSwerveModule(
             driveMotorFR,
@@ -64,7 +67,9 @@ public class ProMOEtheus extends RobotContainer { public ProMOEtheus() {
             Inches.of(4),
             Inches.of(-4),
             pivotFeedback,
-            driveFeedback
+            driveFeedback,
+            Degrees.of(0),
+            true
     );
     SwerveModule backLeftCorner = new SDSSwerveModule(
             driveMotorBL,
@@ -73,7 +78,9 @@ public class ProMOEtheus extends RobotContainer { public ProMOEtheus() {
             Inches.of(-4),
             Inches.of(4),
             pivotFeedback,
-            driveFeedback
+            driveFeedback,
+            Degrees.of(0),
+            true
     );
     SwerveModule backRightCorner = new SDSSwerveModule(
             driveMotorBR,
@@ -82,7 +89,10 @@ public class ProMOEtheus extends RobotContainer { public ProMOEtheus() {
             Inches.of(-4),
             Inches.of(-4),
             pivotFeedback,
-            driveFeedback
+            driveFeedback,
+            Degrees.of(0),
+            true
+            
     );
     SwerveDriveSubsystem ProMOEtheus = new SDSSwerveDrive(
             robotGyro,

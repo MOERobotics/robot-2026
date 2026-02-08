@@ -44,6 +44,8 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
     public CANcoderSimState pivotEncoderSim;
     public PIDConstants pivotFeedback;
     public PIDConstants driveFeedback;
+    public final Angle moduleOffset;
+    boolean pivotInvert;
 
 
 
@@ -58,7 +60,9 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
         Distance xCordinate,
         Distance yCordinate,
         PIDConstants pivotFeedback,
-        PIDConstants driveFeedback
+        PIDConstants driveFeedback,
+        Angle moduleOffset,
+        boolean pivotInvert
     ) {
         super(new SwerveModuleInputsAutoLogged());
         this.driveMotor = driveMotor;
@@ -68,11 +72,13 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
         this.swerveModuleEncoder = swerveModuleEncoder;
         this.xCordinate = xCordinate;
         this.yCordinate = yCordinate;
+        this.moduleOffset = moduleOffset;
         this.pivotEncoderSim = swerveModuleEncoder.getSimState();
         this.pivotFeedback = pivotFeedback;
         this.driveFeedback= driveFeedback;
         pivotMotorSimulator = new SparkMaxSim(pivotMotor, DCMotor.getNEO(1));
         driveMotorSimulator = new SparkMaxSim(driveMotor, DCMotor.getNEO(1));
+
 
         pivotMotorEncoderSimulator = pivotMotorSimulator.getRelativeEncoderSim();
         driveMotorEncoderSimulator = driveMotorSimulator.getRelativeEncoderSim();
@@ -101,6 +107,7 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
 
     @Override
     public void readSensors(SwerveModuleInputsAutoLogged sensors) {
+
         sensors.moduleAngle = swerveModuleEncoder.getPosition().getValue();
         sensors.robotDriveSpeed = driveMotor.get();
         sensors.robotModuleState = new SwerveModuleState(
@@ -125,26 +132,33 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
                 new Rotation2d(getAngle()));
     }
 
-        public Angle getAngle() {
-            return this.swerveModuleEncoder.getPosition().getValue();
-        }
+    public Angle getAngle() {
+        return this.swerveModuleEncoder.getPosition().getValue().minus(moduleOffset);
+    }
 
 
     @Override
     public void setSpeed(double moduleSpeed) {
-        driveMotor.set(-moduleSpeed);
+        driveMotor.set(moduleSpeed);
     }
 
     @Override
 
     public void setPivot(Rotation2d modulePivot) {
-        Angle currentWheelDirection = swerveModuleEncoder.getPosition().getValue();
+        Angle currentWheelDirection = getAngle();
         Angle wheelTargetDirection = modulePivot.getMeasure();
+        this.getSensors().moduleTargetAngle = wheelTargetDirection;
         Angle wheelError = currentWheelDirection.minus(wheelTargetDirection);
-        pivotMotor.set(pidPivotController.calculate(wheelError.in(Degree)));
+        double robotError = pidPivotController.calculate(wheelError.in(Degree));
+        pivotMotor.set(robotError);
+        this.getSensors().robotError = robotError;
+    }
+    public boolean invertPivotmotor() {
+        pivotMotor.setInverted(pivotInvert);
+        return false;
     }
 
-    @Override
+        @Override
     public Translation2d getCoordsOfModule() {
         return new Translation2d(this.xCordinate, this.yCordinate);
 
