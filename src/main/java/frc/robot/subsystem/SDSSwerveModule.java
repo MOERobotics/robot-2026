@@ -1,12 +1,11 @@
 package frc.robot.subsystem;
 
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.sim.CANcoderSimState;
+import com.pathplanner.lib.config.PIDConstants;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.sim.SparkRelativeEncoderSim;
-import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -30,8 +29,9 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
     private final CANcoder swerveModuleEncoder;
     public double xCordinate;
     public double yCordinate;
-    PIDController miniPivotPIDController = new PIDController(1/45.0,0,0);
-    PIDController submoePivotPIDController = new PIDController(1/45.0,0,0);
+    PIDController pidPivotController;
+    PIDController pidDriveController;
+
 
     public RelativeEncoder driveMotorEncoder;
     public RelativeEncoder pivotMotorEncoder;
@@ -41,6 +41,10 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
     public DCMotorSim pivotMotorSystem;
     public DCMotorSim driveMotorSystem;
     public CANcoderSimState pivotEncoderSim;
+    public PIDConstants pivotFeedback;
+    public PIDConstants driveFeedback;
+
+
 
 
 
@@ -51,7 +55,9 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
         SparkMax pivotMotor,
         CANcoder swerveModuleEncoder,
         double xCordinate,
-        double yCordinate
+        double yCordinate,
+        PIDConstants pivotFeedback,
+        PIDConstants driveFeedback
     ) {
         super(new SwerveModuleInputsAutoLogged());
         this.driveMotor = driveMotor;
@@ -62,6 +68,8 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
         this.xCordinate = xCordinate;
         this.yCordinate = yCordinate;
         this.pivotEncoderSim = swerveModuleEncoder.getSimState();
+        this.pivotFeedback = pivotFeedback;
+        this.driveFeedback= driveFeedback;
         pivotMotorSimulator = new SparkMaxSim(pivotMotor, DCMotor.getNEO(1));
         driveMotorSimulator = new SparkMaxSim(driveMotor, DCMotor.getNEO(1));
 
@@ -85,6 +93,8 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
                 ),
                 DCMotor.getNEO(1)
         );
+        pidPivotController = new PIDController(pivotFeedback.kP, pivotFeedback.kI,pivotFeedback.kD);
+        pidDriveController = new PIDController(driveFeedback.kP, driveFeedback.kI, driveFeedback.kD);
 
     }
 
@@ -130,7 +140,7 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
         Angle currentWheelDirection = swerveModuleEncoder.getPosition().getValue();
         Angle wheelTargetDirection = modulePivot.getMeasure();
         Angle wheelError = currentWheelDirection.minus(wheelTargetDirection);
-        pivotMotor.set(submoePivotPIDController.calculate(wheelError.in(Degree)));
+        pivotMotor.set(pidPivotController.calculate(wheelError.in(Degree)));
     }
 
     @Override

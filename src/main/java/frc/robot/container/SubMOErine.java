@@ -27,52 +27,60 @@ public class SubMOErine extends RobotContainer {
 
         PIDConstants pivotFeedback = new PIDConstants(pivotkP, pivotkI, pivotkD, pivotkIMax);
         PIDConstants driveFeedback = new PIDConstants(drivekP, drivekI, drivekD);
-      //  FeedforwardConstants driveFeedForward = new FeedforwardConstants(drivekS, drivekV, drivekA);
+        //  FeedforwardConstants driveFeedForward = new FeedforwardConstants(drivekS, drivekV, drivekA);
 
         Pigeon2 robotGyro = new Pigeon2(0);
         SparkMax driveMotorFL = new SparkMax(1, SparkLowLevel.MotorType.kBrushless);
         SparkMax pivotMotorFL = new SparkMax(20, SparkLowLevel.MotorType.kBrushless);
         CANcoder swerveModuleEncoderFL = new CANcoder(31);
 
-        SparkMax driveMotor2FR = new SparkMax(2, SparkLowLevel.MotorType.kBrushless);
-        SparkMax pivotMotor2FR= new SparkMax(3, SparkLowLevel.MotorType.kBrushless);
-        CANcoder swerveModuleEncoder2FR = new CANcoder(32);
+        SparkMax driveMotorFR = new SparkMax(2, SparkLowLevel.MotorType.kBrushless);
+        SparkMax pivotMotorFR= new SparkMax(3, SparkLowLevel.MotorType.kBrushless);
+        CANcoder swerveModuleEncoderFR = new CANcoder(32);
 
-        SparkMax driveMotor3BL = new SparkMax(17, SparkLowLevel.MotorType.kBrushless);
-        SparkMax pivotMotor3BL = new SparkMax(16, SparkLowLevel.MotorType.kBrushless);
-        CANcoder swerveModuleEncoder3BL = new CANcoder(33);
+        SparkMax driveMotorBL = new SparkMax(19, SparkLowLevel.MotorType.kBrushless);
+        SparkMax pivotMotorBL = new SparkMax(18, SparkLowLevel.MotorType.kBrushless);
+        CANcoder swerveModuleEncoderBL = new CANcoder(34);
 
-        SparkMax driveMotor4BR = new SparkMax(19, SparkLowLevel.MotorType.kBrushless);
-        SparkMax pivotMotor4BR = new SparkMax(18, SparkLowLevel.MotorType.kBrushless);
-        CANcoder swerveModuleEncoder4BR = new CANcoder(34);
+        SparkMax driveMotorBR = new SparkMax(17, SparkLowLevel.MotorType.kBrushless);
+        SparkMax pivotMotorBR = new SparkMax(16, SparkLowLevel.MotorType.kBrushless);
+        CANcoder swerveModuleEncoder4BR = new CANcoder(33);
 
         SwerveModule frontLeftCorner = new SDSSwerveModule(
                 driveMotorFL,
                 pivotMotorFL,
                 swerveModuleEncoderFL,
                 4,
-                4
+                4,
+                pivotFeedback,
+                driveFeedback
         );
         SwerveModule frontRightCorner = new SDSSwerveModule(
-                driveMotor2FR,
-                pivotMotor2FR,
-                swerveModuleEncoder2FR,
+                driveMotorFR,
+                pivotMotorFR,
+                swerveModuleEncoderFR,
                 4,
-                -4
+                -4,
+                pivotFeedback,
+                driveFeedback
         );
         SwerveModule backLeftCorner = new SDSSwerveModule(
-                driveMotor3BL,
-                pivotMotor3BL,
-                swerveModuleEncoder3BL,
+                driveMotorBL,
+                pivotMotorBL,
+                swerveModuleEncoderBL,
                 -4,
-                4
+                4,
+                pivotFeedback,
+                driveFeedback
         );
         SwerveModule backRightCorner = new SDSSwerveModule(
-                driveMotor4BR,
-                pivotMotor4BR,
+                driveMotorBR,
+                pivotMotorBR,
                 swerveModuleEncoder4BR,
                 -4,
-                -4
+                -4,
+                pivotFeedback,
+                driveFeedback
         );
         SwerveDriveSubsystem SubMOErine = new SDSSwerveDrive(
                 robotGyro,
@@ -83,5 +91,5 @@ public class SubMOErine extends RobotContainer {
         );
         this.setRobotSwerveDrive(SubMOErine);
 
-}
+    }
 }

@@ -49,10 +49,10 @@ public class MiniSwerve extends RobotContainer{
         SparkMax pivotMotor4 = new SparkMax(8, SparkLowLevel.MotorType.kBrushless);
         CANcoder swerveModuleEncoder4 = new CANcoder(34);
 
-        SwerveModule frontLeftCorner = new SDSSwerveModule(driveMotor, pivotMotor, swerveModuleEncoder,4,4);
-        SwerveModule frontRightCorner = new SDSSwerveModule(driveMotor2, pivotMotor2, swerveModuleEncoder2,4,-4);
-        SwerveModule backLeftCorner = new SDSSwerveModule(driveMotor3, pivotMotor3, swerveModuleEncoder3,-4,4);
-        SwerveModule backRightCorner = new SDSSwerveModule(driveMotor4, pivotMotor4, swerveModuleEncoder4,-4,-4);
+        SwerveModule frontLeftCorner = new SDSSwerveModule(driveMotor, pivotMotor, swerveModuleEncoder,4,4, pivotFeedback, driveFeedback);
+        SwerveModule frontRightCorner = new SDSSwerveModule(driveMotor2, pivotMotor2, swerveModuleEncoder2,4,-4, pivotFeedback, driveFeedback);
+        SwerveModule backLeftCorner = new SDSSwerveModule(driveMotor3, pivotMotor3, swerveModuleEncoder3,-4,4, pivotFeedback, driveFeedback);
+        SwerveModule backRightCorner = new SDSSwerveModule(driveMotor4, pivotMotor4, swerveModuleEncoder4,-4,-4,  pivotFeedback, driveFeedback);
         SwerveDriveSubsystem miniSwerve = new SDSSwerveDrive(robotGyro,frontLeftCorner, frontRightCorner, backLeftCorner, backRightCorner);
         this.setRobotSwerveDrive(miniSwerve);
 
