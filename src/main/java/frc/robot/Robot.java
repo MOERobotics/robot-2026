@@ -5,11 +5,13 @@
 package frc.robot;
 
 import com.fasterxml.jackson.databind.util.Converter;
+import com.pathplanner.lib.commands.FollowPathCommand;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.PathsFollower;
 import frc.robot.commands.TankDriveForward;
 import frc.robot.container.MiniBotContainer;
 import frc.robot.container.RobotContainer;
@@ -61,6 +63,7 @@ public class Robot extends LoggedRobot {
     Vision visionSubsystem = new Vision();
    // public TankDriveForward driveForward = new TankDriveForward((TankDrive) robot.tankDrive,
     //        24, 0.1, visionSubsystem.getPose(), visionSubsystem);
+    public PathsFollower testPath = new PathsFollower("New Path");
 
     public Robot() {
     }
@@ -78,6 +81,7 @@ public class Robot extends LoggedRobot {
 
 
         scheduler = CommandScheduler.getInstance();
+        scheduler.schedule(FollowPathCommand.warmupCommand());
     }
 
 
@@ -129,7 +133,11 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousInit() {
-       // scheduler.schedule(driveForward);
+
+        robot.getTankDrive().setPose(testPath.path.getStartingDifferentialPose());
+        scheduler.schedule(testPath);
+        Logger.recordOutput("Auto Start Pose", testPath.path.getStartingDifferentialPose());
+        //Logger.recordOutput("Auto End Pose", testPath.path.ge());
     }
 
     @Override
