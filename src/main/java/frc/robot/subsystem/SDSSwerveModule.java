@@ -110,12 +110,12 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
 
         sensors.moduleAngle = swerveModuleEncoder.getPosition().getValue();
         sensors.robotDriveSpeed = driveMotor.get();
-        sensors.robotModuleState = new SwerveModuleState(
+        sensors.speedNDirectionOfMod = new SwerveModuleState(
                 InchesPerSecond.of(driveMotor.getEncoder().getVelocity()*(4* PI / (60.0*6.75))).in(MetersPerSecond),
                 new Rotation2d(getAngle())
         );
         sensors.robotPivotSpeed = pivotMotor.get();
-        sensors.robotPosition = new SwerveModulePosition(
+        sensors.travelDistanceNRobotAngle = new SwerveModulePosition(
                 Inches.of(
                         driveMotor.getEncoder().getPosition()*(4* PI / 6.75)
                 ).in(Meters),
@@ -123,7 +123,7 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
                         getAngle()
                 )
         );
-        sensors.robotTranslation = new Translation2d(this.xCordinate, this.yCordinate);
+        sensors.coordOfModule = new Translation2d(this.xCordinate, this.yCordinate);
     }
 
     @Override

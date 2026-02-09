@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-//import frc.robot.container.MiniSwerve;
 import frc.robot.container.RobotContainer;
 import frc.robot.container.SubMOErine;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -16,11 +15,9 @@ import org.littletonrobotics.junction.LoggedRobot;
 public class Robot extends LoggedRobot {
 
     public RobotContainer robot = new SubMOErine();
-   // CommandJoystick driverJoystick = new CommandJoystick(0);
-   // CommandJoystick functionJoystick = new CommandJoystick(1);
     public Joystick driverJoystick = new Joystick(0);
     private CommandScheduler scheduler;
-    // public ChassisSpeeds robotSpeed = new ChassisSpeeds(driveJoystick.getRawAxis(5), driveJoystick.getRawAxis(0), driveJoystick.getRawAxis(6));
+
 
     @Override
     public void robotInit() {
@@ -41,11 +38,8 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void robotPeriodic() {
-
         MOELogger.log();
         scheduler.run();
-
-
     }
 
     @Override
@@ -71,11 +65,11 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopPeriodic() {
-         ChassisSpeeds robotSpeed = new ChassisSpeeds(
-                 driverJoystick.getRawAxis(1) * -1,
-                 driverJoystick.getRawAxis(0)* -1,
-                 driverJoystick.getRawAxis(2)* -1
-         );
+        ChassisSpeeds robotSpeed = new ChassisSpeeds(
+                driverJoystick.getRawAxis(1) * -1,
+                driverJoystick.getRawAxis(0) * -1,
+                driverJoystick.getRawAxis(2) * -1
+        );
         robot.getRobotSwerveDrive().robotDrive(robotSpeed);
     }
 

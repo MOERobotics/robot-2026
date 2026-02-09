@@ -21,9 +21,9 @@ public interface SwerveModule extends Subsystem, LoggableInputs {
     public class SwerveModuleInputs {
         Angle moduleAngle;
         Angle moduleTargetAngle;
-        Translation2d robotTranslation;
-        SwerveModulePosition robotPosition;
-        SwerveModuleState robotModuleState;
+        Translation2d coordOfModule;
+        SwerveModulePosition travelDistanceNRobotAngle;
+        SwerveModuleState speedNDirectionOfMod;
         double robotPivotSpeed;
         double robotDriveSpeed;
         double robotError;
