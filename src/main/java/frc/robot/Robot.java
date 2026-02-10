@@ -10,12 +10,15 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.container.RobotContainer;
 import frc.robot.container.SubMOErine;
 import org.littletonrobotics.junction.LoggedRobot;
+import edu.wpi.first.math.MathUtil;
+
 
 
 public class Robot extends LoggedRobot {
 
     public RobotContainer robot = new SubMOErine();
     public Joystick driverJoystick = new Joystick(0);
+    public double deadband = 0.2;// find deadband number;
     private CommandScheduler scheduler;
 
 
@@ -66,11 +69,13 @@ public class Robot extends LoggedRobot {
     @Override
     public void teleopPeriodic() {
         ChassisSpeeds robotSpeed = new ChassisSpeeds(
-                driverJoystick.getRawAxis(1) * -1,
-                driverJoystick.getRawAxis(0) * -1,
-                driverJoystick.getRawAxis(2) * -1
+                MathUtil.applyDeadband(driverJoystick.getRawAxis(1) * -1, deadband),
+                MathUtil.applyDeadband( driverJoystick.getRawAxis(0) * -1, deadband),
+                MathUtil.applyDeadband(driverJoystick.getRawAxis(2) * -1, deadband)
         );
+      ;
         robot.getRobotSwerveDrive().robotDrive(robotSpeed);
+
     }
 
     @Override

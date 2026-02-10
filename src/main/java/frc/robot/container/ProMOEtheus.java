@@ -44,11 +44,11 @@ public class ProMOEtheus extends RobotContainer {
 
         SparkMax driveMotorBL = new SparkMax(19, SparkLowLevel.MotorType.kBrushless);
         SparkMax pivotMotorBL = new SparkMax(18, SparkLowLevel.MotorType.kBrushless);
-        CANcoder swerveModuleEncoderBL = new CANcoder(34);
+        CANcoder swerveModuleEncoderBL = new CANcoder(33);
 
         SparkMax driveMotorBR = new SparkMax(17, SparkLowLevel.MotorType.kBrushless);
         SparkMax pivotMotorBR = new SparkMax(16, SparkLowLevel.MotorType.kBrushless);
-        CANcoder swerveModuleEncoderBR = new CANcoder(33);
+        CANcoder swerveModuleEncoderBR = new CANcoder(34);
 
         SwerveModule frontLeftCorner = new SDSSwerveModule(
                 driveMotorFL,
