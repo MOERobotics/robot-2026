@@ -23,7 +23,7 @@ import frc.robot.MOESubsystem;
 import static edu.wpi.first.units.Units.*;
 import static java.lang.Math.PI;
 
-public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged> implements SwerveModule {
+public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> implements SwerveModule {
 
     private final SparkMax pivotMotor;
     private final SparkMax driveMotor;
@@ -48,21 +48,18 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
     boolean pivotInvert;
 
 
-
-
-
     // SparkRelativeEncoderSim pivotMotorEncoder, driveMotorEncoder;
 
-    public SDSSwerveModule (
-        SparkMax driveMotor,
-        SparkMax pivotMotor,
-        CANcoder swerveModuleEncoder,
-        Distance xCordinate,
-        Distance yCordinate,
-        PIDConstants pivotFeedback,
-        PIDConstants driveFeedback,
-        Angle moduleOffset,
-        boolean pivotInvert
+    public SDSSwerveModule(
+            SparkMax driveMotor,
+            SparkMax pivotMotor,
+            CANcoder swerveModuleEncoder,
+            Distance xCordinate,
+            Distance yCordinate,
+            PIDConstants pivotFeedback,
+            PIDConstants driveFeedback,
+            Angle moduleOffset,
+            boolean pivotInvert
     ) {
         super(new SwerveModuleInputsAutoLogged());
         this.driveMotor = driveMotor;
@@ -75,7 +72,7 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
         this.moduleOffset = moduleOffset;
         this.pivotEncoderSim = swerveModuleEncoder.getSimState();
         this.pivotFeedback = pivotFeedback;
-        this.driveFeedback= driveFeedback;
+        this.driveFeedback = driveFeedback;
         pivotMotorSimulator = new SparkMaxSim(pivotMotor, DCMotor.getNEO(1));
         driveMotorSimulator = new SparkMaxSim(driveMotor, DCMotor.getNEO(1));
 
@@ -100,7 +97,7 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
                 ),
                 DCMotor.getNEO(1)
         );
-        pidPivotController = new PIDController(pivotFeedback.kP, pivotFeedback.kI,pivotFeedback.kD);
+        pidPivotController = new PIDController(pivotFeedback.kP, pivotFeedback.kI, pivotFeedback.kD);
         pidDriveController = new PIDController(driveFeedback.kP, driveFeedback.kI, driveFeedback.kD);
 
     }
@@ -111,13 +108,13 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
         sensors.moduleAngle = swerveModuleEncoder.getPosition().getValue();
         sensors.robotDriveSpeed = driveMotor.get();
         sensors.speedNDirectionOfMod = new SwerveModuleState(
-                InchesPerSecond.of(driveMotor.getEncoder().getVelocity()*(4* PI / (60.0*6.75))).in(MetersPerSecond),
+                InchesPerSecond.of(driveMotor.getEncoder().getVelocity() * (4 * PI / (60.0 * 6.75))).in(MetersPerSecond),
                 new Rotation2d(getAngle())
         );
         sensors.robotPivotSpeed = pivotMotor.get();
         sensors.travelDistanceNRobotAngle = new SwerveModulePosition(
                 Inches.of(
-                        driveMotor.getEncoder().getPosition()*(4* PI / 6.75)
+                        driveMotor.getEncoder().getPosition() * (4 * PI / 6.75)
                 ).in(Meters),
                 new Rotation2d(
                         getAngle()
@@ -128,7 +125,7 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
 
     @Override
     public SwerveModuleState getSpeedNDirectionOfMod() {
-        return new SwerveModuleState(InchesPerSecond.of(driveMotor.getEncoder().getVelocity()*(4* PI / (60.0*6.75))).in(MetersPerSecond),
+        return new SwerveModuleState(InchesPerSecond.of(driveMotor.getEncoder().getVelocity() * (4 * PI / (60.0 * 6.75))).in(MetersPerSecond),
                 new Rotation2d(getAngle()));
     }
 
@@ -153,12 +150,13 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
         pivotMotor.set(robotError);
         this.getSensors().robotError = robotError;
     }
+
     public boolean invertPivotmotor() {
         pivotMotor.setInverted(pivotInvert);
         return false;
     }
 
-        @Override
+    @Override
     public Translation2d getCoordsOfModule() {
         return new Translation2d(this.xCordinate, this.yCordinate);
 
@@ -169,24 +167,25 @@ public class SDSSwerveModule extends MOESubsystem <SwerveModuleInputsAutoLogged>
 
         return new SwerveModulePosition(
                 Inches.of(
-                driveMotor.getEncoder().getPosition()*(4* PI / 6.75)
+                        driveMotor.getEncoder().getPosition() * (4 * PI / 6.75)
                 ).in(Meters),
                 new Rotation2d(
-                    getAngle()
+                        getAngle()
                 )
         );
     }
-    public void simulate(){
-        driveMotorSystem.setInputVoltage(driveMotor.getBusVoltage()*driveMotor.get());
-        pivotMotorSystem.setInputVoltage(-pivotMotor.getBusVoltage()*pivotMotor.get());
-        driveMotorSystem.setAngularVelocity(MOESimulator.decelerate(driveMotorSystem.getAngularVelocity(),60).in(RadiansPerSecond));
-        pivotMotorSystem.setAngularVelocity(MOESimulator.decelerate(pivotMotorSystem.getAngularVelocity(),60).in(RadiansPerSecond));
+
+    public void simulate() {
+        driveMotorSystem.setInputVoltage(driveMotor.getBusVoltage() * driveMotor.get());
+        pivotMotorSystem.setInputVoltage(-pivotMotor.getBusVoltage() * pivotMotor.get());
+        driveMotorSystem.setAngularVelocity(MOESimulator.decelerate(driveMotorSystem.getAngularVelocity(), 60).in(RadiansPerSecond));
+        pivotMotorSystem.setAngularVelocity(MOESimulator.decelerate(pivotMotorSystem.getAngularVelocity(), 60).in(RadiansPerSecond));
 
         driveMotorSystem.update(.02);
         pivotMotorSystem.update(.02);
 
-        driveMotorSimulator.iterate(driveMotorSystem.getAngularVelocityRPM()*6.75, 12.0, .02);
-        pivotMotorSimulator.iterate(-pivotMotorSystem.getAngularVelocityRPM()*(150.0/7.0), 12.0, .02);
+        driveMotorSimulator.iterate(driveMotorSystem.getAngularVelocityRPM() * 6.75, 12.0, .02);
+        pivotMotorSimulator.iterate(-pivotMotorSystem.getAngularVelocityRPM() * (150.0 / 7.0), 12.0, .02);
         pivotEncoderSim.setRawPosition(pivotMotorSystem.getAngularPosition().unaryMinus());
         pivotEncoderSim.setVelocity(pivotMotorSystem.getAngularVelocity().unaryMinus());
     }

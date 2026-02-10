@@ -10,11 +10,16 @@ import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public interface SwerveDriveSubsystem extends Subsystem, LoggableInputs {
-    public SwerveModule[] getModules ();
+    public SwerveModule[] getModules();
+
     public void robotDrive(ChassisSpeeds robotChassisSpeed);
+
     public void setModuleStates(SwerveModuleState... robotModuleStates);
+
     public Pose2d getPose();
+
     public void setPose(Pose2d robotPose2D);
+
     public ChassisSpeeds getChassisSpeed();
 
     @AutoLog
@@ -30,4 +35,4 @@ public interface SwerveDriveSubsystem extends Subsystem, LoggableInputs {
         SwerveModulePosition[] modulePositions;
 
     }
-    }
+}

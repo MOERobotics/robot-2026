@@ -8,12 +8,13 @@ import frc.robot.MOESubsystem;
 
 import java.util.Arrays;
 
-public class SDSSwerveDrive extends MOESubsystem <SwerveDriveInputsAutoLogged> implements SwerveDriveSubsystem {
-SwerveDriveKinematics robotKinematics;
+public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> implements SwerveDriveSubsystem {
+    SwerveDriveKinematics robotKinematics;
     SwerveModule[] swerveModules;
     SwerveDriveOdometry robotOdometry;
     Pigeon2 robotGyro;
-    public SDSSwerveDrive(Pigeon2 robotGyro,SwerveModule... swerveModules){
+
+    public SDSSwerveDrive(Pigeon2 robotGyro, SwerveModule... swerveModules) {
         super(new SwerveDriveInputsAutoLogged());
         this.robotGyro = robotGyro;
         this.swerveModules = swerveModules;

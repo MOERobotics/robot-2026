@@ -26,9 +26,17 @@ public interface TankDriveSubsystem extends Subsystem, LoggableInputs {
     public void drive(double leftPercent, double rightPercent);
 
     // Inputs
-    public default Distance getLeftPosition() {return getSensors().leftPosition;}
-    public default Distance getRightPosition() {return getSensors().rightPosition;}
-    public default Angle getAngle() {return getSensors().angle;}
+    public default Distance getLeftPosition() {
+        return getSensors().leftPosition;
+    }
+
+    public default Distance getRightPosition() {
+        return getSensors().rightPosition;
+    }
+
+    public default Angle getAngle() {
+        return getSensors().angle;
+    }
 
 
 }

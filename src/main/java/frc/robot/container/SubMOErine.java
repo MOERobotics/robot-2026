@@ -47,7 +47,7 @@ public class SubMOErine extends RobotContainer {
 
         SparkMax driveMotorBR = new SparkMax(17, SparkLowLevel.MotorType.kBrushless);
         SparkMax pivotMotorBR = new SparkMax(16, SparkLowLevel.MotorType.kBrushless);
-        CANcoder swerveModuleEncoder4BR = new CANcoder(33);
+        CANcoder swerveModuleEncoderBR = new CANcoder(33);
 
         SwerveModule frontLeftCorner = new SDSSwerveModule(
                 driveMotorFL,
@@ -85,7 +85,7 @@ public class SubMOErine extends RobotContainer {
         SwerveModule backRightCorner = new SDSSwerveModule(
                 driveMotorBR,
                 pivotMotorBR,
-                swerveModuleEncoder4BR,
+                swerveModuleEncoderBR,
                 Inches.of(-14.5),
                 Inches.of(-14.5),
                 pivotFeedback,
