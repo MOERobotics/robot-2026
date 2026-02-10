@@ -34,20 +34,20 @@ public class ProMOEtheus extends RobotContainer {
         //  FeedforwardConstants driveFeedForward = new FeedforwardConstants(drivekS, drivekV, drivekA);
 
         Pigeon2 robotGyro = new Pigeon2(0);
-        SparkMax driveMotorFL = new SparkMax(1, SparkLowLevel.MotorType.kBrushless);
-        SparkMax pivotMotorFL = new SparkMax(20, SparkLowLevel.MotorType.kBrushless);
+        SparkMax driveMotorFL = new SparkMax(9, SparkLowLevel.MotorType.kBrushless);
+        SparkMax pivotMotorFL = new SparkMax(8, SparkLowLevel.MotorType.kBrushless);
         CANcoder swerveModuleEncoderFL = new CANcoder(31);
 
-        SparkMax driveMotorFR = new SparkMax(2, SparkLowLevel.MotorType.kBrushless);
-        SparkMax pivotMotorFR = new SparkMax(3, SparkLowLevel.MotorType.kBrushless);
+        SparkMax driveMotorFR = new SparkMax(10, SparkLowLevel.MotorType.kBrushless);
+        SparkMax pivotMotorFR = new SparkMax(11, SparkLowLevel.MotorType.kBrushless);
         CANcoder swerveModuleEncoderFR = new CANcoder(32);
 
-        SparkMax driveMotorBL = new SparkMax(19, SparkLowLevel.MotorType.kBrushless);
-        SparkMax pivotMotorBL = new SparkMax(18, SparkLowLevel.MotorType.kBrushless);
+        SparkMax driveMotorBL = new SparkMax(20, SparkLowLevel.MotorType.kBrushless);
+        SparkMax pivotMotorBL = new SparkMax(1, SparkLowLevel.MotorType.kBrushless);
         CANcoder swerveModuleEncoderBL = new CANcoder(33);
 
-        SparkMax driveMotorBR = new SparkMax(17, SparkLowLevel.MotorType.kBrushless);
-        SparkMax pivotMotorBR = new SparkMax(16, SparkLowLevel.MotorType.kBrushless);
+        SparkMax driveMotorBR = new SparkMax(19, SparkLowLevel.MotorType.kBrushless);
+        SparkMax pivotMotorBR = new SparkMax(18, SparkLowLevel.MotorType.kBrushless);
         CANcoder swerveModuleEncoderBR = new CANcoder(34);
 
         SwerveModule frontLeftCorner = new SDSSwerveModule(
