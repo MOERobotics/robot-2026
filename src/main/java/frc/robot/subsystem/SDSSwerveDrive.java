@@ -1,10 +1,13 @@
 package frc.robot.subsystem;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.revrobotics.sim.SparkMaxSim;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.*;
+import edu.wpi.first.math.system.plant.DCMotor;
 import frc.robot.MOESubsystem;
+import com.ctre.phoenix6.sim.Pigeon2SimState;
 
 import java.util.Arrays;
 
@@ -13,11 +16,14 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
     SwerveModule[] swerveModules;
     SwerveDriveOdometry robotOdometry;
     Pigeon2 robotGyro;
+   // Pigeon2SimState simGyro;
+
 
     public SDSSwerveDrive(Pigeon2 robotGyro, SwerveModule... swerveModules) {
         super(new SwerveDriveInputsAutoLogged());
         this.robotGyro = robotGyro;
         this.swerveModules = swerveModules;
+       // simGyro = robotGyro.getSimState();
         robotKinematics = new SwerveDriveKinematics(
                 Arrays.stream(swerveModules).map(SwerveModule::getCoordsOfModule).toArray(Translation2d[]::new)
         );
@@ -52,6 +58,9 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
         this.setModuleStates(robotModuleStateToChassisSpeed);
     }
 
+    public void simulate() {
+
+    }
     @Override
     public void setModuleStates(SwerveModuleState... robotModuleStates) {
         for (int i = 0; i < swerveModules.length; i++) {

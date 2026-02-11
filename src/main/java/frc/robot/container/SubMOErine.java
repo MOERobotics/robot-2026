@@ -38,7 +38,7 @@ public class SubMOErine extends RobotContainer {
         CANcoder swerveModuleEncoderFL = new CANcoder(31);
 
         SparkMax driveMotorFR = new SparkMax(3, SparkLowLevel.MotorType.kBrushless);
-        SparkMax pivotMotorFR= new SparkMax(2, SparkLowLevel.MotorType.kBrushless);
+        SparkMax pivotMotorFR = new SparkMax(2, SparkLowLevel.MotorType.kBrushless);
         CANcoder swerveModuleEncoderFR = new CANcoder(32);
 
         SparkMax driveMotorBL = new SparkMax(19, SparkLowLevel.MotorType.kBrushless);
@@ -91,7 +91,7 @@ public class SubMOErine extends RobotContainer {
                 pivotFeedback,
                 driveFeedback,
                 Degrees.of(135),
-            true
+                true
         );
         SwerveDriveSubsystem SubMOErine = new SDSSwerveDrive(
                 robotGyro,

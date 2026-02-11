@@ -130,7 +130,7 @@ public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> 
     }
 
     public Angle getAngle() {
-        return this.swerveModuleEncoder.getPosition().getValue().minus(moduleOffset);
+        return this.swerveModuleEncoder.getPosition().getValue().minus(moduleOffset); //change back from absolute
     }
 
 

@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
 import frc.robot.container.SubMOErine;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -16,7 +17,7 @@ import edu.wpi.first.math.MathUtil;
 
 public class Robot extends LoggedRobot {
 
-    public RobotContainer robot = new SubMOErine();
+    public RobotContainer robot = new ProMOEtheus();
     public Joystick driverJoystick = new Joystick(0);
     public double deadband = 0.06; // find deadband number;
     private CommandScheduler scheduler;
