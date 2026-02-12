@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+
+
 public class CameraControl extends MOESubsystem<VisionInputsAutoLogged> implements PhotonCameraSubsystem {
 
 
