@@ -45,7 +45,6 @@ public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> 
     public PIDConstants pivotFeedback;
     public PIDConstants driveFeedback;
     public final Angle moduleOffset;
-    boolean pivotInvert;
 
 
     // SparkRelativeEncoderSim pivotMotorEncoder, driveMotorEncoder;
@@ -58,8 +57,7 @@ public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> 
             Distance yCordinate,
             PIDConstants pivotFeedback,
             PIDConstants driveFeedback,
-            Angle moduleOffset,
-            boolean pivotInvert
+            Angle moduleOffset //BOLT ON RIGHT
     ) {
         super(new SwerveModuleInputsAutoLogged());
         this.driveMotor = driveMotor;
@@ -105,7 +103,7 @@ public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> 
     @Override
     public void readSensors(SwerveModuleInputsAutoLogged sensors) {
 
-        sensors.moduleAngle = swerveModuleEncoder.getPosition().getValue();
+        sensors.moduleAngle = getAngle();
         sensors.robotDriveSpeed = driveMotor.get();
         sensors.speedNDirectionOfMod = new SwerveModuleState(
                 InchesPerSecond.of(driveMotor.getEncoder().getVelocity() * (4 * PI / (60.0 * 6.75))).in(MetersPerSecond),
@@ -130,7 +128,7 @@ public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> 
     }
 
     public Angle getAngle() {
-        return this.swerveModuleEncoder.getPosition().getValue().minus(moduleOffset); //change back from absolute
+        return this.swerveModuleEncoder.getAbsolutePosition(true).getValue().minus(moduleOffset); //change back from absolute
     }
 
 
@@ -149,11 +147,6 @@ public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> 
         double robotError = pidPivotController.calculate(wheelError.in(Degree));
         pivotMotor.set(robotError);
         this.getSensors().robotError = robotError;
-    }
-
-    public boolean invertPivotmotor() {
-        pivotMotor.setInverted(pivotInvert);
-        return false;
     }
 
     @Override

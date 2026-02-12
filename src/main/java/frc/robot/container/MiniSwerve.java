@@ -52,10 +52,10 @@ public class MiniSwerve extends RobotContainer {
         CANcoder swerveModuleEncoderBR = new CANcoder(34);
 
         SwerveModule frontLeftCorner = new SDSSwerveModule(driveMotorFL, pivotMotorFL, swerveModuleEncoderFL, Inches.of(4), Inches.of(4), pivotFeedback, driveFeedback, Degrees.of(0)
-                , true);
-        SwerveModule frontRightCorner = new SDSSwerveModule(driveMotorFR, pivotMotorFR, swerveModuleEncoderFR, Inches.of(4), Inches.of(-4), pivotFeedback, driveFeedback, Degrees.of(0), true);
-        SwerveModule backLeftCorner = new SDSSwerveModule(driveMotorBL, pivotMotorBL, swerveModuleEncoderBL, Inches.of(-4), Inches.of(4), pivotFeedback, driveFeedback, Degrees.of(0), true);
-        SwerveModule backRightCorner = new SDSSwerveModule(driveMotorBR, pivotMotorBR, swerveModuleEncoderBR, Inches.of(-4), Inches.of(-4), pivotFeedback, driveFeedback, Degrees.of(0), true);
+                );
+        SwerveModule frontRightCorner = new SDSSwerveModule(driveMotorFR, pivotMotorFR, swerveModuleEncoderFR, Inches.of(4), Inches.of(-4), pivotFeedback, driveFeedback, Degrees.of(0));
+        SwerveModule backLeftCorner = new SDSSwerveModule(driveMotorBL, pivotMotorBL, swerveModuleEncoderBL, Inches.of(-4), Inches.of(4), pivotFeedback, driveFeedback, Degrees.of(0));
+        SwerveModule backRightCorner = new SDSSwerveModule(driveMotorBR, pivotMotorBR, swerveModuleEncoderBR, Inches.of(-4), Inches.of(-4), pivotFeedback, driveFeedback, Degrees.of(0));
         SwerveDriveSubsystem miniSwerve = new SDSSwerveDrive(robotGyro, frontLeftCorner, frontRightCorner, backLeftCorner, backRightCorner);
         this.setRobotSwerveDrive(miniSwerve);
 
