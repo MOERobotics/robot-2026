@@ -22,7 +22,6 @@ public interface SwerveModule extends Subsystem, LoggableInputs {
 
     public SwerveModuleInputsAutoLogged getSensors();
 
-    public boolean invertPivotmotor();
 
     @AutoLog
     public class SwerveModuleInputs {

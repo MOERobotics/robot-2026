@@ -57,8 +57,7 @@ public class SubMOErine extends RobotContainer {
                 Inches.of(14.5),
                 pivotFeedback,
                 driveFeedback,
-                Degrees.of(-45),
-                true
+                Degrees.of(-45)
         );
         SwerveModule frontRightCorner = new SDSSwerveModule(
                 driveMotorFR,
@@ -68,8 +67,7 @@ public class SubMOErine extends RobotContainer {
                 Inches.of(-14.5),
                 pivotFeedback,
                 driveFeedback,
-                Degrees.of(45),
-                true
+                Degrees.of(45)
         );
         SwerveModule backLeftCorner = new SDSSwerveModule(
                 driveMotorBL,
@@ -79,8 +77,7 @@ public class SubMOErine extends RobotContainer {
                 Inches.of(14.5),
                 pivotFeedback,
                 driveFeedback,
-                Degrees.of(-135),
-                true
+                Degrees.of(-135)
         );
         SwerveModule backRightCorner = new SDSSwerveModule(
                 driveMotorBR,
@@ -90,8 +87,7 @@ public class SubMOErine extends RobotContainer {
                 Inches.of(-14.5),
                 pivotFeedback,
                 driveFeedback,
-                Degrees.of(135),
-                true
+                Degrees.of(135)
         );
         SwerveDriveSubsystem SubMOErine = new SDSSwerveDrive(
                 robotGyro,
