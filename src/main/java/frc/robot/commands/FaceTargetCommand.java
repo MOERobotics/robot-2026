@@ -2,68 +2,76 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.units.Units;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystem.CameraControl;
 import frc.robot.subsystem.TankDrive;
 import org.littletonrobotics.junction.Logger;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 
 public class FaceTargetCommand extends Command {
-    public Angle desiredTurnAngle;
-    public Angle initialAngle;
-    public TankDrive driveSystem;
 
-    public double power;
+    private final TankDrive driveSystem;
+    private final CameraControl camera;
+    private final PIDController PID;
+    private final double power;
 
-    public CameraControl camera;
+    int target;
 
-    private PIDController PID;
-    public FaceTargetCommand(double power, TankDrive driveSystem, CameraControl camera){
+    Angle goalYaw;
+
+    public FaceTargetCommand(double power, TankDrive driveSystem, CameraControl camera, int target) {
+
         this.power = power;
-        this.camera = camera;
-        PID = new PIDController(0.05, 0.0, 0.0);
-        PID.setTolerance(2.0);
-        PID.enableContinuousInput(-180,180);
         this.driveSystem = driveSystem;
-        addRequirements(driveSystem);
+        this.camera = camera;
 
+        this.PID = new PIDController(0.4, 0.0, 0);
+        PID.setTolerance(1.5);
+        PID.enableContinuousInput(-180, 180);
+        this.target = target;
+
+        addRequirements(driveSystem);
     }
 
 
     @Override
-    public void execute() {
+    public void initialize(){
+        PID.reset();
 
+        if(camera.angleToTarget(target).isPresent()){
+            goalYaw = driveSystem.getAngle().plus((camera.angleToTarget(target).get().getMeasure()));
+        } else {
+            goalYaw = driveSystem.getAngle().plus(driveSystem.angleToTarget(target).get().getMeasure());
+        }
+    }
+    public void execute() {
 
         if (!camera.hasTargets()) {
             driveSystem.drive(0,0);
-            return;
         }
 
-        double yaw = camera.angleToTarget().orElse(0.0);
-        SmartDashboard.putNumber("yaw", yaw);
+        Rotation2d yaw;
+        if(camera.angleToTarget(target).isPresent()){
+           yaw = camera.angleToTarget(target).get();
 
-        double currentAngle = driveSystem.getAngle().in(Units.Degrees);
-        double targetAngle = currentAngle + yaw;
+        }else{
+            yaw = new Rotation2d(0,0);
+            //yaw = driveSystem.angleToTarget(target).get();
 
-        double output = MathUtil.clamp(PID.calculate(yaw, 0), -1, 1);
+        }
 
 
-
-        SmartDashboard.putNumber("curr angle", currentAngle);
-
+        double output = MathUtil.clamp(PID.calculate( yaw.getDegrees(), 0), -1.0, 1.0);
 
         driveSystem.drive(power * output, -power * output);
 
         Logger.recordOutput("FaceTarget/Yaw", yaw);
-        Logger.recordOutput("FaceTarget/TargetAngle", targetAngle);
-        Logger.recordOutput("FaceTarget/PIDOutput", output);
-
-        Logger.recordOutput("Power Output R", power*output);
-        Logger.recordOutput("Power Output L", -power*output);
-
-
+        Logger.recordOutput("FaceTarget/Output", output);
+        Logger.recordOutput("FaceTarget/Error", PID.getAccumulatedError());
     }
 
     @Override
@@ -74,6 +82,5 @@ public class FaceTargetCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         driveSystem.drive(0,0);
-
     }
 }

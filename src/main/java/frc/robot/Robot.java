@@ -44,7 +44,7 @@ public class Robot extends LoggedRobot {
     PhotonCameraSim cameraSim;
     SimCameraProperties cameraProps;
 
-    public Command faceTargetCommand = new FaceTargetCommand(1.0, (TankDrive)robot.getTankDrive(), photonCameraObject);
+    public Command faceTargetCommand = new FaceTargetCommand(0.2, robot.getTankDrive(), photonCameraObject, 1);
 
 
 
@@ -69,14 +69,7 @@ public class Robot extends LoggedRobot {
     public void robotPeriodic() {
         MOELogger.log();
         scheduler.run();
-
-
-
-
-
-
         scheduler.schedule(hubLogging);
-
     }
 
 
@@ -97,7 +90,6 @@ public class Robot extends LoggedRobot {
     @Override
     public void autonomousPeriodic() {
         scheduler.schedule(faceTargetCommand);
-
     }
 
     @Override

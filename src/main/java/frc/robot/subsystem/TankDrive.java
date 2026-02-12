@@ -11,6 +11,7 @@ import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.sim.SparkRelativeEncoderSim;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -22,13 +23,19 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.MOESubsystem;
 import lombok.Getter;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.PhotonUtils;
+
+import java.io.IOException;
+import java.util.Optional;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.subsystem.CameraControl.kTagLayout;
 
 public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements TankDriveSubsystem{
 
@@ -63,6 +70,16 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
     Pigeon2SimState pigeonSim;
 
     DifferentialDriveWheelSpeeds differentialDriveWheelSpeeds;
+
+    static {
+        try {
+            kTagLayout = new AprilTagFieldLayout(Filesystem.getDeployDirectory().getPath() + "/2026-rebuilt-welded.json");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 
 
 
@@ -123,16 +140,14 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
         return  driveKinematics.toChassisSpeeds(differentialDriveWheelSpeeds);
     }
 
+
+    // TODO change
     @Override
     public void periodic() {
         Logger.recordOutput("InchesTraveledPeriodicR", rightEncoder.getPosition() * 4 * Math.PI / 20);
         Logger.recordOutput("InchesTraveledPeriodicL", leftEncoder.getPosition() * 4 * Math.PI / 20);
         Logger.recordOutput("PigeonRotationDegrees",pigeon2.getRotation2d().getMeasure().in(Degrees));
         Rotation2d pigeon2Rotation2d = pigeon2.getRotation2d();
-
-        DifferentialDriveWheelPositions differentialDriveWheelPositions = new DifferentialDriveWheelPositions
-                (Units.inchesToMeters(getLeftPosition().in(Inches)),
-                        Units.inchesToMeters(getRightPosition().in(Inches)));
 
         realPose = driveOdometry.update(
                 pigeon2.getRotation2d(),
@@ -148,6 +163,8 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
 
     }
 
+
+
     @Override
     public void readSensors(DriveInputsAutoLogged sensors) {
         sensors.leftPosition = getLeftPosition();
@@ -155,6 +172,9 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
         sensors.angle = getAngle();
         sensors.simPose = this.simPose;
     }
+
+    //TODO change to Chassisspeeds drive
+
 
     @Override
     public void drive(double leftPercent, double rightPercent) {
@@ -221,6 +241,13 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
                 )
         );
         Logger.recordOutput("updated drive Pos", simPose);
+
+    }
+
+    public Optional<Rotation2d> angleToTarget(int target){
+
+            return Optional.of(PhotonUtils.getYawToPose(simPose, kTagLayout.getTagPose(target).get().toPose2d() ));
+
 
     }
 }
