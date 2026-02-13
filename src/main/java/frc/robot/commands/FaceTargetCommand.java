@@ -45,8 +45,9 @@ public class FaceTargetCommand extends Command {
         if(camera.angleToTarget(target).isPresent()){
             goalYaw = driveSystem.getAngle().plus((camera.angleToTarget(target).get().getMeasure()));
         } else {
-            goalYaw = driveSystem.getAngle().plus(driveSystem.angleToTarget(target).get().getMeasure());
+            goalYaw = Degrees.of(0);
         }
+
     }
     public void execute() {
 
