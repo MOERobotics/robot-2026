@@ -41,9 +41,9 @@ public class ShooterControl extends MOESubsystem <ShooterInputsAutoLogged> imple
     private static final double HOOD_MIN = 0;
     private static final double HOOD_MAX = 0;
 
-    private static final double TURRET_TOLERANCE = 1.5;
-    private static final double HOOD_TOLERANCE = 1.0;
-    private static final double FLYWHEEL_TOLERANCE = 150;
+    private static final double TURRET_TOLERANCE = 0;
+    private static final double HOOD_TOLERANCE = 0;
+    private static final double FLYWHEEL_TOLERANCE = 0;
 
 
     public static double TURRET_CONVERSION_FACTOR = 360.0;
