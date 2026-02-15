@@ -17,10 +17,12 @@ import edu.wpi.first.math.MathUtil;
 
 public class Robot extends LoggedRobot {
 
-    public RobotContainer robot = new ProMOEtheus();
+    public RobotContainer robot = new SubMOErine();
     public Joystick driverJoystick = new Joystick(0);
     public double deadband = 0.06; // find deadband number;
     private CommandScheduler scheduler;
+
+
 
 
     @Override
@@ -76,6 +78,11 @@ public class Robot extends LoggedRobot {
         );
       ;
         robot.getRobotSwerveDrive().robotDrive(robotSpeed);
+
+        if(driverJoystick.getRawButtonPressed(2)){
+            robot.getShooterSubsystem().setHoodPower(0.5);
+        }
+
 
     }
 

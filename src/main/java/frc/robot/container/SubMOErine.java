@@ -3,12 +3,11 @@ package frc.robot.container;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.config.PIDConstants;
+import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
-import frc.robot.subsystem.SDSSwerveDrive;
-import frc.robot.subsystem.SDSSwerveModule;
-import frc.robot.subsystem.SwerveDriveSubsystem;
-import frc.robot.subsystem.SwerveModule;
+import frc.robot.subsystem.*;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
@@ -98,5 +97,23 @@ public class SubMOErine extends RobotContainer {
         );
         this.setRobotSwerveDrive(SubMOErine);
 
+
+        ShooterControl shooterControl = new ShooterControl(
+                new SparkMax(25, SparkLowLevel.MotorType.kBrushless),
+                new SparkMax(26, SparkLowLevel.MotorType.kBrushless),
+                new SparkMax(27, SparkLowLevel.MotorType.kBrushless),
+                new SparkMax(28, SparkLowLevel.MotorType.kBrushless),
+                new SparkMax(29,SparkLowLevel.MotorType.kBrushless) ,
+                new CANcoder(1),
+                new CANcoder(2),
+                Degrees.of(-90),
+                Degrees.of(90),
+                Degrees.of(-90),
+                Degrees.of(90));
+
+        this.setShooterSubsystem(shooterControl);
+
     }
+
+
 }

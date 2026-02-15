@@ -44,9 +44,9 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
     public ShooterInputs getSensors();
 
 
-    void setTurretTarget(Angle angle);
+    void setTurretPower(double power);
 
-    void setHoodTarget(Angle angle);
+    void setHoodPower(double power);
 
     void setFlywheelTargetRPM(double rpm);
 
