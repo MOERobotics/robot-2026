@@ -10,7 +10,6 @@ import frc.robot.subsystem.TankDrive;
 import org.littletonrobotics.junction.Logger;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.DegreesPerSecond;
 
 public class FaceTargetCommand extends Command {
 
@@ -43,7 +42,7 @@ public class FaceTargetCommand extends Command {
         PID.reset();
 
         if(camera.angleToTarget(target).isPresent()){
-            goalYaw = driveSystem.getAngle().plus((camera.angleToTarget(target).get().getMeasure()));
+            goalYaw = driveSystem.getAngle().plus(Degrees.of(camera.angleToTarget(target).get().getDegrees()));
         } else {
             goalYaw = Degrees.of(0);
         }
@@ -55,22 +54,14 @@ public class FaceTargetCommand extends Command {
             driveSystem.drive(0,0);
         }
 
-        Rotation2d yaw;
-        if(camera.angleToTarget(target).isPresent()){
-           yaw = camera.angleToTarget(target).get();
-
-        }else{
-            yaw = new Rotation2d(0,0);
-            //yaw = driveSystem.angleToTarget(target).get();
-
-        }
 
 
-        double output = MathUtil.clamp(PID.calculate( yaw.getDegrees(), 0), -1.0, 1.0);
+
+        double output = MathUtil.clamp(PID.calculate(driveSystem.getAngle().in(Degrees)  , goalYaw.in(Degrees)), -1.0, 1.0);
 
         driveSystem.drive(power * output, -power * output);
 
-        Logger.recordOutput("FaceTarget/Yaw", yaw);
+        Logger.recordOutput("FaceTarget/Yaw", goalYaw);
         Logger.recordOutput("FaceTarget/Output", output);
         Logger.recordOutput("FaceTarget/Error", PID.getAccumulatedError());
     }
