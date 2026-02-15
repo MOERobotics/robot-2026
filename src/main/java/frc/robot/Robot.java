@@ -4,22 +4,24 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathPlannerPath;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
+import frc.robot.container.SubMOErine;
 import org.littletonrobotics.junction.LoggedRobot;
-import static edu.wpi.first.units.Units.*;
+import edu.wpi.first.math.MathUtil;
+
 
 
 public class Robot extends LoggedRobot {
 
-    public RobotContainer robot = null;
-    public Joystick driveJoystick = new Joystick(0);
+    public RobotContainer robot = new ProMOEtheus();
+    public Joystick driverJoystick = new Joystick(0);
+    public double deadband = 0.06; // find deadband number;
     private CommandScheduler scheduler;
+
 
     @Override
     public void robotInit() {
@@ -29,6 +31,8 @@ public class Robot extends LoggedRobot {
 
         MOELogger.setupLogging(this);
         scheduler = CommandScheduler.getInstance();
+
+
     }
 
 
@@ -65,6 +69,14 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopPeriodic() {
+        ChassisSpeeds robotSpeed = new ChassisSpeeds(
+                MathUtil.applyDeadband(driverJoystick.getRawAxis(1) * -1, deadband),
+                MathUtil.applyDeadband( driverJoystick.getRawAxis(0) * -1, deadband),
+                MathUtil.applyDeadband(driverJoystick.getRawAxis(2) * -1, deadband)
+        );
+      ;
+        robot.getRobotSwerveDrive().robotDrive(robotSpeed);
+
     }
 
     @Override
