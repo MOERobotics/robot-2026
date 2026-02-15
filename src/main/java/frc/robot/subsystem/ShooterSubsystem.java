@@ -21,9 +21,22 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
 
         public boolean spindexerOn = false;
 
-        public boolean transitonOn = false;
+        public boolean transitionOn = false;
 
         public LinearVelocity flywheelSpeed = MetersPerSecond.zero();
+
+        public LinearVelocity spinDexerSpeed =  MetersPerSecond.zero();
+        public LinearVelocity transitionSpeed =  MetersPerSecond.zero();
+
+
+        public LinearVelocity turretSpeed = MetersPerSecond.zero();
+
+        public LinearVelocity hoodSpeed = MetersPerSecond.zero();
+
+        public Angle turretTargetAngle = Degrees.zero();
+
+        public Angle hoodTargetAngle = Degrees.zero();
+
 
 
     }
@@ -62,17 +75,44 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
         return getSensors().flywheelSpeed;
     }
 
+    default LinearVelocity getSpindexerSpeed() {
+        return getSensors().spinDexerSpeed;
+    }
+    default LinearVelocity getTransitionSpeed() {
+        return getSensors().transitionSpeed;
+    }
+    default LinearVelocity getTurretSpeed() {
+        return getSensors().turretSpeed;
+    }
+
+    default LinearVelocity getHoodSpeed() {
+        return getSensors().hoodSpeed;
+    }
+
+
     default boolean getSpindexerOn() {
         return getSensors().spindexerOn;
     }
 
     default boolean getTransitionOn() {
-        return getSensors().transitonOn;
+        return getSensors().transitionOn;
     }
 
     default boolean isLoggedReadyToShoot() {
         return this.isReadyToShoot();
     }
+
+    default Angle getTurretTargetAngle() {
+        return getSensors().turretTargetAngle;
+    }
+
+    default Angle getHoodTargetAngle() {
+        return getSensors().hoodTargetAngle;
+    }
+
+
+
+
 
 
 }
