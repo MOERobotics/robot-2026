@@ -31,28 +31,48 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
     public ShooterInputs getSensors();
 
 
-    public void setSpindexer(double power);
+    void setTurretTarget(Angle angle);
 
-    public void setTransition(double power);
+    void setHoodTarget(Angle angle);
 
-    public void setFlywheelSpeed(double power);
+    void setFlywheelTargetRPM(double rpm);
 
+    void loadFuel(double spindexerPower, double transitionPower);
 
-    public default Angle getHoodAngleinDegrees(){ return getSensors().hoodAngle; }
+    void stopFeeding();
 
-    public default Angle getTurretAngleinDegrees(){ return getSensors().turretAngle; }
+    boolean isTurretAtTarget();
 
-    public default boolean getShooting(){ return getSensors().shooting; }
+    boolean isHoodAtTarget();
 
+    boolean isFlywheelAtSpeed();
 
-    public default boolean getSpindexerOn(){ return getSensors().spindexerOn; }
-    public default boolean getTransitionOn(){ return getSensors().transitonOn; }
-
-    public default LinearVelocity getFlywheelSpeed(){ return getSensors().flywheelSpeed; }
-
+    boolean isReadyToShoot();
 
 
+    default Angle getTurretAngleinDegrees() {
+        return getSensors().turretAngle;
+    }
 
+    default Angle getHoodAngleinDegrees() {
+        return getSensors().hoodAngle;
+    }
+
+    default LinearVelocity getFlywheelSpeed() {
+        return getSensors().flywheelSpeed;
+    }
+
+    default boolean getSpindexerOn() {
+        return getSensors().spindexerOn;
+    }
+
+    default boolean getTransitionOn() {
+        return getSensors().transitonOn;
+    }
+
+    default boolean isLoggedReadyToShoot() {
+        return this.isReadyToShoot();
+    }
 
 
 }
