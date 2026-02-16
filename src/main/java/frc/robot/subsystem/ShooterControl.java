@@ -15,14 +15,16 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.MOESimulator;
 import frc.robot.MOESubsystem;
 
 import static edu.wpi.first.units.Units.*;
 
-public class ShooterControl extends MOESubsystem <ShooterInputsAutoLogged> implements ShooterSubsystem  {
+public class ShooterControl extends MOESubsystem<ShooterInputsAutoLogged> implements ShooterSubsystem {
 
 
     protected final SparkMax turretMotor;
@@ -34,16 +36,16 @@ public class ShooterControl extends MOESubsystem <ShooterInputsAutoLogged> imple
     protected final CANcoder turretEncoder;
     protected final CANcoder hoodEncoder;
 
-    private final PIDController turretPID = new PIDController(0.02, 0, 0);
-    private final PIDController hoodPID = new PIDController(0.02, 0, 0);
-    private double targetTurretAngle = 0;
-    private double targetHoodAngle= 0;
-    private double targetFlywheelRPM = 0;
-    private  Angle TURRET_MIN_ANGLE;
-    private  Angle TURRET_MAX_ANGLE;
-    private  Angle HOOD_MIN_ANGLE;
-    private  Angle HOOD_MAX_ANGLE;
-    private static final double FLYWHEEL_TOLERANCE = 0;
+
+    private AngularVelocity targetFlywheelRPM = RPM.of(0);
+    private Angle TURRET_MIN_ANGLE;
+    private Angle TURRET_MAX_ANGLE;
+    private Angle HOOD_MIN_ANGLE;
+    private Angle HOOD_MAX_ANGLE;
+    private static final AngularVelocity FLYWHEEL_TOLERANCE = RPM.of(1);
+    private static final Angle HOOD_TOLERANCE = Degree.of(1);
+    private static final Angle TURRET_TOLERANCE = Degree.of(1);
+
 
     public static double TURRET_CONVERSION_FACTOR = 0;
     public static double HOOD_CONVERSION_FACTOR = 0;
@@ -53,8 +55,6 @@ public class ShooterControl extends MOESubsystem <ShooterInputsAutoLogged> imple
     private final SparkMaxConfig turretConfig = new SparkMaxConfig();
 
     private final SparkMaxConfig hoodConfig = new SparkMaxConfig();
-
-
 
 
     public ShooterControl(SparkMax turretMotor,
@@ -83,11 +83,9 @@ public class ShooterControl extends MOESubsystem <ShooterInputsAutoLogged> imple
         this.hoodEncoder = hoodEncoder;
 
 
-
         flywheelConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
 
         flywheelMotor.configure(flywheelConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-
 
 
         turretConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
@@ -105,17 +103,6 @@ public class ShooterControl extends MOESubsystem <ShooterInputsAutoLogged> imple
         this.HOOD_MAX_ANGLE = HOOD_MAX_ANGLE;
         this.HOOD_MIN_ANGLE = HOOD_MIN_ANGLE;
 
-        getSensors().hoodAngle = getHoodAngleinDegrees();
-        getSensors().turretAngle = getTurretAngleinDegrees();
-        getSensors().flywheelSpeed = getFlywheelSpeed();
-        getSensors().hoodSpeed = getHoodSpeed();
-        getSensors().spinDexerSpeed = getSpindexerSpeed();
-        getSensors().transitionSpeed= getTransitionSpeed();
-        getSensors().transitionOn= getTransitionOn();
-        getSensors().spindexerOn= getSpindexerOn();
-        getSensors().hoodTargetAngle= getHoodTargetAngle();
-        getSensors().turretTargetAngle= getTurretTargetAngle();
-
         ShooterSimulator shooterSimulator = new ShooterSimulator(this);
         setSimulator(shooterSimulator);
 
@@ -123,10 +110,27 @@ public class ShooterControl extends MOESubsystem <ShooterInputsAutoLogged> imple
     }
 
 
+    @Override
+    public void periodic() {
+
+        getSensors().hoodAngle = getHoodAngleinDegrees();
+        getSensors().turretAngle = getTurretAngleinDegrees();
+        getSensors().flywheelSpeed = getFlywheelSpeed();
+        getSensors().hoodSpeed = getHoodSpeed();
+        getSensors().spinDexerSpeed = getSpindexerSpeed();
+        getSensors().transitionSpeed = getTransitionSpeed();
+        getSensors().transitionOn = getTransitionOn();
+        getSensors().spindexerOn = getSpindexerOn();
+        getSensors().reachedMaxHood = reachedHoodMax();
+        getSensors().reachedMinHood = reachedHoodMin();
+        getSensors().reachedMaxTurret = reachedTurretMax();
+        getSensors().reachedMinTurret =reachedTurretMin();
+
+    }
 
     @Override
     public void setTurretPower(double power) {
-       turretMotor.set(power);
+        turretMotor.set(power);
     }
 
     @Override
@@ -135,9 +139,8 @@ public class ShooterControl extends MOESubsystem <ShooterInputsAutoLogged> imple
     }
 
     @Override
-    public void setFlywheelTargetRPM(double rpm) {
-
-        targetFlywheelRPM = rpm;
+    public void setFlywheelPower(double power) {
+        flywheelMotor.set(power);
     }
 
 
@@ -155,27 +158,15 @@ public class ShooterControl extends MOESubsystem <ShooterInputsAutoLogged> imple
     }
 
     @Override
-    public boolean isTurretAtTarget() {
-
-        return turretPID.atSetpoint();
-    }
-
-    @Override
-    public boolean isHoodAtTarget() {
-        return hoodPID.atSetpoint();
-
-
-    }
-
-    @Override
     public boolean isFlywheelAtSpeed() {
-        return Math.abs(flywheelMotor.getAlternateEncoder().getVelocity()) > targetFlywheelRPM +FLYWHEEL_TOLERANCE;
+        double error = Math.abs( (RPM.of(flywheelMotor.getAlternateEncoder().getVelocity()).minus(targetFlywheelRPM)).in(RPM));
+        return RPM.of(error).lt(FLYWHEEL_TOLERANCE);
     }
 
     @Override
     public boolean isReadyToShoot() {
 
-        return isTurretAtTarget() && isHoodAtTarget() && isFlywheelAtSpeed();
+        return getSpindexerOn() && getTransitionOn() && isFlywheelAtSpeed();
     }
 
 
@@ -188,10 +179,29 @@ public class ShooterControl extends MOESubsystem <ShooterInputsAutoLogged> imple
     public Angle getHoodAngleinDegrees() {
         return Degrees.of(hoodEncoder.getPosition().getValue().in(Degree) * HOOD_CONVERSION_FACTOR);
 
-}
+    }
+
     @Override
-    public LinearVelocity getFlywheelSpeed() {
-        return MetersPerSecond.of(flywheelMotor.getAlternateEncoder().getVelocity());
+    public AngularVelocity getFlywheelSpeed() {
+        return RPM.of(flywheelMotor.getAlternateEncoder().getVelocity());
+    }
+
+    @Override
+    public boolean reachedHoodMax() {
+        return this.getHoodAngleinDegrees().gt(Degrees.of(HOOD_MAX_ANGLE.in(Degrees)).minus(Degrees.of(HOOD_TOLERANCE.in(Degrees))));
+    }
+
+    @Override
+    public boolean reachedHoodMin() {
+        return this.getHoodAngleinDegrees().lt(Degrees.of(HOOD_MIN_ANGLE.in(Degrees)).plus(Degrees.of(HOOD_TOLERANCE.in(Degrees))));
+    }
+    @Override
+    public boolean reachedTurretMax() {
+        return this.getTurretAngleinDegrees().gt(Degrees.of(TURRET_MAX_ANGLE.in(Degrees)).minus(Degrees.of(TURRET_TOLERANCE.in(Degrees))));
+    }
+    @Override
+    public boolean reachedTurretMin() {
+        return this.getTurretAngleinDegrees().lt(Degrees.of(TURRET_MIN_ANGLE.in(Degrees)).plus(Degrees.of(TURRET_TOLERANCE.in(Degrees))));
     }
 
 
