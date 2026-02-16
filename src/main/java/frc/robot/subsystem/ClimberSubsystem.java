@@ -12,19 +12,22 @@ import static edu.wpi.first.units.Units.InchesPerSecond;
 
 public interface ClimberSubsystem extends Subsystem, LoggableInputs {
 
-    void setVelocity();
+
 
     @AutoLog
     static class ClimberInputs{
         double newVelocity = 0;
+        double pidError = 0;
         LinearVelocity velocity = InchesPerSecond.zero();
-        Distance height = Inches.zero();
+        //Distance height = Inches.zero();
         boolean canGoUp, canGoDown;
     }
-    void setVelocity(double newVelocity);
-    void getVelocity();
-    Distance getHeight();
-    boolean checkCanGoUp();
-    boolean checkCanGoDown();
+    ClimberInputsAutoLogged getSensors();
 
+    default void stopVelocity() {}
+    default void setVelocity(LinearVelocity newVelocity) {}
+    default LinearVelocity getVelocity() {return this.getSensors().velocity;}
+    //default Distance getHeight() {return this.getSensors().height;}
+    default boolean checkCanGoUp() {return this.getSensors().canGoUp;}
+    default boolean checkCanGoDown() {return this.getSensors().canGoDown;}
 }

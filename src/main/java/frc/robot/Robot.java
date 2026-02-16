@@ -15,13 +15,14 @@ import edu.wpi.first.wpilibj2.command.Commands;
 //import frc.robot.container.MiniSwerve;
 import frc.robot.container.MiniSwerve;
 import frc.robot.container.RobotContainer;
+import frc.robot.container.SubMOErine;
 import org.littletonrobotics.junction.LoggedRobot;
 import static edu.wpi.first.units.Units.*;
 
 
 public class Robot extends LoggedRobot {
 
-    public RobotContainer robot = new MiniSwerve();
+    public RobotContainer robot = new SubMOErine();
     public Joystick driveJoystick = new Joystick(0);
     private CommandScheduler scheduler;
     // public ChassisSpeeds robotSpeed = new ChassisSpeeds(driveJoystick.getRawAxis(5), driveJoystick.getRawAxis(0), driveJoystick.getRawAxis(6));
@@ -81,6 +82,10 @@ public class Robot extends LoggedRobot {
                  driveJoystick.getRawAxis(6)
          );
         robot.getRobotSwerveDrive().robotDrive(robotSpeed);
+        /*
+        driveJoystick.getRawButton(1){
+        }
+         */
     }
 
     @Override
