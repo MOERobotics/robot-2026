@@ -8,6 +8,9 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.robot.MOESimulator;
 
+import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Rotations;
+
 public class ShooterSimulator implements MOESimulator {
     public SparkMaxSim hoodMotorSim, turretMotorSim, spindexerMotorSim, transitionMotorSim, flywheelMotorSim;
 
@@ -86,11 +89,21 @@ public class ShooterSimulator implements MOESimulator {
         double transitionPower = transitionMotorSim.getSetpoint();
         double flyWheelPower = flywheelMotorSim.getSetpoint();
 
+
         turretMotorSystem.setInputVoltage(turretPower*12.0);
         hoodMotorSystem.setInputVoltage(hoodPower*12.0);
         spindexerMotorSystem.setInputVoltage(spindexerPower*12.0);
         transitionMotorSystem.setInputVoltage(transitionPower*12.0);
         flywheelMotorSystem.setInputVoltage(flyWheelPower*12.0);
+
+
+        double velocityTurret = turretMotorSystem.getAngularVelocityRPM();
+        double velocityHood = hoodMotorSystem.getAngularVelocityRPM();
+        double velocitySpindexer = spindexerMotorSystem.getAngularVelocityRPM();
+        double velocityTransition = transitionMotorSystem.getAngularVelocityRPM();
+        double velocityFlywheel = flywheelMotorSystem.getAngularVelocityRPM();
+
+
 
         turretMotorSystem.update(0.020);
         hoodMotorSystem.update(0.020);
@@ -98,6 +111,23 @@ public class ShooterSimulator implements MOESimulator {
         transitionMotorSystem.update(0.020);
         flywheelMotorSystem.update(0.020);
 
+
+        turretMotorSim.iterate(velocityTurret*60.0, 12, 0.02);
+
+        hoodMotorSim.iterate(velocityHood*60.0, 12, 0.02);
+
+        flywheelMotorSim.iterate(velocityFlywheel*60.0, 12, 0.02);
+
+        transitionMotorSim.iterate(velocityTransition*60.0, 12, 0.02);
+
+        spindexerMotorSim.iterate(velocitySpindexer*60.0, 12, 0.02);
+
+
+        hoodEncoderSim.setPosition(hoodMotorSystem.getAngularPosition().in(Rotations));
+        turretEncoderSim.setPosition(turretMotorSystem.getAngularPosition().in(Rotations));
+
+        turretEncoderSim.setVelocity(turretMotorSystem.getAngularVelocity().in(RPM));
+        hoodEncoderSim.setVelocity(hoodMotorSystem.getAngularVelocity().in(RPM));
 
 
 

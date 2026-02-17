@@ -53,6 +53,11 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
 
     void loadFuel(double spindexerPower, double transitionPower);
 
+    void setTransitionPower(double transitionPower);
+
+    void setSpindexerPower(double spindexerPower);
+
+
     void stopFeeding();
 
     boolean isFlywheelAtSpeed();

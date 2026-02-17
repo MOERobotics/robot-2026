@@ -33,8 +33,8 @@ public class ShooterControl extends MOESubsystem<ShooterInputsAutoLogged> implem
     protected final SparkMax transitionMotor;
     protected final SparkMax flywheelMotor;
 
-    protected final CANcoder turretEncoder;
-    protected final CANcoder hoodEncoder;
+    protected final SparkAbsoluteEncoder turretEncoder;
+    protected final SparkAbsoluteEncoder hoodEncoder;
 
 
     private AngularVelocity targetFlywheelRPM = RPM.of(0);
@@ -47,8 +47,8 @@ public class ShooterControl extends MOESubsystem<ShooterInputsAutoLogged> implem
     private static final Angle TURRET_TOLERANCE = Degree.of(1);
 
 
-    public static double TURRET_CONVERSION_FACTOR = 0;
-    public static double HOOD_CONVERSION_FACTOR = 0;
+    public static double TURRET_CONVERSION_FACTOR = 1;
+    public static double HOOD_CONVERSION_FACTOR = 1;
 
     private final SparkMaxConfig flywheelConfig = new SparkMaxConfig();
 
@@ -62,8 +62,8 @@ public class ShooterControl extends MOESubsystem<ShooterInputsAutoLogged> implem
                           SparkMax spindexerMotor,
                           SparkMax transitionMotor,
                           SparkMax flywheelMotor,
-                          CANcoder turretEncoder,
-                          CANcoder hoodEncoder,
+                          SparkAbsoluteEncoder turretEncoder,
+                          SparkAbsoluteEncoder hoodEncoder,
                           Angle TURRET_MIN_ANGLE,
                           Angle TURRET_MAX_ANGLE,
                           Angle HOOD_MIN_ANGLE,
@@ -152,6 +152,16 @@ public class ShooterControl extends MOESubsystem<ShooterInputsAutoLogged> implem
         }
     }
 
+    @Override
+    public void setTransitionPower(double transitionPower) {
+        transitionMotor.set(transitionPower);
+    }
+
+    @Override
+    public void setSpindexerPower(double spindexerPower) {
+        spindexerMotor.set(spindexerPower);
+    }
+
     public void stopFeeding() {
         spindexerMotor.set(0);
         transitionMotor.set(0);
@@ -172,12 +182,12 @@ public class ShooterControl extends MOESubsystem<ShooterInputsAutoLogged> implem
 
     @Override
     public Angle getTurretAngleinDegrees() {
-        return Degrees.of(turretEncoder.getPosition().getValue().in(Degree) * TURRET_CONVERSION_FACTOR);
+        return Degrees.of(turretEncoder.getPosition() * TURRET_CONVERSION_FACTOR);
     }
 
     @Override
     public Angle getHoodAngleinDegrees() {
-        return Degrees.of(hoodEncoder.getPosition().getValue().in(Degree) * HOOD_CONVERSION_FACTOR);
+        return Degrees.of(hoodEncoder.getPosition() * HOOD_CONVERSION_FACTOR);
 
     }
 

@@ -10,8 +10,8 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public abstract @Data class RobotContainer implements LoggableInputs {
     private TankDriveSubsystem tankDrive;
-     ShooterSubsystem shooterSubsystem;
-    SwerveDriveSubsystem robotSwerveDrive;
+    private ShooterSubsystem shooterSubsystem;
+    private SwerveDriveSubsystem robotSwerveDrive;
     private PowerDistribution pdh;
 
     public RobotContainer() {
