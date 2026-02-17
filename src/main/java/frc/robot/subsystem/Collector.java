@@ -4,7 +4,6 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import frc.robot.Interfaces.CollectorSubsystem;
 import frc.robot.MOESubsystem;
 
 import static edu.wpi.first.units.Units.*;

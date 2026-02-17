@@ -1,17 +1,22 @@
 package frc.robot.subsystem;
 
 import com.revrobotics.sim.SparkMaxSim;
+import com.revrobotics.sim.SparkRelativeEncoderSim;
 import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import frc.robot.MOESimulator;
 
-public class CollectorSim {
+import static edu.wpi.first.units.Units.*;
+
+public class CollectorSim implements MOESimulator {
     private final SparkMax armMotor, wheelMotor;
     private final SparkMaxSim armMotorSim, wheelMotorSim;
-    private final DCMotorSim armMotorSystem = new DCMotorSim(LinearSystemId.createDCMotorSystem(DCMotor.getNeo550(1), 0.001, 1.0), DCMotor.getNeo550(1));
-    private final DCMotorSim wheelMotorSystem = new DCMotorSim(LinearSystemId.createDCMotorSystem(DCMotor.getNeo550(1), 0.001, 1.0), DCMotor.getNeo550(1));
-
+    private final DCMotorSim armMotorSystem = new DCMotorSim(LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), 0.001, 1.0), DCMotor.getNEO(1));
+    private final DCMotorSim wheelMotorSystem = new DCMotorSim(LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), 0.001, 1.0), DCMotor.getNEO(1));
+    public SparkRelativeEncoderSim armMotorEncoderSimulator;
+    public SparkRelativeEncoderSim wheelMotorEncoderSimulator;
 
     public CollectorSim(SparkMax armMotor, SparkMax wheelMotor, SparkMaxSim armMotorSim, SparkMaxSim wheelMotorSim) {
         this.armMotor = armMotor;
@@ -19,4 +24,27 @@ public class CollectorSim {
         this.armMotorSim = armMotorSim;
         this.wheelMotorSim = wheelMotorSim;
     }
+
+    @Override
+    public void updateSimState() {
+        armMotorSystem.setInputVoltage(armMotor.getBusVoltage() * armMotor.get());
+        wheelMotorSystem.setInputVoltage(-wheelMotor.getBusVoltage() * wheelMotor.get());
+        armMotorSystem.setAngularVelocity(MOESimulator.decelerate(armMotorSystem.getAngularVelocity(), 60).in(RadiansPerSecond));
+        wheelMotorSystem.setAngularVelocity(MOESimulator.decelerate(wheelMotorSystem.getAngularVelocity(), 60).in(RadiansPerSecond));
+
+        armMotorSystem.update(.02);
+        wheelMotorSystem.update(.02);
+
+        armMotorEncoderSimulator.setPosition(armMotorSystem.getAngularPosition().unaryMinus().in(Radians));
+        armMotorEncoderSimulator.setVelocity(armMotorSystem.getAngularVelocity().unaryMinus().in(RadiansPerSecond));
+        wheelMotorEncoderSimulator.setVelocity(wheelMotorSystem.getAngularVelocity().unaryMinus().in(RadiansPerSecond));
+    }
+
+    @Override
+    public void simulationPeriodic() {
+        updateSimState();
+    }
+
+
+
 }
