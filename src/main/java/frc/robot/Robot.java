@@ -17,6 +17,8 @@ import frc.robot.container.MiniSwerve;
 import frc.robot.container.RobotContainer;
 import frc.robot.container.SubMOErine;
 import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+
 import static edu.wpi.first.units.Units.*;
 
 
@@ -82,10 +84,17 @@ public class Robot extends LoggedRobot {
                  driveJoystick.getRawAxis(6)
          );
         robot.getRobotSwerveDrive().robotDrive(robotSpeed);
-        /*
-        driveJoystick.getRawButton(1){
+        boolean buttonPressed;
+        if (driveJoystick.getRawButton(1)) {
+            robot.getClimber().setVelocity(InchesPerSecond.of(1));
         }
-         */
+        else if (driveJoystick.getRawButton(2)){
+            robot.getClimber().setVelocity(InchesPerSecond.of(-1));
+        } else {
+            robot.getClimber().stopVelocity();
+        }
+
+
     }
 
     @Override
@@ -102,6 +111,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void simulationPeriodic() {
+        robot.getClimber().simulationPeriodic();
     }
 
 

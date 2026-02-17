@@ -16,18 +16,23 @@ public interface ClimberSubsystem extends Subsystem, LoggableInputs {
 
     @AutoLog
     static class ClimberInputs{
-        double newVelocity = 0;
+        LinearVelocity newVelocity = InchesPerSecond.zero();
         double pidError = 0;
         LinearVelocity velocity = InchesPerSecond.zero();
-        //Distance height = Inches.zero();
+        LinearVelocity lastVelocity = InchesPerSecond.zero();
+        Distance height = Inches.zero();
         boolean canGoUp, canGoDown;
+
     }
     ClimberInputsAutoLogged getSensors();
 
     default void stopVelocity() {}
     default void setVelocity(LinearVelocity newVelocity) {}
     default LinearVelocity getVelocity() {return this.getSensors().velocity;}
-    //default Distance getHeight() {return this.getSensors().height;}
+    default Distance getHeight() {return this.getSensors().height;}
+    /*
     default boolean checkCanGoUp() {return this.getSensors().canGoUp;}
     default boolean checkCanGoDown() {return this.getSensors().canGoDown;}
+
+     */
 }

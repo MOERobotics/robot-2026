@@ -3,16 +3,20 @@ package frc.robot.subsystem;
 import com.pathplanner.lib.config.PIDConstants;
 import com.revrobotics.AnalogInput;
 import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import frc.robot.MOESubsystem;
+import org.littletonrobotics.junction.Logger;
+import simulators.ClimberSim;
 
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.InchesPerSecond;
@@ -24,9 +28,14 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
     public boolean canGoUp, canGoDown;
     public PIDController pidController;
     public SparkMaxConfig climberMotorConfig;
+    public RelativeEncoder climberEncoder;
+
+
 
     public Distance MAX_HEIGHT;
     public Distance MIN_HEIGHT;
+
+    public ClimberSim climberSim;
 
 
 
@@ -39,6 +48,10 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
         this.climberMotorConfig = new SparkMaxConfig();
 
         this.climberSparkMax = climberSparkMax;
+
+        this.climberEncoder = climberSparkMax.getEncoder();
+
+        climberSim = new ClimberSim(climberSparkMax);
         //this.potentiometer = potentiometer;
 
         this.climberSparkMax.configure(
@@ -58,29 +71,48 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
     }
     @Override
     public void readSensors(ClimberInputsAutoLogged sensors){
-        //sensors.height = getHeight();
-        sensors.canGoUp = canGoUp;
-        sensors.canGoDown = canGoDown;
+        sensors.height = getHeight();
+        sensors.canGoUp = getHeight().lte(MAX_HEIGHT);
+        sensors.canGoDown = getHeight().gte(MIN_HEIGHT);
         sensors.velocity = getVelocity();
-        sensors.newVelocity = 0; // will update later when needed
-        sensors.pidError = pidController.getAccumulatedError();
+
+        // will update later when needed
+        //sensors.pidError = 0;
     }
 
     @Override
     public void stopVelocity() {
-        climberSparkMax.set(0);
+        setVelocity(InchesPerSecond.zero());
     }
 
     @Override
     public void setVelocity(LinearVelocity newVelocity) {
-        if ((canGoUp && newVelocity.gt(InchesPerSecond.zero())) || (canGoDown && newVelocity.lt(InchesPerSecond.zero()))){
+
+        getSensors().lastVelocity = newVelocity;
+        getSensors().newVelocity = newVelocity;
+        if (getSensors().canGoUp && newVelocity.gt(InchesPerSecond.zero())){
+            climberSparkMax.set(newVelocity.in(InchesPerSecond));
+        }
+        else if (getSensors().canGoDown && newVelocity.lt(InchesPerSecond.zero())){
+            climberSparkMax.set(newVelocity.in(InchesPerSecond));
+        }
+        else {
+            climberSparkMax.set(0);
+        }
+        /*
             LinearVelocity currentVelocity = InchesPerSecond.of(climberSparkMax.getEncoder().getVelocity()) ;
             LinearVelocity velocityError = currentVelocity.minus(newVelocity);
-            climberSparkMax.set(pidController.calculate(velocityError.in(InchesPerSecond)));
-        }
-        else{
-            stopVelocity();
-        }
+            climberSparkMax.set(pidController.calculate(velocityError.in(InchesPerSecond))/1);
+
+            getSensors().pidError = pidController.getAccumulatedError();
+            getSensors().newVelocity = newVelocity.in(InchesPerSecond);
+
+         */
+       // }
+           // Logger.recordOutput("stopped", "stopVelocity triggered!");
+       // }
+
+
     }
 
     @Override
@@ -88,10 +120,28 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
        return InchesPerSecond.of(climberSparkMax.getEncoder().getVelocity());
     }
 
+    @Override
+    public Distance getHeight(){
+        return Inches.of((climberEncoder.getPosition() * 0.5 * Math.PI / 125) + 20);
+        //(radius of spool / gear ratio) + offset
+    }
 
+    @Override
+    public void simulationPeriodic(){
+        climberSim.updateSimState();
+    }
 
-
-
-
-
+    @Override
+    public void periodic() {
+        super.periodic();
+        if (getSensors().canGoUp && getSensors().lastVelocity.gt(InchesPerSecond.zero())){
+            climberSparkMax.set(getSensors().lastVelocity.in(InchesPerSecond));
+        }
+        else if (getSensors().canGoDown && getSensors().lastVelocity.lt(InchesPerSecond.zero())){
+            climberSparkMax.set(getSensors().lastVelocity.in(InchesPerSecond));
+        }
+        else {
+            climberSparkMax.set(0);
+        }
+    }
 }

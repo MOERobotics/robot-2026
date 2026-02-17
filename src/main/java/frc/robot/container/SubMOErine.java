@@ -6,6 +6,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import frc.robot.subsystem.*;
+import simulators.ClimberSim;
 
 import static edu.wpi.first.units.Units.Inches;
 
@@ -45,7 +46,9 @@ public class SubMOErine extends RobotContainer {
         SparkMax pivotMotorBR = new SparkMax(16, SparkLowLevel.MotorType.kBrushless);
         CANcoder swerveModuleEncoder4BR = new CANcoder(33);
 
-        Climber climber = new Climber(new SparkMax(0, SparkLowLevel.MotorType.kBrushless),new PIDConstants(0,0,0));
+        Climber climber = new Climber(new SparkMax(0, SparkLowLevel.MotorType.kBrushless),new PIDConstants(.1,0,0));
+
+        //ClimberSim climberSim = new ClimberSim(climber);
 
         SwerveModule frontLeftCorner = new SDSSwerveModule(
                 driveMotorFL,
@@ -93,6 +96,7 @@ public class SubMOErine extends RobotContainer {
 
 
         this.setRobotSwerveDrive(SubMOErine);
+        this.setClimber(climber);
 
 
     }

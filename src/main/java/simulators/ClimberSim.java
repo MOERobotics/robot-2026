@@ -20,8 +20,8 @@ public class ClimberSim implements MOESimulator {
             DCMotor.getNeo550(1));
     private final SparkMaxSim climberMotorSim;
 
-    public ClimberSim(Climber climber){
-        this.climberSparkmax = climber.climberSparkMax;
+    public ClimberSim(SparkMax climberSparkMax){
+        this.climberSparkmax = climberSparkMax;
         this.climberMotorSim = new SparkMaxSim(climberSparkmax,DCMotor.getNeo550(1));
 
     }
