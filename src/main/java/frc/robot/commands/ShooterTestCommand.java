@@ -60,37 +60,56 @@ public class ShooterTestCommand extends Command {
 
     @Override
     public void execute() {
-
+        double transitionPower =0;
         if (driverJoystick.getRawButton(transitionFW)) {
-            shooterSubsystem.setTransitionPower(0.2);
-        } else if (driverJoystick.getRawButtonPressed(transitionBack)) {
-            shooterSubsystem.setTransitionPower(-0.2);
+            transitionPower =0.2;
+        } else if (driverJoystick.getRawButton(transitionBack)) {
+            transitionPower=-0.2;
         }
 
+        shooterSubsystem.setTransitionPower(transitionPower);
+
+        double hoodPower =0;
         if (functionJoystick.getRawButton(hoodUp)) {
-            shooterSubsystem.setHoodPower(0.2);
-        } else if (functionJoystick.getRawButtonPressed(hoodDown)) {
-            shooterSubsystem.setHoodPower(-0.2);
+            hoodPower=0.2;
+        } else if (functionJoystick.getRawButton(hoodDown)) {
+            hoodPower=-0.2;
         }
+        shooterSubsystem.setHoodPower(hoodPower);
 
+        double turretPower =0;
         if (functionJoystick.getRawButton(turretLeft)) {
-            shooterSubsystem.setTurretPower(0.2);
-        } else if (functionJoystick.getRawButtonPressed(turretRight)) {
-            shooterSubsystem.setTurretPower(-0.2);
+           turretPower=0.2;
+        } else if (functionJoystick.getRawButton(turretRight)) {
+            turretPower=-0.2;
         }
 
+        shooterSubsystem.setTurretPower(turretPower);
+
+        double spindexerPower=0;
         if (driverJoystick.getRawButton(spindexerFW)) {
-            shooterSubsystem.setSpindexerPower(0.2);
-        } else if (driverJoystick.getRawButtonPressed(spindexerBack)) {
-            shooterSubsystem.setSpindexerPower(-0.2);
+           spindexerPower =0.2;
+        } else if (driverJoystick.getRawButton(spindexerBack)) {
+            spindexerPower=-0.2;
         }
 
+        shooterSubsystem.setSpindexerPower(spindexerPower);
+
+        double flywheelPower = 0;
 
         if (functionJoystick.getRawButton(flywheelFW)) {
-            shooterSubsystem.setFlywheelPower(0.2);
-        } else if (functionJoystick.getRawButtonPressed(flywheelBack)) {
-            shooterSubsystem.setFlywheelPower(-0.2);
+           flywheelPower=0.2;
+        } else if (functionJoystick.getRawButton(flywheelBack)) {
+            flywheelPower=-0.2;
         }
+
+        shooterSubsystem.setFlywheelPower(flywheelPower);
+
+        Logger.recordOutput("reachedHoodMax", shooterSubsystem.reachedHoodMax());
+        Logger.recordOutput("reachedHoodMin", shooterSubsystem.reachedHoodMin());
+        Logger.recordOutput("reachedTurretMax", shooterSubsystem.reachedTurretMax());
+        Logger.recordOutput("reachedTurretMin", shooterSubsystem.reachedTurretMin());
+
 
 
     }
@@ -106,11 +125,7 @@ public class ShooterTestCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return shooterSubsystem.reachedHoodMin() ||
-                shooterSubsystem.reachedHoodMax() ||
-                shooterSubsystem.reachedTurretMin() ||
-                shooterSubsystem.reachedTurretMax();
-
+        return false;
 
     }
 

@@ -100,13 +100,13 @@ public class SubMOErine extends RobotContainer {
         this.setRobotSwerveDrive(SubMOErine);
 
 
-        SparkMax turretMotor = new SparkMax(25 , SparkLowLevel.MotorType.kBrushless);
+        SparkMax turretMotor = new SparkMax(25, SparkLowLevel.MotorType.kBrushless);
 
-        SparkMax hoodMotor = new SparkMax(26 , SparkLowLevel.MotorType.kBrushless);
+        SparkMax hoodMotor = new SparkMax(26, SparkLowLevel.MotorType.kBrushless);
 
-        SparkMax spindexerMotor = new SparkMax(27 , SparkLowLevel.MotorType.kBrushless);
+        SparkMax spindexerMotor = new SparkMax(27, SparkLowLevel.MotorType.kBrushless);
 
-        SparkMax transitionMotor = new SparkMax(28 , SparkLowLevel.MotorType.kBrushless);
+        SparkMax transitionMotor = new SparkMax(28, SparkLowLevel.MotorType.kBrushless);
 
         SparkMax flywheelMotor = new SparkMax(29, SparkLowLevel.MotorType.kBrushless);
 
@@ -125,7 +125,6 @@ public class SubMOErine extends RobotContainer {
         this.setShooterSubsystem(shooterControl);
 
     }
-
 
 
 }

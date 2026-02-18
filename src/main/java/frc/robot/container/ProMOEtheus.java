@@ -5,10 +5,7 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.config.PIDConstants;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
-import frc.robot.subsystem.SDSSwerveDrive;
-import frc.robot.subsystem.SDSSwerveModule;
-import frc.robot.subsystem.SwerveDriveSubsystem;
-import frc.robot.subsystem.SwerveModule;
+import frc.robot.subsystem.*;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
@@ -103,6 +100,31 @@ public class ProMOEtheus extends RobotContainer {
                 backRightCorner
         );
         this.setRobotSwerveDrive(ProMOEtheus);
+
+        SparkMax turretMotor = new SparkMax(25, SparkLowLevel.MotorType.kBrushless);
+
+        SparkMax hoodMotor = new SparkMax(26, SparkLowLevel.MotorType.kBrushless);
+
+        SparkMax spindexerMotor = new SparkMax(27, SparkLowLevel.MotorType.kBrushless);
+
+        SparkMax transitionMotor = new SparkMax(28, SparkLowLevel.MotorType.kBrushless);
+
+        SparkMax flywheelMotor = new SparkMax(29, SparkLowLevel.MotorType.kBrushless);
+
+        ShooterControl shooterControl = new ShooterControl(
+                turretMotor,
+                hoodMotor,
+                spindexerMotor,
+                transitionMotor,
+                flywheelMotor,
+                turretMotor.getAbsoluteEncoder(),
+                hoodMotor.getAbsoluteEncoder(),
+                Degrees.of(-5),
+                Degrees.of(10),
+                Degrees.of(-5),
+                Degrees.of(10));
+        this.setShooterSubsystem(shooterControl);
+
 
     }
 }

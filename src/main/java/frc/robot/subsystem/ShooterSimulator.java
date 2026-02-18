@@ -22,6 +22,8 @@ public class ShooterSimulator implements MOESimulator {
     public DCMotorSim hoodMotorSystem, turretMotorSystem, spindexerMotorSystem, transitionMotorSystem;
 
 
+
+
     public ShooterSimulator(ShooterControl shooter) {
         hoodMotorSim = new SparkMaxSim(shooter.hoodMotor, DCMotor.getNEO(1));
         turretMotorSim = new SparkMaxSim(shooter.turretMotor , DCMotor.getNEO(1));
@@ -36,7 +38,7 @@ public class ShooterSimulator implements MOESimulator {
         hoodMotorSystem = new DCMotorSim(
                 LinearSystemId.createDCMotorSystem(
                         DCMotor.getNEO(1),
-                        0.005,
+                        0.05,
                         25
                 ),
                 DCMotor.getNEO(1)
@@ -97,6 +99,13 @@ public class ShooterSimulator implements MOESimulator {
         flywheelMotorSystem.setInputVoltage(flyWheelPower*12.0);
 
 
+        turretMotorSystem.update(0.020);
+        hoodMotorSystem.update(0.020);
+        spindexerMotorSystem.update(0.020);
+        transitionMotorSystem.update(0.020);
+        flywheelMotorSystem.update(0.020);
+
+
         double velocityTurret = turretMotorSystem.getAngularVelocityRPM();
         double velocityHood = hoodMotorSystem.getAngularVelocityRPM();
         double velocitySpindexer = spindexerMotorSystem.getAngularVelocityRPM();
@@ -105,22 +114,15 @@ public class ShooterSimulator implements MOESimulator {
 
 
 
-        turretMotorSystem.update(0.020);
-        hoodMotorSystem.update(0.020);
-        spindexerMotorSystem.update(0.020);
-        transitionMotorSystem.update(0.020);
-        flywheelMotorSystem.update(0.020);
+        turretMotorSim.iterate(velocityTurret, 12, 0.02);
 
+        hoodMotorSim.iterate(velocityHood, 12, 0.02);
 
-        turretMotorSim.iterate(velocityTurret*60.0, 12, 0.02);
+        flywheelMotorSim.iterate(velocityFlywheel, 12, 0.02);
 
-        hoodMotorSim.iterate(velocityHood*60.0, 12, 0.02);
+        transitionMotorSim.iterate(velocityTransition, 12, 0.02);
 
-        flywheelMotorSim.iterate(velocityFlywheel*60.0, 12, 0.02);
-
-        transitionMotorSim.iterate(velocityTransition*60.0, 12, 0.02);
-
-        spindexerMotorSim.iterate(velocitySpindexer*60.0, 12, 0.02);
+        spindexerMotorSim.iterate(velocitySpindexer, 12, 0.02);
 
 
         hoodEncoderSim.setPosition(hoodMotorSystem.getAngularPosition().in(Rotations));
