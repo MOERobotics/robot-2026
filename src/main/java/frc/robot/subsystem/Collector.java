@@ -5,10 +5,11 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.MOESubsystem;
+import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 import static edu.wpi.first.units.Units.*;
 
-public class Collector extends MOESubsystem<CollectorInputsAutologged> implements CollectorSubsystem {
+public class Collector extends MOESubsystem<CollectorInputsAutologged> implements CollectorSubsystem, LoggableInputs {
 
     public SparkMax wheelMotor;
     public SparkMax armMotor;
