@@ -21,7 +21,7 @@ import simulators.ClimberSim;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.InchesPerSecond;
 
-public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements ClimberSubsystem{
+public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements ClimberSubsystem {
     public final SparkMax climberSparkMax;
     //public final AnalogPotentiometer potentiometer;
     //public Distance height;
@@ -31,16 +31,12 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
     public RelativeEncoder climberEncoder;
 
 
-
     public static Distance MAX_HEIGHT = Inches.of(29.75);
 
-    public static Distance MIN_HEIGHT = Inches.of(20.0);;
+    public static Distance MIN_HEIGHT = Inches.of(20.0);
+    ;
 
     public ClimberSim climberSim;
-
-
-
-
 
 
     public Climber(SparkMax climberSparkMax, PIDConstants pidConstants) {
@@ -71,8 +67,9 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
         setSimulator(climberSim);
 
     }
+
     @Override
-    public void readSensors(ClimberInputsAutoLogged sensors){
+    public void readSensors(ClimberInputsAutoLogged sensors) {
         sensors.height = getHeight();
         sensors.canGoUp = getHeight().lte(MAX_HEIGHT);
         sensors.canGoDown = getHeight().gte(MIN_HEIGHT);
@@ -93,13 +90,11 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
         // also it will tell us the current applied velocity
         getSensors().lastVelocity = newVelocity;
 
-        if (getSensors().canGoUp && newVelocity.gt(InchesPerSecond.zero())){
+        if (getSensors().canGoUp && newVelocity.gt(InchesPerSecond.zero())) {
             climberSparkMax.set(newVelocity.in(InchesPerSecond));
-        }
-        else if (getSensors().canGoDown && newVelocity.lt(InchesPerSecond.zero())){
+        } else if (getSensors().canGoDown && newVelocity.lt(InchesPerSecond.zero())) {
             climberSparkMax.set(newVelocity.in(InchesPerSecond));
-        }
-        else {
+        } else {
             climberSparkMax.set(0);
         }
         /*
@@ -124,13 +119,13 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
     }
 
     @Override
-    public Distance getHeight(){
+    public Distance getHeight() {
         return Inches.of((climberEncoder.getPosition() * 1 * Math.PI / 125) + 20);
-        //(diameter of spool / gear ratio) + offset
+        //(circumference of spool / gear ratio) + offset
     }
 
     @Override
-    public void simulationPeriodic(){
+    public void simulationPeriodic() {
         climberSim.updateSimState();
     }
 
@@ -139,13 +134,11 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
         super.periodic();
         // this is our fallback system in case setVelocity() stops getting called before we need it to;
         // it just makes sure that the motors can get to their set points and then stop.
-        if (getSensors().canGoUp && getSensors().lastVelocity.gt(InchesPerSecond.zero())){
+        if (getSensors().canGoUp && getSensors().lastVelocity.gt(InchesPerSecond.zero())) {
             climberSparkMax.set(getSensors().lastVelocity.in(InchesPerSecond));
-        }
-        else if (getSensors().canGoDown && getSensors().lastVelocity.lt(InchesPerSecond.zero())){
+        } else if (getSensors().canGoDown && getSensors().lastVelocity.lt(InchesPerSecond.zero())) {
             climberSparkMax.set(getSensors().lastVelocity.in(InchesPerSecond));
-        }
-        else {
+        } else {
             climberSparkMax.set(0);
         }
     }

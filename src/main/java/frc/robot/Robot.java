@@ -72,17 +72,16 @@ public class Robot extends LoggedRobot {
     public void teleopPeriodic() {
         ChassisSpeeds robotSpeed = new ChassisSpeeds(
                 MathUtil.applyDeadband(driverJoystick.getRawAxis(1) * -1, deadband),
-                MathUtil.applyDeadband( driverJoystick.getRawAxis(0) * -1, deadband),
+                MathUtil.applyDeadband(driverJoystick.getRawAxis(0) * -1, deadband),
                 MathUtil.applyDeadband(driverJoystick.getRawAxis(2) * -1, deadband)
         );
-      ;
+        ;
         robot.getRobotSwerveDrive().robotDrive(robotSpeed);
 
         boolean buttonPressed;
         if (driverJoystick.getRawButton(1)) {
             robot.getClimber().setVelocity(InchesPerSecond.of(1));
-        }
-        else if (driverJoystick.getRawButton(2)){
+        } else if (driverJoystick.getRawButton(2)) {
             robot.getClimber().setVelocity(InchesPerSecond.of(-1));
         } else {
             robot.getClimber().stopVelocity();

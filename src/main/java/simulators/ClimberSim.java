@@ -14,17 +14,18 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 public class ClimberSim implements MOESimulator {
     private final SparkMax climberSparkmax;
     private final DCMotorSim climberSystem = new DCMotorSim(LinearSystemId.createDCMotorSystem(DCMotor.getNeo550(
-            1),
+                    1),
             0.001,
             1.0),
             DCMotor.getNeo550(1));
     private final SparkMaxSim climberMotorSim;
 
-    public ClimberSim(Climber climber){
+    public ClimberSim(Climber climber) {
         this.climberSparkmax = climber.climberSparkMax;
-        this.climberMotorSim = new SparkMaxSim(climberSparkmax,DCMotor.getNeo550(1));
+        this.climberMotorSim = new SparkMaxSim(climberSparkmax, DCMotor.getNeo550(1));
 
     }
+
     @Override
     public void updateSimState() {
         climberSystem.setInputVoltage(climberSparkmax.getBusVoltage() * climberSparkmax.getAppliedOutput());
