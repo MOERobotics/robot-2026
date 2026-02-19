@@ -8,13 +8,14 @@ import com.revrobotics.spark.SparkMax;
 import frc.robot.subsystem.*;
 import simulators.ClimberSim;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 
 public class SubMOErine extends RobotContainer {
     public SubMOErine() {
-        double pivotkP = 0.50;
+        double pivotkP = 0.005;
         double pivotkI = 0.001;
-        double pivotkD = 0.003;
+        double pivotkD = 0.00003;
         double pivotkIMax = 1;
 
         double drivekP = 1e-3;
@@ -34,8 +35,8 @@ public class SubMOErine extends RobotContainer {
         SparkMax pivotMotorFL = new SparkMax(20, SparkLowLevel.MotorType.kBrushless);
         CANcoder swerveModuleEncoderFL = new CANcoder(31);
 
-        SparkMax driveMotorFR = new SparkMax(2, SparkLowLevel.MotorType.kBrushless);
-        SparkMax pivotMotorFR= new SparkMax(3, SparkLowLevel.MotorType.kBrushless);
+        SparkMax driveMotorFR = new SparkMax(3, SparkLowLevel.MotorType.kBrushless);
+        SparkMax pivotMotorFR = new SparkMax(2, SparkLowLevel.MotorType.kBrushless);
         CANcoder swerveModuleEncoderFR = new CANcoder(32);
 
         SparkMax driveMotorBL = new SparkMax(19, SparkLowLevel.MotorType.kBrushless);
@@ -44,7 +45,7 @@ public class SubMOErine extends RobotContainer {
 
         SparkMax driveMotorBR = new SparkMax(17, SparkLowLevel.MotorType.kBrushless);
         SparkMax pivotMotorBR = new SparkMax(16, SparkLowLevel.MotorType.kBrushless);
-        CANcoder swerveModuleEncoder4BR = new CANcoder(33);
+        CANcoder swerveModuleEncoderBR = new CANcoder(33);
 
         Climber climber = new Climber(new SparkMax(0, SparkLowLevel.MotorType.kBrushless),new PIDConstants(.1,0,0));
 
@@ -53,37 +54,41 @@ public class SubMOErine extends RobotContainer {
                 driveMotorFL,
                 pivotMotorFL,
                 swerveModuleEncoderFL,
-                Inches.of(4),
-                Inches.of(4),
+                Inches.of(14.5),
+                Inches.of(14.5),
                 pivotFeedback,
-                driveFeedback
+                driveFeedback,
+                Degrees.of(-45)
         );
         SwerveModule frontRightCorner = new SDSSwerveModule(
                 driveMotorFR,
                 pivotMotorFR,
                 swerveModuleEncoderFR,
-                Inches.of(4),
-                Inches.of(-4),
+                Inches.of(14.5),
+                Inches.of(-14.5),
                 pivotFeedback,
-                driveFeedback
+                driveFeedback,
+                Degrees.of(45)
         );
         SwerveModule backLeftCorner = new SDSSwerveModule(
                 driveMotorBL,
                 pivotMotorBL,
                 swerveModuleEncoderBL,
-                Inches.of(-4),
-                Inches.of(4),
+                Inches.of(-14.5),
+                Inches.of(14.5),
                 pivotFeedback,
-                driveFeedback
+                driveFeedback,
+                Degrees.of(-135)
         );
         SwerveModule backRightCorner = new SDSSwerveModule(
                 driveMotorBR,
                 pivotMotorBR,
-                swerveModuleEncoder4BR,
-                Inches.of(-4),
-                Inches.of(-4),
+                swerveModuleEncoderBR,
+                Inches.of(-14.5),
+                Inches.of(-14.5),
                 pivotFeedback,
-                driveFeedback
+                driveFeedback,
+                Degrees.of(135)
         );
         SwerveDriveSubsystem SubMOErine = new SDSSwerveDrive(
                 robotGyro,
