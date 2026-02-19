@@ -5,10 +5,7 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.config.PIDConstants;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
-import frc.robot.subsystem.SDSSwerveDrive;
-import frc.robot.subsystem.SDSSwerveModule;
-import frc.robot.subsystem.SwerveDriveSubsystem;
-import frc.robot.subsystem.SwerveModule;
+import frc.robot.subsystem.*;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
@@ -102,7 +99,13 @@ public class ProMOEtheus extends RobotContainer {
                 backLeftCorner,
                 backRightCorner
         );
-        this.setRobotSwerveDrive(ProMOEtheus);
+    // TODO: get actual id from electrical when they have it
+    SparkMax climberMotor = new SparkMax(0, SparkLowLevel.MotorType.kBrushless);
+    Climber climber = new Climber(climberMotor, new PIDConstants(0,0,0));
+
+
+    this.setRobotSwerveDrive(ProMOEtheus);
+    this.setClimber(climber);
 
     }
 }

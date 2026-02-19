@@ -13,6 +13,7 @@ import frc.robot.container.SubMOErine;
 import org.littletonrobotics.junction.LoggedRobot;
 import edu.wpi.first.math.MathUtil;
 
+import static edu.wpi.first.units.Units.InchesPerSecond;
 
 
 public class Robot extends LoggedRobot {
@@ -78,10 +79,10 @@ public class Robot extends LoggedRobot {
         robot.getRobotSwerveDrive().robotDrive(robotSpeed);
 
         boolean buttonPressed;
-        if (driveJoystick.getRawButton(1)) {
+        if (driverJoystick.getRawButton(1)) {
             robot.getClimber().setVelocity(InchesPerSecond.of(1));
         }
-        else if (driveJoystick.getRawButton(2)){
+        else if (driverJoystick.getRawButton(2)){
             robot.getClimber().setVelocity(InchesPerSecond.of(-1));
         } else {
             robot.getClimber().stopVelocity();

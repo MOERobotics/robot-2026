@@ -13,7 +13,6 @@ public abstract @Data class RobotContainer implements LoggableInputs {
     private TankDriveSubsystem tankDrive;
     SwerveDriveSubsystem robotSwerveDrive;
     ClimberSubsystem climber;
-    ClimberSim climberSim;
     private PowerDistribution pdh;
 
     public RobotContainer() {

@@ -47,6 +47,7 @@ public class SubMOErine extends RobotContainer {
         SparkMax pivotMotorBR = new SparkMax(16, SparkLowLevel.MotorType.kBrushless);
         CANcoder swerveModuleEncoderBR = new CANcoder(33);
 
+        // TODO: find free motor
         Climber climber = new Climber(new SparkMax(0, SparkLowLevel.MotorType.kBrushless),new PIDConstants(.1,0,0));
 
 

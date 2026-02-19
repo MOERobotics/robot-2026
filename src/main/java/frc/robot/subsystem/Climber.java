@@ -32,8 +32,9 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
 
 
 
-    public Distance MAX_HEIGHT;
-    public Distance MIN_HEIGHT;
+    public static Distance MAX_HEIGHT = Inches.of(29.75);
+
+    public static Distance MIN_HEIGHT = Inches.of(20.0);;
 
     public ClimberSim climberSim;
 
@@ -60,12 +61,10 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
         // decision to be made if we define pid constants here or outside the subsystem
         pidController =
                 new PIDController(
-                pidConstants.kP,
-                pidConstants.kI,
-                pidConstants.kD);
+                        pidConstants.kP,
+                        pidConstants.kI,
+                        pidConstants.kD);
 
-        MAX_HEIGHT = Inches.of(29.75);
-        MIN_HEIGHT = Inches.of(20.0);
 
         climberSim = new ClimberSim(this);
 
@@ -90,9 +89,10 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
 
     @Override
     public void setVelocity(LinearVelocity newVelocity) {
-
+        // lastVelocity is used to keep a velocity for our periodic fallback
+        // also it will tell us the current applied velocity
         getSensors().lastVelocity = newVelocity;
-        getSensors().newVelocity = newVelocity;
+
         if (getSensors().canGoUp && newVelocity.gt(InchesPerSecond.zero())){
             climberSparkMax.set(newVelocity.in(InchesPerSecond));
         }
@@ -111,22 +111,22 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
             getSensors().newVelocity = newVelocity.in(InchesPerSecond);
 
          */
-       // }
-           // Logger.recordOutput("stopped", "stopVelocity triggered!");
-       // }
+        // }
+        // Logger.recordOutput("stopped", "stopVelocity triggered!");
+        // }
 
 
     }
 
     @Override
     public LinearVelocity getVelocity() {
-       return InchesPerSecond.of(climberSparkMax.getEncoder().getVelocity());
+        return InchesPerSecond.of(climberSparkMax.getEncoder().getVelocity());
     }
 
     @Override
     public Distance getHeight(){
-        return Inches.of((climberEncoder.getPosition() * 0.5 * Math.PI / 125) + 20);
-        //(radius of spool / gear ratio) + offset
+        return Inches.of((climberEncoder.getPosition() * 1 * Math.PI / 125) + 20);
+        //(diameter of spool / gear ratio) + offset
     }
 
     @Override
@@ -137,6 +137,8 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
     @Override
     public void periodic() {
         super.periodic();
+        // this is our fallback system in case setVelocity() stops getting called before we need it to;
+        // it just makes sure that the motors can get to their set points and then stop.
         if (getSensors().canGoUp && getSensors().lastVelocity.gt(InchesPerSecond.zero())){
             climberSparkMax.set(getSensors().lastVelocity.in(InchesPerSecond));
         }
