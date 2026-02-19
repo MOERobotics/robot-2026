@@ -64,7 +64,7 @@ public class ShooterTestCommand extends Command {
         if (driverJoystick.getRawButton(transitionFW)) {
             transitionPower =0.2;
         } else if (driverJoystick.getRawButton(transitionBack)) {
-            transitionPower=-0.2;
+           transitionPower=-0.2;
         }
 
         shooterSubsystem.setTransitionPower(transitionPower);

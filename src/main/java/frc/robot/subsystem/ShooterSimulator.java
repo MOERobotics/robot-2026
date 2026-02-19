@@ -84,7 +84,7 @@ public class ShooterSimulator implements MOESimulator {
 
     @Override
     public void updateSimState() {
-        // Step 1
+
         double turretPower = turretMotorSim.getSetpoint();
         double hoodPower = hoodMotorSim.getSetpoint();
         double spindexerPower = spindexerMotorSim.getSetpoint();
@@ -123,6 +123,14 @@ public class ShooterSimulator implements MOESimulator {
         transitionMotorSim.iterate(velocityTransition, 12, 0.02);
 
         spindexerMotorSim.iterate(velocitySpindexer, 12, 0.02);
+
+        transitionMotorSim.getAlternateEncoderSim().iterate(velocityTransition,0.02);
+        hoodMotorSim.getAlternateEncoderSim().iterate(velocityHood,0.02);
+        turretMotorSim.getAlternateEncoderSim().iterate(velocityTurret,0.02);
+        flywheelMotorSim.getAlternateEncoderSim().iterate(velocityFlywheel,0.02);
+        spindexerMotorSim.getAlternateEncoderSim().iterate(velocitySpindexer,0.02);
+
+
 
 
         hoodEncoderSim.setPosition(hoodMotorSystem.getAngularPosition().in(Rotations));

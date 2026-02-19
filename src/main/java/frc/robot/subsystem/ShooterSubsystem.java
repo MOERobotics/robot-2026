@@ -2,7 +2,6 @@ package frc.robot.subsystem;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
@@ -25,13 +24,13 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
 
         public AngularVelocity flywheelSpeed = RPM.zero();
 
-        public LinearVelocity spinDexerSpeed =  MetersPerSecond.zero();
-        public LinearVelocity transitionSpeed =  MetersPerSecond.zero();
+        public AngularVelocity spindexerSpeed =  RPM.zero();
+        public AngularVelocity transitionSpeed =  RPM.zero();
 
 
-        public LinearVelocity turretSpeed = MetersPerSecond.zero();
+        public AngularVelocity turretSpeed = RPM.zero();
 
-        public LinearVelocity hoodSpeed = MetersPerSecond.zero();
+        public AngularVelocity hoodSpeed = RPM.zero();
 
         public boolean reachedMaxTurret = false;
         public boolean reachedMinTurret = false;
@@ -61,8 +60,6 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
     void stopFeeding();
 
     boolean isFlywheelAtSpeed();
-
-    boolean isReadyToShoot();
 
     default boolean reachedHoodMax(){
         return getSensors().reachedMaxHood;
@@ -95,21 +92,6 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
         return getSensors().flywheelSpeed;
     }
 
-    default LinearVelocity getSpindexerSpeed() {
-        return getSensors().spinDexerSpeed;
-    }
-    default LinearVelocity getTransitionSpeed() {
-        return getSensors().transitionSpeed;
-    }
-    default LinearVelocity getTurretSpeed() {
-        return getSensors().turretSpeed;
-    }
-
-    default LinearVelocity getHoodSpeed() {
-        return getSensors().hoodSpeed;
-    }
-
-
     default boolean getSpindexerOn() {
         return getSensors().spindexerOn;
     }
@@ -118,9 +100,6 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
         return getSensors().transitionOn;
     }
 
-    default boolean isLoggedReadyToShoot() {
-        return this.isReadyToShoot();
-    }
 
 
 
