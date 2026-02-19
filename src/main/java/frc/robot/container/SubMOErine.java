@@ -48,7 +48,6 @@ public class SubMOErine extends RobotContainer {
 
         Climber climber = new Climber(new SparkMax(0, SparkLowLevel.MotorType.kBrushless),new PIDConstants(.1,0,0));
 
-        //ClimberSim climberSim = new ClimberSim(climber);
 
         SwerveModule frontLeftCorner = new SDSSwerveModule(
                 driveMotorFL,

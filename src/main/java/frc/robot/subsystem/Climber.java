@@ -51,7 +51,6 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
 
         this.climberEncoder = climberSparkMax.getEncoder();
 
-        climberSim = new ClimberSim(climberSparkMax);
         //this.potentiometer = potentiometer;
 
         this.climberSparkMax.configure(
@@ -67,6 +66,10 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
 
         MAX_HEIGHT = Inches.of(29.75);
         MIN_HEIGHT = Inches.of(20.0);
+
+        climberSim = new ClimberSim(this);
+
+        setSimulator(climberSim);
 
     }
     @Override
