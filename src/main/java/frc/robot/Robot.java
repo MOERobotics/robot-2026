@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Commands.FuelCollectorTeleopCommand;
 import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
 import frc.robot.container.SubMOErine;
@@ -19,6 +20,7 @@ public class Robot extends LoggedRobot {
 
     public RobotContainer robot = new ProMOEtheus();
     public Joystick driverJoystick = new Joystick(0);
+    public Joystick functionJoystick = new Joystick(1);
     public double deadband = 0.06; // find deadband number;
     private CommandScheduler scheduler;
 
@@ -69,6 +71,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopPeriodic() {
+
         ChassisSpeeds robotSpeed = new ChassisSpeeds(
                 MathUtil.applyDeadband(driverJoystick.getRawAxis(1) * -1, deadband),
                 MathUtil.applyDeadband( driverJoystick.getRawAxis(0) * -1, deadband),
@@ -81,6 +84,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void testInit() {
+        new FuelCollectorTeleopCommand(robot, functionJoystick).schedule();
     }
 
     @Override

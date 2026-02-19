@@ -5,10 +5,8 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.config.PIDConstants;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
-import frc.robot.subsystem.SDSSwerveDrive;
-import frc.robot.subsystem.SDSSwerveModule;
-import frc.robot.subsystem.SwerveDriveSubsystem;
-import frc.robot.subsystem.SwerveModule;
+import edu.wpi.first.units.measure.Angle;
+import frc.robot.subsystem.*;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
@@ -54,7 +52,7 @@ public class ProMOEtheus extends RobotContainer {
         pivotMotorBR.setInverted(true);
         CANcoder swerveModuleEncoderBR = new CANcoder(32);
 
-        SwerveModule frontLeftCorner = new SDSSwerveModule(
+         SwerveModule frontLeftCorner = new SDSSwerveModule(
                 driveMotorFL,
                 pivotMotorFL,
                 swerveModuleEncoderFL,
@@ -104,6 +102,15 @@ public class ProMOEtheus extends RobotContainer {
         );
         this.setRobotSwerveDrive(ProMOEtheus);
 
+
+
+        SparkMax collectorArmMotor = new SparkMax(15, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
+        SparkMax collectorRollerMotor = new SparkMax(17, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
+        Angle collectorArmBottom = Degrees.of(50);
+        Angle collectorArmTop = Degrees.of(20);
+
+        this.fuelCollector = new Collector(collectorRollerMotor,collectorArmMotor, collectorArmBottom,collectorArmTop);
+        this.setFuelCollector(fuelCollector);
     }
 }
 

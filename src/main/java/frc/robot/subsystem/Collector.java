@@ -1,7 +1,9 @@
 package frc.robot.subsystem;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.spark.SparkMax;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.MOESubsystem;
@@ -9,7 +11,7 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 import static edu.wpi.first.units.Units.*;
 
-public class Collector extends MOESubsystem<CollectorInputsAutologged> implements CollectorSubsystem, LoggableInputs {
+public class Collector extends MOESubsystem<CollectorInputsAutoLogged> implements CollectorSubsystem, LoggableInputs {
 
     public SparkMax wheelMotor;
     public SparkMax armMotor;
@@ -21,7 +23,7 @@ public class Collector extends MOESubsystem<CollectorInputsAutologged> implement
     private final Angle topAngle;
 
     public Collector(SparkMax wheelMotor, SparkMax armMotor, Angle bottomAngle, Angle topAngle) {
-        super(new CollectorInputsAutologged());
+        super(new CollectorInputsAutoLogged());
         this.wheelMotor = wheelMotor;
         this.armMotor = armMotor;
 
@@ -30,8 +32,16 @@ public class Collector extends MOESubsystem<CollectorInputsAutologged> implement
 
         this.bottomAngle = bottomAngle;
         this.topAngle = topAngle;
+        this.setSimulator(new CollectorSim(
+                armMotor,
+                wheelMotor,
+                new SparkMaxSim(armMotor, DCMotor.getNEO(1)),
+                new SparkMaxSim(wheelMotor, DCMotor.getNEO(1))
+        ));
 
     }
+
+
 
     @Override
     public CollectorInputs readSensors() {
@@ -43,14 +53,6 @@ public class Collector extends MOESubsystem<CollectorInputsAutologged> implement
         sensors.inCollectPosition = sensors.collectorArmAngle.gte(topAngle);
         return sensors;
     }
-    public void periodic(){
-        readSensors().wheelVelocity = RPM.of(wheelEncoder.getVelocity());
-        readSensors().collectorArmVelocity = RPM.of(armEncoder.getVelocity());
-        readSensors().collectorArmAngle = Degrees.of(armEncoder.getPosition());
-       readSensors().inStartPosition = readSensors().collectorArmAngle.lte(bottomAngle);
-        readSensors().inCollectPosition = readSensors().collectorArmAngle.gte(topAngle);
-
-    }
 
     @Override
     public void setArmVelocity(AngularVelocity armVelocity) {
@@ -58,7 +60,7 @@ public class Collector extends MOESubsystem<CollectorInputsAutologged> implement
     }
 
     @Override
-    public void setWheelVelocity(AngularVelocity wheelVelocity) {
+    public void setRollerVelocity(AngularVelocity wheelVelocity) {
         wheelMotor.set(wheelVelocity.in(RPM));
     }
 

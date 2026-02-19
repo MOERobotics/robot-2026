@@ -20,7 +20,7 @@ public interface CollectorSubsystem extends Subsystem, LoggableInputs {
     }
    public CollectorInputs readSensors();
     public void setArmVelocity(AngularVelocity armVelocity);
-    public void setWheelVelocity(AngularVelocity wheelVelocity);
+    public void setRollerVelocity(AngularVelocity wheelVelocity);
     public Angle getArmAngle();
     public boolean inStartPosition() ;
     public boolean inCollectPosition() ;
