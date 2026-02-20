@@ -5,6 +5,7 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.MOESubsystem;
+import frc.robot.subsystem.interfaces.ShooterInputsAutoLogged;
 import frc.robot.subsystem.interfaces.ShooterSubsystem;
 import frc.robot.subsystem.simulations.ShooterSimulator;
 

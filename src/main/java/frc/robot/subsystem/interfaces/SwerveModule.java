@@ -6,7 +6,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.subsystem.SwerveModuleInputsAutoLogged;
 import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
@@ -26,14 +25,14 @@ public interface SwerveModule extends Subsystem, LoggableInputs {
 
     @AutoLog
      class SwerveModuleInputs {
-        Angle moduleAngle;
-        Angle moduleTargetAngle;
-        Translation2d coordOfModule;
-        SwerveModulePosition travelDistanceNRobotAngle;
-        SwerveModuleState speedNDirectionOfMod;
-        double robotPivotSpeed;
-        double robotDriveSpeed;
-        double robotError;
+        public Angle moduleAngle;
+        public Angle moduleTargetAngle;
+        public Translation2d coordOfModule;
+        public SwerveModulePosition travelDistanceNRobotAngle;
+        public SwerveModuleState speedNDirectionOfMod;
+        public double robotPivotSpeed;
+        public double robotDriveSpeed;
+        public double robotError;
 
     }
 }
