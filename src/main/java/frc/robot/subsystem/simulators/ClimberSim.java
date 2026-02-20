@@ -1,4 +1,4 @@
-package simulators;
+package frc.robot.subsystem.simulators;
 
 import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.spark.SparkMax;
@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.MOESimulator;
 import frc.robot.subsystem.Climber;
 
-import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 public class ClimberSim implements MOESimulator {

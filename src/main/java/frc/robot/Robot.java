@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.ClimberTestCommand;
 import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
 import frc.robot.container.SubMOErine;
@@ -22,6 +23,8 @@ public class Robot extends LoggedRobot {
     public Joystick driverJoystick = new Joystick(0);
     public double deadband = 0.06; // find deadband number;
     private CommandScheduler scheduler;
+
+    public ClimberTestCommand climberTestCommand = new ClimberTestCommand(robot, driverJoystick);
 
 
     @Override
@@ -66,6 +69,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopInit() {
+        scheduler.schedule(climberTestCommand);
     }
 
     @Override
@@ -77,15 +81,6 @@ public class Robot extends LoggedRobot {
         );
         ;
         robot.getRobotSwerveDrive().robotDrive(robotSpeed);
-
-        boolean buttonPressed;
-        if (driverJoystick.getRawButton(1)) {
-            robot.getClimber().setVelocity(InchesPerSecond.of(1));
-        } else if (driverJoystick.getRawButton(2)) {
-            robot.getClimber().setVelocity(InchesPerSecond.of(-1));
-        } else {
-            robot.getClimber().stopVelocity();
-        }
 
 
     }

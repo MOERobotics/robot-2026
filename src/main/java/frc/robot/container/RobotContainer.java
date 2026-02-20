@@ -1,13 +1,12 @@
 package frc.robot.container;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
-import frc.robot.subsystem.ClimberSubsystem;
-import frc.robot.subsystem.SwerveDriveSubsystem;
-import frc.robot.subsystem.TankDriveSubsystem;
+import frc.robot.subsystem.interfaces.ClimberSubsystem;
+import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
+import frc.robot.subsystem.interfaces.TankDriveSubsystem;
 import lombok.Data;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
-import simulators.ClimberSim;
 
 public abstract @Data class RobotContainer implements LoggableInputs {
     private TankDriveSubsystem tankDrive;

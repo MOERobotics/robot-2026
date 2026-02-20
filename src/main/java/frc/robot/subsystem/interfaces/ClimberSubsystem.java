@@ -1,9 +1,9 @@
-package frc.robot.subsystem;
+package frc.robot.subsystem.interfaces;
 
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.subsystem.interfaces.ClimberInputsAutoLogged;
 import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
@@ -14,19 +14,18 @@ public interface ClimberSubsystem extends Subsystem, LoggableInputs {
 
 
     @AutoLog
-    static class ClimberInputs {
-        LinearVelocity newVelocity = InchesPerSecond.zero();
-        double pidError = 0;
-        LinearVelocity velocity = InchesPerSecond.zero();
-        LinearVelocity lastVelocity = InchesPerSecond.zero();
-        Distance height = Inches.zero();
-        boolean canGoUp, canGoDown;
+    public class ClimberInputs {
+        public LinearVelocity newVelocity = InchesPerSecond.zero();
+        public LinearVelocity velocity = InchesPerSecond.zero();
+        public LinearVelocity lastVelocity = InchesPerSecond.zero();
+        public Distance height = Inches.zero();
+        public boolean canGoUp, canGoDown;
 
     }
 
     ClimberInputsAutoLogged getSensors();
 
-    default void stopVelocity() {
+    default void stop() {
     }
 
     default void setVelocity(LinearVelocity newVelocity) {
@@ -39,9 +38,5 @@ public interface ClimberSubsystem extends Subsystem, LoggableInputs {
     default Distance getHeight() {
         return this.getSensors().height;
     }
-    /*
-    default boolean checkCanGoUp() {return this.getSensors().canGoUp;}
-    default boolean checkCanGoDown() {return this.getSensors().canGoDown;}
 
-     */
 }

@@ -1,4 +1,4 @@
-package frc.robot.subsystem;
+package frc.robot.subsystem.interfaces;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -10,7 +10,7 @@ import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public interface SwerveDriveSubsystem extends Subsystem, LoggableInputs {
-    public SwerveModule[] getModules();
+    public SwerveModuleSubsystem[] getModules();
 
     public void robotDrive(ChassisSpeeds robotChassisSpeed);
 
@@ -24,15 +24,15 @@ public interface SwerveDriveSubsystem extends Subsystem, LoggableInputs {
 
     @AutoLog
     public static class SwerveDriveInputs {
-        Angle robotAngle;
-        ChassisSpeeds robotChassisSpeed;
-        SwerveModule moduleFL;
-        SwerveModule moduleFR;
-        SwerveModule moduleBL;
-        SwerveModule moduleBR;
-        Pose2d robotPose2D;
-        SwerveModuleState[] moduleStates;
-        SwerveModulePosition[] modulePositions;
+        public Angle robotAngle;
+        public ChassisSpeeds robotChassisSpeed;
+        public SwerveModuleSubsystem moduleFL;
+        public SwerveModuleSubsystem moduleFR;
+        public SwerveModuleSubsystem moduleBL;
+        public SwerveModuleSubsystem moduleBR;
+        public Pose2d robotPose2D;
+        public SwerveModuleState[] moduleStates;
+        public SwerveModulePosition[] modulePositions;
 
     }
 }
