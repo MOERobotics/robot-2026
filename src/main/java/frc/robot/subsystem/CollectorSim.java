@@ -1,5 +1,6 @@
 package frc.robot.subsystem;
 
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.sim.SparkRelativeEncoderSim;
 import com.revrobotics.spark.SparkMax;
@@ -15,14 +16,19 @@ public class CollectorSim implements MOESimulator {
     private final SparkMaxSim armMotorSim, wheelMotorSim;
     private final DCMotorSim armMotorSystem = new DCMotorSim(LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), 0.001, 1.0), DCMotor.getNEO(1));
     private final DCMotorSim wheelMotorSystem = new DCMotorSim(LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), 0.001, 1.0), DCMotor.getNEO(1));
-    public SparkRelativeEncoderSim armMotorEncoderSimulator;
-    public SparkRelativeEncoderSim wheelMotorEncoderSimulator;
+    public final SparkRelativeEncoderSim armMotorEncoderSimulator;
+    public final SparkRelativeEncoderSim wheelMotorEncoderSimulator;
 
     public CollectorSim(SparkMax armMotor, SparkMax wheelMotor, SparkMaxSim armMotorSim, SparkMaxSim wheelMotorSim) {
         this.armMotor = armMotor;
         this.wheelMotor = wheelMotor;
         this.armMotorSim = armMotorSim;
         this.wheelMotorSim = wheelMotorSim;
+
+       this.armMotorEncoderSimulator = new SparkRelativeEncoderSim(armMotor);
+       this.wheelMotorEncoderSimulator = new SparkRelativeEncoderSim(wheelMotor);
+
+
     }
 
     @Override
@@ -35,9 +41,9 @@ public class CollectorSim implements MOESimulator {
         armMotorSystem.update(.02);
         wheelMotorSystem.update(.02);
 
-        armMotorEncoderSimulator.setPosition(armMotorSystem.getAngularPosition().unaryMinus().in(Radians));
-        armMotorEncoderSimulator.setVelocity(armMotorSystem.getAngularVelocity().unaryMinus().in(RadiansPerSecond));
-        wheelMotorEncoderSimulator.setVelocity(wheelMotorSystem.getAngularVelocity().unaryMinus().in(RadiansPerSecond));
+        armMotorEncoderSimulator.setPosition(armMotorSystem.getAngularPosition().in(Rotations));
+        armMotorEncoderSimulator.setVelocity(armMotorSystem.getAngularVelocity().unaryMinus().in(RotationsPerSecond));
+        wheelMotorEncoderSimulator.setVelocity(wheelMotorSystem.getAngularVelocity().unaryMinus().in(RotationsPerSecond));
     }
 
     @Override

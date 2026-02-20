@@ -46,6 +46,7 @@ public class FuelCollectorTeleopCommand extends Command {
         collectorSubsystem.setArmVelocity(armVelocity);
         collectorSubsystem.setRollerVelocity(rollerVelocity);
 
+
         Logger.recordOutput("FuelCollector/ArmVelocity", armVelocity);
         Logger.recordOutput("FuelCollector/RollerVelocity", rollerVelocity);
     }

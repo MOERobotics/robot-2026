@@ -32,31 +32,30 @@ public class Collector extends MOESubsystem<CollectorInputsAutoLogged> implement
 
         this.bottomAngle = bottomAngle;
         this.topAngle = topAngle;
-        this.setSimulator(new CollectorSim(
-                armMotor,
-                wheelMotor,
-                new SparkMaxSim(armMotor, DCMotor.getNEO(1)),
-                new SparkMaxSim(wheelMotor, DCMotor.getNEO(1))
-        ));
+        this.setSimulator(new CollectorSim(armMotor, wheelMotor, new SparkMaxSim(armMotor, DCMotor.getNEO(1)), new SparkMaxSim(wheelMotor, DCMotor.getNEO(1))));
 
     }
 
 
-
     @Override
-    public CollectorInputs readSensors() {
-        CollectorInputs sensors = new CollectorInputs();
+    public void readSensors(CollectorInputsAutoLogged sensors) {
         sensors.wheelVelocity = RPM.of(wheelEncoder.getVelocity());
         sensors.collectorArmVelocity = RPM.of(armEncoder.getVelocity());
         sensors.collectorArmAngle = Degrees.of(armEncoder.getPosition());
         sensors.inStartPosition = sensors.collectorArmAngle.lte(bottomAngle);
         sensors.inCollectPosition = sensors.collectorArmAngle.gte(topAngle);
-        return sensors;
     }
 
     @Override
     public void setArmVelocity(AngularVelocity armVelocity) {
-        armMotor.set(armVelocity.in(RPM));
+        if (inStartPosition()& armVelocity.gt(RPM.zero())) { //can't go up
+            armMotor.set(0);
+        } else if (inCollectPosition()& armVelocity.lte(RPM.zero())) { //can't go down
+            armMotor.set(0);
+        } else {
+            armMotor.set(armVelocity.in(RPM));
+        }
+
     }
 
     @Override
@@ -71,11 +70,11 @@ public class Collector extends MOESubsystem<CollectorInputsAutoLogged> implement
 
     @Override
     public boolean inStartPosition() {
-        return getArmAngle().lte(bottomAngle);
+        return getArmAngle().gte(topAngle);
     }
 
     @Override
     public boolean inCollectPosition() {
-        return getArmAngle().gte(topAngle);
+        return getArmAngle().lte(bottomAngle);
     }
 }

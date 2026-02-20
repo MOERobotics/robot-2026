@@ -18,7 +18,6 @@ public interface CollectorSubsystem extends Subsystem, LoggableInputs {
         public boolean inCollectPosition = false;
         public Angle collectorArmAngle = Degrees.zero();
     }
-   public CollectorInputs readSensors();
     public void setArmVelocity(AngularVelocity armVelocity);
     public void setRollerVelocity(AngularVelocity wheelVelocity);
     public Angle getArmAngle();

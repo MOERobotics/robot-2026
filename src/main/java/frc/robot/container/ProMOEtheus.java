@@ -8,6 +8,7 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.subsystem.*;
 
+import static com.playingwithfusion.jni.CANVenomJNI.setInverted;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 
@@ -105,9 +106,10 @@ public class ProMOEtheus extends RobotContainer {
 
 
         SparkMax collectorArmMotor = new SparkMax(15, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
-        SparkMax collectorRollerMotor = new SparkMax(17, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
-        Angle collectorArmBottom = Degrees.of(50);
-        Angle collectorArmTop = Degrees.of(20);
+        SparkMax collectorRollerMotor= new SparkMax(17, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
+        collectorRollerMotor.setInverted(true);
+        Angle collectorArmBottom = Degrees.of(5);
+        Angle collectorArmTop = Degrees.of(85);
 
         this.fuelCollector = new Collector(collectorRollerMotor,collectorArmMotor, collectorArmBottom,collectorArmTop);
         this.setFuelCollector(fuelCollector);
