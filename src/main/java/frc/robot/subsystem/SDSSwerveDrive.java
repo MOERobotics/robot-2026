@@ -1,13 +1,13 @@
 package frc.robot.subsystem;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.revrobotics.sim.SparkMaxSim;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.*;
-import edu.wpi.first.math.system.plant.DCMotor;
 import frc.robot.MOESubsystem;
-import com.ctre.phoenix6.sim.Pigeon2SimState;
+import frc.robot.subsystem.interfaces.SwerveDriveInputsAutoLogged;
+import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
+import frc.robot.subsystem.interfaces.SwerveModule;
 
 import java.util.Arrays;
 
@@ -16,14 +16,14 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
     SwerveModule[] swerveModules;
     SwerveDriveOdometry robotOdometry;
     Pigeon2 robotGyro;
-   // Pigeon2SimState simGyro;
+    // Pigeon2SimState simGyro;
 
 
     public SDSSwerveDrive(Pigeon2 robotGyro, SwerveModule... swerveModules) {
         super(new SwerveDriveInputsAutoLogged());
         this.robotGyro = robotGyro;
         this.swerveModules = swerveModules;
-       // simGyro = robotGyro.getSimState();
+        // simGyro = robotGyro.getSimState();
         robotKinematics = new SwerveDriveKinematics(
                 Arrays.stream(swerveModules).map(SwerveModule::getCoordsOfModule).toArray(Translation2d[]::new)
         );
@@ -37,8 +37,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
     public void readSensors(SwerveDriveInputsAutoLogged sensors) {
         sensors.robotAngle = robotGyro.getRotation2d().getMeasure();
         sensors.robotChassisSpeed = robotKinematics.toChassisSpeeds(Arrays.stream(swerveModules).map(SwerveModule::getSpeedNDirectionOfMod).toArray(SwerveModuleState[]::new));
-        sensors.robotPose2D = robotOdometry.update(robotGyro.getRotation2d(),
-                Arrays.stream(swerveModules).map(SwerveModule::getTravelDistanceNRobotAngle).toArray(SwerveModulePosition[]::new));
+        sensors.robotPose2D = robotOdometry.update(robotGyro.getRotation2d(), Arrays.stream(swerveModules).map(SwerveModule::getTravelDistanceNRobotAngle).toArray(SwerveModulePosition[]::new));
         sensors.moduleFL = swerveModules[0];
         sensors.moduleFR = swerveModules[1];
         sensors.moduleBL = swerveModules[2];
@@ -61,6 +60,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
     public void simulate() {
 
     }
+
     @Override
     public void setModuleStates(SwerveModuleState... robotModuleStates) {
         for (int i = 0; i < swerveModules.length; i++) {

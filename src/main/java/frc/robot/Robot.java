@@ -6,7 +6,9 @@ package frc.robot;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.ShooterTestCommand;
 import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
 import frc.robot.container.SubMOErine;
@@ -17,10 +19,16 @@ import edu.wpi.first.math.MathUtil;
 
 public class Robot extends LoggedRobot {
 
-    public RobotContainer robot = new ProMOEtheus();
+    public RobotContainer robot = new SubMOErine();
     public Joystick driverJoystick = new Joystick(0);
+    public Joystick functionJoystick = new Joystick(1);
+
     public double deadband = 0.06; // find deadband number;
     private CommandScheduler scheduler;
+
+    private Command shooterTestCommand = new ShooterTestCommand(robot,driverJoystick, functionJoystick);
+
+
 
 
     @Override
@@ -31,6 +39,7 @@ public class Robot extends LoggedRobot {
 
         MOELogger.setupLogging(this);
         scheduler = CommandScheduler.getInstance();
+
 
 
     }
@@ -77,6 +86,8 @@ public class Robot extends LoggedRobot {
       ;
         robot.getRobotSwerveDrive().robotDrive(robotSpeed);
 
+
+
     }
 
     @Override
@@ -85,6 +96,8 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void testPeriodic() {
+        scheduler.schedule(shooterTestCommand);
+
     }
 
     @Override

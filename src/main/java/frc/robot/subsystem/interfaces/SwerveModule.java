@@ -1,4 +1,4 @@
-package frc.robot.subsystem;
+package frc.robot.subsystem.interfaces;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -24,15 +24,15 @@ public interface SwerveModule extends Subsystem, LoggableInputs {
 
 
     @AutoLog
-    public class SwerveModuleInputs {
-        Angle moduleAngle;
-        Angle moduleTargetAngle;
-        Translation2d coordOfModule;
-        SwerveModulePosition travelDistanceNRobotAngle;
-        SwerveModuleState speedNDirectionOfMod;
-        double robotPivotSpeed;
-        double robotDriveSpeed;
-        double robotError;
+     class SwerveModuleInputs {
+        public Angle moduleAngle;
+        public Angle moduleTargetAngle;
+        public Translation2d coordOfModule;
+        public SwerveModulePosition travelDistanceNRobotAngle;
+        public SwerveModuleState speedNDirectionOfMod;
+        public double robotPivotSpeed;
+        public double robotDriveSpeed;
+        public double robotError;
 
     }
 }

@@ -19,6 +19,8 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.MOESimulator;
 import frc.robot.MOESubsystem;
+import frc.robot.subsystem.interfaces.SwerveModule;
+import frc.robot.subsystem.interfaces.SwerveModuleInputsAutoLogged;
 
 import static edu.wpi.first.units.Units.*;
 import static java.lang.Math.PI;
