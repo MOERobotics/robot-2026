@@ -1,4 +1,4 @@
-package frc.robot.subsystem;
+package frc.robot.subsystem.interfaces;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -24,15 +24,15 @@ public interface SwerveDriveSubsystem extends Subsystem, LoggableInputs {
 
     @AutoLog
     public static class SwerveDriveInputs {
-        Angle robotAngle;
-        ChassisSpeeds robotChassisSpeed;
-        SwerveModule moduleFL;
-        SwerveModule moduleFR;
-        SwerveModule moduleBL;
-        SwerveModule moduleBR;
-        Pose2d robotPose2D;
-        SwerveModuleState[] moduleStates;
-        SwerveModulePosition[] modulePositions;
+        public Angle robotAngle;
+        public ChassisSpeeds robotChassisSpeed;
+        public SwerveModule moduleFL;
+        public SwerveModule moduleFR;
+        public SwerveModule moduleBL;
+        public SwerveModule moduleBR;
+        public Pose2d robotPose2D;
+        public SwerveModuleState[] moduleStates;
+        public SwerveModulePosition[] modulePositions;
 
     }
 }

@@ -1,4 +1,4 @@
-package frc.robot.subsystem;
+package frc.robot.subsystem.simulations;
 
 import com.revrobotics.sim.SparkAbsoluteEncoderSim;
 import com.revrobotics.sim.SparkMaxSim;
@@ -7,6 +7,7 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.robot.MOESimulator;
+import frc.robot.subsystem.Shooter;
 
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Rotations;
@@ -24,7 +25,7 @@ public class ShooterSimulator implements MOESimulator {
 
 
 
-    public ShooterSimulator(ShooterControl shooter) {
+    public ShooterSimulator(Shooter shooter) {
         hoodMotorSim = new SparkMaxSim(shooter.hoodMotor, DCMotor.getNEO(1));
         turretMotorSim = new SparkMaxSim(shooter.turretMotor , DCMotor.getNEO(1));
         spindexerMotorSim = new SparkMaxSim(shooter.spindexerMotor, DCMotor.getNEO(1));
@@ -123,14 +124,6 @@ public class ShooterSimulator implements MOESimulator {
         transitionMotorSim.iterate(velocityTransition, 12, 0.02);
 
         spindexerMotorSim.iterate(velocitySpindexer, 12, 0.02);
-
-        transitionMotorSim.getAlternateEncoderSim().iterate(velocityTransition,0.02);
-        hoodMotorSim.getAlternateEncoderSim().iterate(velocityHood,0.02);
-        turretMotorSim.getAlternateEncoderSim().iterate(velocityTurret,0.02);
-        flywheelMotorSim.getAlternateEncoderSim().iterate(velocityFlywheel,0.02);
-        spindexerMotorSim.getAlternateEncoderSim().iterate(velocitySpindexer,0.02);
-
-
 
 
         hoodEncoderSim.setPosition(hoodMotorSystem.getAngularPosition().in(Rotations));

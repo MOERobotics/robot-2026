@@ -1,48 +1,40 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.container.RobotContainer;
-import frc.robot.subsystem.ShooterControl;
-import frc.robot.subsystem.ShooterSubsystem;
+import frc.robot.subsystem.interfaces.ShooterSubsystem;
 import org.littletonrobotics.junction.Logger;
-
-import static edu.wpi.first.units.Units.RPM;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 public class ShooterTestCommand extends Command {
     ShooterSubsystem shooterSubsystem;
-
-
     Joystick driverJoystick;
 
     Joystick functionJoystick;
 
     // driver joystick
-    int transitionFW = 5;
+    int transitionFWBtn = 5;
 
-    int transitionBack = 6;
+    int transitionBackBtn = 6;
 
-    int spindexerFW = 7;
+    int spindexerFWBtn = 7;
 
-    int spindexerBack = 8;
+    int spindexerBackBtn = 8;
 
 
     // function joystick
 
-    int hoodUp = 7;
+    int hoodUpBtn = 7;
 
-    int hoodDown = 5;
+    int hoodDownBtn = 5;
 
-    int turretLeft = 8;
+    int turretLeftBtn = 8;
 
-    int turretRight = 6;
+    int turretRightBtn = 6;
 
-    int flywheelFW = 4;
+    int flywheelFWBtn = 4;
 
-    int flywheelBack = 3;
+    int flywheelBackBtn = 3;
 
 
     public ShooterTestCommand(RobotContainer robot, Joystick driverjoystick, Joystick functionJoystick) {
@@ -61,35 +53,35 @@ public class ShooterTestCommand extends Command {
     @Override
     public void execute() {
         double transitionPower =0;
-        if (driverJoystick.getRawButton(transitionFW)) {
+        if (driverJoystick.getRawButton(transitionFWBtn)) {
             transitionPower =0.2;
-        } else if (driverJoystick.getRawButton(transitionBack)) {
+        } else if (driverJoystick.getRawButton(transitionBackBtn)) {
            transitionPower=-0.2;
         }
 
         shooterSubsystem.setTransitionPower(transitionPower);
 
         double hoodPower =0;
-        if (functionJoystick.getRawButton(hoodUp)) {
+        if (functionJoystick.getRawButton(hoodUpBtn)) {
             hoodPower=0.2;
-        } else if (functionJoystick.getRawButton(hoodDown)) {
+        } else if (functionJoystick.getRawButton(hoodDownBtn)) {
             hoodPower=-0.2;
         }
         shooterSubsystem.setHoodPower(hoodPower);
 
         double turretPower =0;
-        if (functionJoystick.getRawButton(turretLeft)) {
+        if (functionJoystick.getRawButton(turretLeftBtn)) {
            turretPower=0.2;
-        } else if (functionJoystick.getRawButton(turretRight)) {
+        } else if (functionJoystick.getRawButton(turretRightBtn)) {
             turretPower=-0.2;
         }
 
         shooterSubsystem.setTurretPower(turretPower);
 
         double spindexerPower=0;
-        if (driverJoystick.getRawButton(spindexerFW)) {
+        if (driverJoystick.getRawButton(spindexerFWBtn)) {
            spindexerPower =0.2;
-        } else if (driverJoystick.getRawButton(spindexerBack)) {
+        } else if (driverJoystick.getRawButton(spindexerBackBtn)) {
             spindexerPower=-0.2;
         }
 
@@ -97,9 +89,9 @@ public class ShooterTestCommand extends Command {
 
         double flywheelPower = 0;
 
-        if (functionJoystick.getRawButton(flywheelFW)) {
+        if (functionJoystick.getRawButton(flywheelFWBtn)) {
            flywheelPower=0.2;
-        } else if (functionJoystick.getRawButton(flywheelBack)) {
+        } else if (functionJoystick.getRawButton(flywheelBackBtn)) {
             flywheelPower=-0.2;
         }
 

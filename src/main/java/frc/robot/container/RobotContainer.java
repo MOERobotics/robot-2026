@@ -1,9 +1,9 @@
 package frc.robot.container;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
-import frc.robot.subsystem.ShooterSubsystem;
-import frc.robot.subsystem.SwerveDriveSubsystem;
-import frc.robot.subsystem.TankDriveSubsystem;
+import frc.robot.subsystem.interfaces.ShooterSubsystem;
+import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
+import frc.robot.subsystem.interfaces.TankDriveSubsystem;
 import lombok.Data;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;

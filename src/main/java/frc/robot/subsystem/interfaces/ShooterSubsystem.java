@@ -1,4 +1,4 @@
-package frc.robot.subsystem;
+package frc.robot.subsystem.interfaces;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -36,9 +36,6 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
         public boolean reachedMinTurret = false;
         public boolean reachedMaxHood = false;
         public boolean reachedMinHood = false;
-
-
-
     }
 
     public ShooterInputs getSensors();
@@ -50,7 +47,10 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
 
     void setFlywheelPower(double power);
 
-    void loadFuel(double spindexerPower, double transitionPower);
+    default void loadFuel(double spindexerPower, double transitionPower){
+        setTransitionPower(transitionPower);
+        setSpindexerPower(spindexerPower);
+    };
 
     void setTransitionPower(double transitionPower);
 
@@ -58,8 +58,6 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
 
 
     void stopFeeding();
-
-    boolean isFlywheelAtSpeed();
 
     default boolean reachedHoodMax(){
         return getSensors().reachedMaxHood;
@@ -99,11 +97,6 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
     default boolean getTransitionOn() {
         return getSensors().transitionOn;
     }
-
-
-
-
-
 
 
 
