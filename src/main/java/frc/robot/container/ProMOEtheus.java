@@ -185,6 +185,7 @@ public class ProMOEtheus extends RobotContainer {
                 Degrees.of(10));
         this.setShooterSubsystem(shooter);
         this.setRobotSwerveDrive(ProMOEtheus);
+        this.setClimber(climber);
 
 
 

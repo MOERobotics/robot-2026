@@ -8,8 +8,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Commands.FuelCollectorTeleopCommand;
 import frc.robot.commands.ClimberTestCommand;
+import frc.robot.commands.FuelCollectorTeleopCommand;
 import frc.robot.commands.ShooterTestCommand;
 import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
@@ -31,8 +31,9 @@ public class Robot extends LoggedRobot {
 
     public ClimberTestCommand climberTestCommand = new ClimberTestCommand(robot, driverJoystick);
 
-    private Command shooterTestCommand = new ShooterTestCommand(robot,driverJoystick, functionJoystick);
+    public Command shooterTestCommand = new ShooterTestCommand(robot,driverJoystick, functionJoystick);
 
+    public Command fuelCollectorTeleopCommand = new FuelCollectorTeleopCommand(robot,driverJoystick);
 
 
 
@@ -97,13 +98,14 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void testInit() {
-        new FuelCollectorTeleopCommand(robot, functionJoystick).schedule();
+
     }
 
     @Override
     public void testPeriodic() {
         scheduler.schedule(climberTestCommand);
         scheduler.schedule(shooterTestCommand);
+        scheduler.schedule(fuelCollectorTeleopCommand);
 
     }
 
