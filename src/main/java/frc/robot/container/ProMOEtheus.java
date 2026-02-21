@@ -9,17 +9,19 @@ import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.subsystem.*;
 import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
 import frc.robot.subsystem.interfaces.SwerveModuleSubsystem;
 
+
+import static com.playingwithfusion.jni.CANVenomJNI.setInverted;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 
 public class ProMOEtheus extends RobotContainer {
     public ProMOEtheus() {
-
 
         double pivotkP = 0.0050;
         double pivotkI = 0;
@@ -183,8 +185,17 @@ public class ProMOEtheus extends RobotContainer {
                 Degrees.of(10));
         this.setShooterSubsystem(shooter);
         this.setRobotSwerveDrive(ProMOEtheus);
-        this.setClimber(climber);
 
+
+
+        SparkMax collectorArmMotor = new SparkMax(15, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
+        SparkMax collectorRollerMotor= new SparkMax(17, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
+        collectorRollerMotor.setInverted(true);
+        Angle collectorArmBottom = Degrees.of(5);
+        Angle collectorArmTop = Degrees.of(85);
+
+        this.fuelCollector = new Collector(collectorRollerMotor,collectorArmMotor, collectorArmBottom,collectorArmTop);
+        this.setFuelCollector(fuelCollector);
     }
 }
 

@@ -8,6 +8,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Commands.FuelCollectorTeleopCommand;
 import frc.robot.commands.ClimberTestCommand;
 import frc.robot.commands.ShooterTestCommand;
 import frc.robot.container.ProMOEtheus;
@@ -82,6 +83,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopPeriodic() {
+
         ChassisSpeeds robotSpeed = new ChassisSpeeds(
                 MathUtil.applyDeadband(driverJoystick.getRawAxis(1) * -1, deadband),
                 MathUtil.applyDeadband(driverJoystick.getRawAxis(0) * -1, deadband),
@@ -95,6 +97,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void testInit() {
+        new FuelCollectorTeleopCommand(robot, functionJoystick).schedule();
     }
 
     @Override
