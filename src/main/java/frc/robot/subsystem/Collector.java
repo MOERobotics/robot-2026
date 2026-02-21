@@ -7,6 +7,9 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.MOESubsystem;
+import frc.robot.subsystem.interfaces.CollectorInputsAutoLogged;
+import frc.robot.subsystem.interfaces.CollectorSubsystem;
+import frc.robot.subsystem.simulations.CollectorSim;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 import static edu.wpi.first.units.Units.*;
@@ -48,13 +51,15 @@ public class Collector extends MOESubsystem<CollectorInputsAutoLogged> implement
 
     @Override
     public void setArmVelocity(AngularVelocity armVelocity) {
-        if (inStartPosition()& armVelocity.gt(RPM.zero())) { //can't go up
-            armMotor.set(0);
-        } else if (inCollectPosition()& armVelocity.lte(RPM.zero())) { //can't go down
-            armMotor.set(0);
-        } else {
-            armMotor.set(armVelocity.in(RPM));
-        }
+
+        armMotor.set(armVelocity.in(RPM));
+//        if (inStartPosition()& armVelocity.gt(RPM.zero())) { //can't go up
+//            armMotor.set(0);
+//        } else if (inCollectPosition()& armVelocity.lte(RPM.zero())) { //can't go down
+//            armMotor.set(0);
+//        } else {
+//            armMotor.set(armVelocity.in(RPM));
+//        }
 
     }
 

@@ -33,7 +33,7 @@ public class Robot extends LoggedRobot {
 
     public Command shooterTestCommand = new ShooterTestCommand(robot,driverJoystick, functionJoystick);
 
-    public Command fuelCollectorTeleopCommand = new FuelCollectorTeleopCommand(robot,driverJoystick);
+    public Command fuelCollectorTeleopCommand = new FuelCollectorTeleopCommand(robot,functionJoystick);
 
 
 

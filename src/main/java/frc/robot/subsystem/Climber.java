@@ -1,18 +1,13 @@
 package frc.robot.subsystem;
 
-import com.pathplanner.lib.config.PIDConstants;
-import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import frc.robot.MOESubsystem;
 import frc.robot.subsystem.interfaces.ClimberInputsAutoLogged;
 import frc.robot.subsystem.interfaces.ClimberSubsystem;
-import frc.robot.subsystem.simulators.ClimberSim;
+import frc.robot.subsystem.simulations.ClimberSim;
 
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.InchesPerSecond;

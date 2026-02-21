@@ -1,6 +1,5 @@
-package frc.robot.subsystem;
+package frc.robot.subsystem.simulations;
 
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.sim.SparkRelativeEncoderSim;
 import com.revrobotics.spark.SparkMax;

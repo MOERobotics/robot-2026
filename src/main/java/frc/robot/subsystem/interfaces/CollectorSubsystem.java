@@ -1,4 +1,4 @@
-package frc.robot.subsystem;
+package frc.robot.subsystem.interfaces;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;

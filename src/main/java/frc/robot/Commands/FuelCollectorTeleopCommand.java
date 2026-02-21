@@ -1,11 +1,11 @@
-package frc.robot.Commands;
+package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.container.RobotContainer;
-import frc.robot.subsystem.CollectorSubsystem;
+import frc.robot.subsystem.interfaces.CollectorSubsystem;
 import org.littletonrobotics.junction.Logger;
 
 import static edu.wpi.first.units.Units.*;
