@@ -107,15 +107,16 @@ public class ProMOEtheus extends RobotContainer {
         );
         this.setRobotSwerveDrive(ProMOEtheus);
 
-        SparkMax turretMotor = new SparkMax(25, SparkLowLevel.MotorType.kBrushless);
+        SparkMax turretMotor = new SparkMax(2, SparkLowLevel.MotorType.kBrushless);
 
         SparkMax hoodMotor = new SparkMax(26, SparkLowLevel.MotorType.kBrushless);
 
-        SparkMax spindexerMotor = new SparkMax(27, SparkLowLevel.MotorType.kBrushless);
+        SparkMax spindexerMotor = new SparkMax(16, SparkLowLevel.MotorType.kBrushless);
 
-        SparkMax transitionMotor = new SparkMax(28, SparkLowLevel.MotorType.kBrushless);
+        SparkMax transitionMotor = new SparkMax(3, SparkLowLevel.MotorType.kBrushless);
 
         SparkMax flywheelMotor = new SparkMax(29, SparkLowLevel.MotorType.kBrushless);
+
 
 
 
@@ -147,7 +148,7 @@ public class ProMOEtheus extends RobotContainer {
 
 
         spindexerConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
-        spindexerConfig.inverted(false);
+        spindexerConfig.inverted(true);
         spindexerMotor.configure(spindexerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
 

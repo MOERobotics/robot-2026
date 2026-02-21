@@ -106,9 +106,9 @@ public class SubMOErine extends RobotContainer {
 
         SparkMax hoodMotor = new SparkMax(26, SparkLowLevel.MotorType.kBrushless);
 
-        SparkMax spindexerMotor = new SparkMax(27, SparkLowLevel.MotorType.kBrushless);
+        SparkMax spindexerMotor = new SparkMax(16, SparkLowLevel.MotorType.kBrushless);
 
-        SparkMax transitionMotor = new SparkMax(28, SparkLowLevel.MotorType.kBrushless);
+        SparkMax transitionMotor = new SparkMax(3, SparkLowLevel.MotorType.kBrushless);
 
         SparkMax flywheelMotor = new SparkMax(29, SparkLowLevel.MotorType.kBrushless);
 
