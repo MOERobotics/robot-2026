@@ -6,11 +6,12 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.subsystem.interfaces.SwerveModuleSubsystem;
 import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public interface SwerveDriveSubsystem extends Subsystem, LoggableInputs {
-    public SwerveModule[] getModules();
+    public SwerveModuleSubsystem[] getModules();
 
     public void robotDrive(ChassisSpeeds robotChassisSpeed);
 
@@ -26,10 +27,10 @@ public interface SwerveDriveSubsystem extends Subsystem, LoggableInputs {
     public static class SwerveDriveInputs {
         public Angle robotAngle;
         public ChassisSpeeds robotChassisSpeed;
-        public SwerveModule moduleFL;
-        public SwerveModule moduleFR;
-        public SwerveModule moduleBL;
-        public SwerveModule moduleBR;
+        public SwerveModuleSubsystem moduleFL;
+        public SwerveModuleSubsystem moduleFR;
+        public SwerveModuleSubsystem moduleBL;
+        public SwerveModuleSubsystem moduleBR;
         public Pose2d robotPose2D;
         public SwerveModuleState[] moduleStates;
         public SwerveModulePosition[] modulePositions;

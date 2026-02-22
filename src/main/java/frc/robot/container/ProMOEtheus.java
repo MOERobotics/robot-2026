@@ -9,9 +9,10 @@ import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.units.measure.Distance;
 import frc.robot.subsystem.*;
 import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
-import frc.robot.subsystem.interfaces.SwerveModule;
+import frc.robot.subsystem.interfaces.SwerveModuleSubsystem;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
@@ -57,7 +58,7 @@ public class ProMOEtheus extends RobotContainer {
         pivotMotorBR.setInverted(true);
         CANcoder swerveModuleEncoderBR = new CANcoder(32);
 
-        SwerveModule frontLeftCorner = new SDSSwerveModule(
+        SwerveModuleSubsystem frontLeftCorner = new SDSSwerveModule(
                 driveMotorFL,
                 pivotMotorFL,
                 swerveModuleEncoderFL,
@@ -67,7 +68,7 @@ public class ProMOEtheus extends RobotContainer {
                 driveFeedback,
                 Degrees.of(-45)
         );
-        SwerveModule frontRightCorner = new SDSSwerveModule(
+        SwerveModuleSubsystem frontRightCorner = new SDSSwerveModule(
                 driveMotorFR,
                 pivotMotorFR,
                 swerveModuleEncoderFR,
@@ -77,7 +78,7 @@ public class ProMOEtheus extends RobotContainer {
                 driveFeedback,
                 Degrees.of(45)
         );
-        SwerveModule backLeftCorner = new SDSSwerveModule(
+        SwerveModuleSubsystem backLeftCorner = new SDSSwerveModule(
                 driveMotorBL,
                 pivotMotorBL,
                 swerveModuleEncoderBL,
@@ -87,7 +88,7 @@ public class ProMOEtheus extends RobotContainer {
                 driveFeedback,
                 Degrees.of(-135)
         );
-        SwerveModule backRightCorner = new SDSSwerveModule(
+        SwerveModuleSubsystem backRightCorner = new SDSSwerveModule(
                 driveMotorBR,
                 pivotMotorBR,
                 swerveModuleEncoderBR,
@@ -105,7 +106,16 @@ public class ProMOEtheus extends RobotContainer {
                 backLeftCorner,
                 backRightCorner
         );
-        this.setRobotSwerveDrive(ProMOEtheus);
+    // TODO: get actual id from electrical when they have it
+    SparkMax climberMotor = new SparkMax(30, SparkLowLevel.MotorType.kBrushless);
+    SparkMaxConfig climberMotorConfig = new SparkMaxConfig();
+    climberMotorConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
+    climberMotor.configure(climberMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    Climber climber = new Climber(climberMotor, Inches.of(29.75), Inches.of(20.0)) {
+    };
+
+
+
 
         SparkMax turretMotor = new SparkMax(25, SparkLowLevel.MotorType.kBrushless);
 
@@ -169,6 +179,9 @@ public class ProMOEtheus extends RobotContainer {
                 Degrees.of(10),
                 Degrees.of(-5),
                 Degrees.of(10));
+
+        this.setRobotSwerveDrive(ProMOEtheus);
+        this.setClimber(climber);
         this.setShooterSubsystem(shooter);
 
 
