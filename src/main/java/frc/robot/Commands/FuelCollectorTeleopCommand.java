@@ -33,12 +33,13 @@ public class FuelCollectorTeleopCommand extends Command {
     @Override
     public void execute() {
 
-        AngularVelocity armVelocity = RPM.of(-0.5 * MathUtil.applyDeadband(joystick.getRawAxis(0), 0.05));
+        AngularVelocity armVelocity = RPM.of(-0.5/4 * MathUtil.applyDeadband(joystick.getRawAxis(0), 0.05));
         AngularVelocity rollerVelocity;
+
         if (joystick.getRawButton(1)) {
-            rollerVelocity = RPM.of(1);
+            rollerVelocity = RPM.of(0.25);
         } else if (joystick.getRawButton(2)) {
-            rollerVelocity = RPM.of(-1);
+            rollerVelocity = RPM.of(-0.25);
         } else {
             rollerVelocity = RPM.zero();
         }
