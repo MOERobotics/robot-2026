@@ -8,6 +8,7 @@ import frc.robot.MOESubsystem;
 import frc.robot.subsystem.interfaces.ClimberInputsAutoLogged;
 import frc.robot.subsystem.interfaces.ClimberSubsystem;
 import frc.robot.subsystem.simulations.ClimberSim;
+import org.littletonrobotics.junction.Logger;
 
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.InchesPerSecond;
@@ -87,6 +88,12 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
             climberSparkMax.set(0);
         }
     }
+    @Override
+    public void unlatchHooks(){
+        getSensors().hooksLatched = false;
+    }
+
+
     @Override
     public void periodic() {
         super.periodic();

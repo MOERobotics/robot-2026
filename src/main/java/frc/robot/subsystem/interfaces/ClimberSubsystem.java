@@ -20,6 +20,7 @@ public interface ClimberSubsystem extends Subsystem, LoggableInputs {
         public LinearVelocity lastVelocity = InchesPerSecond.zero();
         public Distance height = Inches.zero();
         public boolean canGoUp, canGoDown;
+        public boolean hooksLatched = true;
 
     }
 
@@ -37,6 +38,9 @@ public interface ClimberSubsystem extends Subsystem, LoggableInputs {
 
     default Distance getHeight() {
         return this.getSensors().height;
+    }
+
+    default void unlatchHooks(){
     }
 
 }
