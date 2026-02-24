@@ -4,13 +4,13 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.ClimberTestCommand;
-import frc.robot.commands.FuelCollectorTeleopCommand;
-import frc.robot.commands.ShooterTestCommand;
+import frc.robot.commands.*;
 import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
 import frc.robot.container.SubMOErine;
@@ -35,6 +35,11 @@ public class Robot extends LoggedRobot {
 
     public Command fuelCollectorTeleopCommand = new FuelCollectorTeleopCommand(robot,functionJoystick);
 
+    public Command rotateCommand = new AutoRotateCommand(robot,functionJoystick);
+
+    public Command driveTeleopCommand = new DriveTeleopCommand(robot,driverJoystick);
+
+
 
 
     @Override
@@ -45,7 +50,6 @@ public class Robot extends LoggedRobot {
 
         MOELogger.setupLogging(this);
         scheduler = CommandScheduler.getInstance();
-
 
 
     }
@@ -80,18 +84,34 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopInit() {
+        if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
+            robot.getRobotSwerveDrive().setPose(new Pose2d(robot.getRobotSwerveDrive().getPose().getTranslation(), Rotation2d.kPi));
+        }
+
+
     }
 
     @Override
     public void teleopPeriodic() {
 
-        ChassisSpeeds robotSpeed = new ChassisSpeeds(
-                MathUtil.applyDeadband(driverJoystick.getRawAxis(1) * -1, deadband),
-                MathUtil.applyDeadband(driverJoystick.getRawAxis(0) * -1, deadband),
-                MathUtil.applyDeadband(driverJoystick.getRawAxis(2) * -1, deadband)
-        );
-        ;
-        robot.getRobotSwerveDrive().robotDrive(robotSpeed);
+
+        if(driverJoystick.getRawButtonPressed(1)){
+            robot.getRobotSwerveDrive().setPose(new Pose2d(robot.getRobotSwerveDrive().getPose().getTranslation(), DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue ? Rotation2d.kZero:Rotation2d.kPi));
+        }
+
+
+        if (functionJoystick.getPOV() != -1) {
+
+                scheduler.cancel(driveTeleopCommand);
+                scheduler.schedule(rotateCommand);
+
+        } else {
+            {
+                scheduler.cancel(rotateCommand);
+                scheduler.schedule(driveTeleopCommand);
+            }
+        }
+
 
 
     }
@@ -103,6 +123,8 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void testPeriodic() {
+        scheduler.schedule(rotateCommand);
+
         scheduler.schedule(climberTestCommand);
         scheduler.schedule(shooterTestCommand);
         scheduler.schedule(fuelCollectorTeleopCommand);
