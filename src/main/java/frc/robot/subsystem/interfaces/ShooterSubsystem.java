@@ -28,6 +28,7 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
         public AngularVelocity transitionSpeed =  RPM.zero();
 
 
+
         public AngularVelocity turretSpeed = RPM.zero();
 
         public AngularVelocity hoodSpeed = RPM.zero();
@@ -97,7 +98,6 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
     default boolean getTransitionOn() {
         return getSensors().transitionOn;
     }
-
 
 
 

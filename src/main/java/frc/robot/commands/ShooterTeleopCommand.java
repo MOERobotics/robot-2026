@@ -22,42 +22,49 @@ public class ShooterTeleopCommand extends  Command {
         public double kP = 1/500.0;
         public double kI = 0;
         public double kD = 0;
-
+        private static final double targetRPM = 3000;
         PIDController shooterPIDController = new PIDController(kP,kI,kD);
 
         public ShooterTeleopCommand(Joystick joystick, double flywheelPower) {
           this.joystick = joystick;
           this.flywheelPower = flywheelPower;
+
+          shooterPIDController.setSetpoint(targetRPM);
+          shooterPIDController.setTolerance(100); // Dont know if this is needed but a fine safety net ig
+
+          addRequirements(shooterSubsystem);
         }
 
 
         @Override
         public void initialize() {
-
+        //    shooterPIDController.reset(); isnt needed right now since kI and kD are zero
         }
 
         @Override
         public void execute() {
             // Flywheel Toggle
             if (joystick.getRawButtonPressed(2)) {
+                isFlywheelOn = !isFlywheelOn;
+
                 if (isFlywheelOn) {
-                    isFlywheelOn = false;
+                    AngularVelocity currentRPM = shooterSubsystem.getFlywheelSpeed();
+                    double output = shooterPIDController.calculate(currentRPM.in(RPM));
+                    shooterSubsystem.setFlywheelPower(shooterPIDController.calculate(output));
+                } else {
+                    shooterSubsystem.setFlywheelPower(0);
                 }
-
-                targetFlywheelPower = RPM.of(3000);
-                shooterSubsystem.setFlywheelPower(shooterPIDController.calculate(flywheelPower));
-                isFlywheelOn = true;
             }
-            else if (joystick.g) {
-                isFlywheelOn = false;
-
-            }
+            // Shoot Button
             if (joystick.getRawButtonPressed(12)){
-               if(isFlywheelOn) {
+               if(isFlywheelOn && shooterPIDController.atSetpoint()) {
                    shooterSubsystem.setSpindexerPower(0.2);
                    shooterSubsystem.setTransitionPower(0.2);
+               } else {
+                   shooterSubsystem.stopFeeding();
                }
-
+            } else {
+                shooterSubsystem.stopFeeding();
             }
 
         }
