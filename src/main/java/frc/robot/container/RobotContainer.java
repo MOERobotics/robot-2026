@@ -1,16 +1,19 @@
 package frc.robot.container;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
-import frc.robot.subsystem.CollectorSubsystem;
-import frc.robot.subsystem.SwerveDriveSubsystem;
-import frc.robot.subsystem.TankDriveSubsystem;
+import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
+import frc.robot.subsystem.interfaces.ClimberSubsystem;
+import frc.robot.subsystem.interfaces.TankDriveSubsystem;
+import frc.robot.subsystem.interfaces.ShooterSubsystem;
 import lombok.Data;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public abstract @Data class RobotContainer implements LoggableInputs {
     private TankDriveSubsystem tankDrive;
-    SwerveDriveSubsystem robotSwerveDrive;
+    private ShooterSubsystem shooterSubsystem;
+    private SwerveDriveSubsystem robotSwerveDrive;
+    ClimberSubsystem climber;
     private PowerDistribution pdh;
     CollectorSubsystem fuelCollector;
 
@@ -24,12 +27,16 @@ public abstract @Data class RobotContainer implements LoggableInputs {
         table.put("SwerveDrive", robotSwerveDrive);
         table.put ("FuelCollector", fuelCollector);
 
+        table.put("Shooter", shooterSubsystem);
+        table.put("Climber", climber);
     }
 
     @Override
     public void fromLog(LogTable table) {
         tankDrive = table.get("TankDrive", tankDrive);
         robotSwerveDrive = table.get("SwerveDrive", robotSwerveDrive);
+        shooterSubsystem = table.get("Shooter", shooterSubsystem);
+        climber = table.get("Climber", climber);
         fuelCollector = table.get("FuelCollector", fuelCollector);
     }
 }

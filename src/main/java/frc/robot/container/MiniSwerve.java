@@ -5,11 +5,10 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.config.PIDConstants;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
-import edu.wpi.first.wpilibj.CAN;
 import frc.robot.subsystem.SDSSwerveDrive;
 import frc.robot.subsystem.SDSSwerveModule;
-import frc.robot.subsystem.SwerveDriveSubsystem;
-import frc.robot.subsystem.SwerveModule;
+import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
+import frc.robot.subsystem.interfaces.SwerveModuleSubsystem;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -51,11 +50,11 @@ public class MiniSwerve extends RobotContainer {
         SparkMax pivotMotorBR = new SparkMax(8, SparkLowLevel.MotorType.kBrushless);
         CANcoder swerveModuleEncoderBR = new CANcoder(34);
 
-        SwerveModule frontLeftCorner = new SDSSwerveModule(driveMotorFL, pivotMotorFL, swerveModuleEncoderFL, Inches.of(4), Inches.of(4), pivotFeedback, driveFeedback, Degrees.of(0)
+        SwerveModuleSubsystem frontLeftCorner = new SDSSwerveModule(driveMotorFL, pivotMotorFL, swerveModuleEncoderFL, Inches.of(4), Inches.of(4), pivotFeedback, driveFeedback, Degrees.of(0)
                 );
-        SwerveModule frontRightCorner = new SDSSwerveModule(driveMotorFR, pivotMotorFR, swerveModuleEncoderFR, Inches.of(4), Inches.of(-4), pivotFeedback, driveFeedback, Degrees.of(0));
-        SwerveModule backLeftCorner = new SDSSwerveModule(driveMotorBL, pivotMotorBL, swerveModuleEncoderBL, Inches.of(-4), Inches.of(4), pivotFeedback, driveFeedback, Degrees.of(0));
-        SwerveModule backRightCorner = new SDSSwerveModule(driveMotorBR, pivotMotorBR, swerveModuleEncoderBR, Inches.of(-4), Inches.of(-4), pivotFeedback, driveFeedback, Degrees.of(0));
+        SwerveModuleSubsystem frontRightCorner = new SDSSwerveModule(driveMotorFR, pivotMotorFR, swerveModuleEncoderFR, Inches.of(4), Inches.of(-4), pivotFeedback, driveFeedback, Degrees.of(0));
+        SwerveModuleSubsystem backLeftCorner = new SDSSwerveModule(driveMotorBL, pivotMotorBL, swerveModuleEncoderBL, Inches.of(-4), Inches.of(4), pivotFeedback, driveFeedback, Degrees.of(0));
+        SwerveModuleSubsystem backRightCorner = new SDSSwerveModule(driveMotorBR, pivotMotorBR, swerveModuleEncoderBR, Inches.of(-4), Inches.of(-4), pivotFeedback, driveFeedback, Degrees.of(0));
         SwerveDriveSubsystem miniSwerve = new SDSSwerveDrive(robotGyro, frontLeftCorner, frontRightCorner, backLeftCorner, backRightCorner);
         this.setRobotSwerveDrive(miniSwerve);
 

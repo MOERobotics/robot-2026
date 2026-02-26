@@ -19,11 +19,13 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.MOESimulator;
 import frc.robot.MOESubsystem;
+import frc.robot.subsystem.interfaces.SwerveModuleInputsAutoLogged;
+import frc.robot.subsystem.interfaces.SwerveModuleSubsystem;
 
 import static edu.wpi.first.units.Units.*;
 import static java.lang.Math.PI;
 
-public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> implements SwerveModule {
+public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> implements SwerveModuleSubsystem {
 
     private final SparkMax pivotMotor;
     private final SparkMax driveMotor;
