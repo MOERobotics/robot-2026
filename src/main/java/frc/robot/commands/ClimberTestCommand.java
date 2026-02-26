@@ -8,14 +8,14 @@ import org.littletonrobotics.junction.Logger;
 
 import static edu.wpi.first.units.Units.InchesPerSecond;
 
-public class ClimberTeleopCommand extends Command {
+public class ClimberTestCommand extends Command {
     public ClimberSubsystem climber;
     public Joystick joyStick;
     public int clicksSequence;
     public int ticks;
     public boolean decayTrigger;
 
-    public ClimberTeleopCommand(RobotContainer robot, Joystick joystick){
+    public ClimberTestCommand(RobotContainer robot, Joystick joystick){
         this.climber = robot.getClimber();
         this.joyStick = joystick;
         this.clicksSequence = 0;
@@ -32,14 +32,14 @@ public class ClimberTeleopCommand extends Command {
     @Override
     public void execute() {
         super.execute();
-        if (joyStick.getRawButton(6)) {
+        if (joyStick.getRawButton(1)) {
             climber.setVelocity(InchesPerSecond.of(1));
-        } else if (joyStick.getRawButton(5)) {
+        } else if (joyStick.getRawButton(2)) {
             climber.setVelocity(InchesPerSecond.of(-1));
         } else {
             climber.stop();
         }
-        if (joyStick.getRawButtonPressed(10)){
+        if (joyStick.getRawButtonPressed(3)){
             clicksSequence += 1;
             decayTrigger = true;
         }

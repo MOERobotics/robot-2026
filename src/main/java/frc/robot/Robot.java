@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.ClimberAutoCommand;
 import frc.robot.commands.ClimberTeleopCommand;
+import frc.robot.commands.ClimberTestCommand;
 import frc.robot.commands.ShooterTestCommand;
 import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
@@ -28,7 +29,9 @@ public class Robot extends LoggedRobot {
 
     private Command shooterTestCommand = new ShooterTestCommand(robot,driverJoystick, functionJoystick);
 
-    public ClimberTeleopCommand climberTestCommand = new ClimberTeleopCommand(robot, driverJoystick);
+    public ClimberTestCommand climberTestCommand = new ClimberTestCommand(robot, driverJoystick);
+
+    public ClimberTeleopCommand climberTeleopCommand = new ClimberTeleopCommand(robot, driverJoystick);
 
     public ClimberAutoCommand climberAutoCommand = new ClimberAutoCommand(robot, true, 1.0,true);
 
@@ -76,7 +79,9 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopInit() {
+        scheduler.schedule(climberTeleopCommand);
     }
+
 
     @Override
     public void teleopPeriodic() {
@@ -92,12 +97,12 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void testInit() {
+        scheduler.schedule(climberTestCommand);
+        scheduler.schedule(shooterTestCommand);
     }
 
     @Override
     public void testPeriodic() {
-        scheduler.schedule(climberTestCommand);
-        scheduler.schedule(shooterTestCommand);
     }
 
     @Override
