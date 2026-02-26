@@ -120,13 +120,13 @@ public class ProMOEtheus extends RobotContainer {
 
         SparkMax turretMotor = new SparkMax(2, SparkLowLevel.MotorType.kBrushless);
 
-        SparkMax hoodMotor = new SparkMax(26, SparkLowLevel.MotorType.kBrushless);
+        SparkMax hoodMotor = new SparkMax(5, SparkLowLevel.MotorType.kBrushless);
 
         SparkMax spindexerMotor = new SparkMax(16, SparkLowLevel.MotorType.kBrushless);
 
         SparkMax transitionMotor = new SparkMax(3, SparkLowLevel.MotorType.kBrushless);
 
-        SparkMax flywheelMotor = new SparkMax(29, SparkLowLevel.MotorType.kBrushless);
+        SparkMax flywheelMotor = new SparkMax(4, SparkLowLevel.MotorType.kBrushless);
 
 
 

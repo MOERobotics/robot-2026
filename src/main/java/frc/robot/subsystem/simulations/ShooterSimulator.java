@@ -74,7 +74,7 @@ public class ShooterSimulator implements MOESimulator {
         );
 
 
-        flywheelMotorSystem = new FlywheelSim(LinearSystemId.createFlywheelSystem(DCMotor.getNEO(1), 0.005, 25), DCMotor.getNEO(1));
+        flywheelMotorSystem = new FlywheelSim(LinearSystemId.createFlywheelSystem(DCMotor.getNEO(1), 0.005, 1), DCMotor.getNEO(1));
 
 
 

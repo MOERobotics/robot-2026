@@ -5,28 +5,30 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.container.RobotContainer;
 import frc.robot.subsystem.interfaces.ShooterSubsystem;
 import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
+import org.littletonrobotics.junction.Logger;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RPM;
 
 public class ShooterTeleopCommand extends  Command {
 
-        public ShooterSubsystem shooterSubsystem;
-        public SwerveDriveSubsystem swerveDriveSubsystem;
-        public Joystick joystick;
+        public final ShooterSubsystem shooterSubsystem;
+        public final Joystick joystick;
         double flywheelPower;
         AngularVelocity targetFlywheelPower;
         boolean isFlywheelOn = false;
         public double kP = 1/500.0;
-        public double kI = 0;
+        public double kI = 0.0001;
         public double kD = 0;
         private static final double targetRPM = 3000;
         PIDController shooterPIDController = new PIDController(kP,kI,kD);
 
-        public ShooterTeleopCommand(Joystick joystick, double flywheelPower) {
+        public ShooterTeleopCommand(RobotContainer robot, Joystick joystick) {
           this.joystick = joystick;
+          shooterSubsystem = robot.getShooterSubsystem();
           this.flywheelPower = flywheelPower;
 
           shooterPIDController.setSetpoint(targetRPM);
@@ -47,16 +49,19 @@ public class ShooterTeleopCommand extends  Command {
             if (joystick.getRawButtonPressed(2)) {
                 isFlywheelOn = !isFlywheelOn;
 
-                if (isFlywheelOn) {
-                    AngularVelocity currentRPM = shooterSubsystem.getFlywheelSpeed();
-                    double output = shooterPIDController.calculate(currentRPM.in(RPM));
-                    shooterSubsystem.setFlywheelPower(shooterPIDController.calculate(output));
-                } else {
-                    shooterSubsystem.setFlywheelPower(0);
-                }
             }
+            if (isFlywheelOn) {
+                AngularVelocity currentRPM = shooterSubsystem.getFlywheelSpeed();
+                double output = shooterPIDController.calculate(currentRPM.in(RPM));
+                Logger.recordOutput("FlywheelOutput", output);
+                if (output < 0) output = 0;
+                shooterSubsystem.setFlywheelPower(output);
+            } else {
+                shooterSubsystem.setFlywheelPower(0);
+            }
+
             // Shoot Button
-            if (joystick.getRawButtonPressed(12)){
+            if (joystick.getRawAxis(3) > 0.3){
                if(isFlywheelOn && shooterPIDController.atSetpoint()) {
                    shooterSubsystem.setSpindexerPower(0.2);
                    shooterSubsystem.setTransitionPower(0.2);
@@ -66,6 +71,9 @@ public class ShooterTeleopCommand extends  Command {
             } else {
                 shooterSubsystem.stopFeeding();
             }
+
+            Logger.recordOutput( "isFlywheelOn", isFlywheelOn);
+
 
         }
 

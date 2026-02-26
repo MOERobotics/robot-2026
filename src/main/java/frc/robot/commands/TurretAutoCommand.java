@@ -26,7 +26,7 @@ public class TurretAutoCommand extends Command {
 
     @Override
     public void initialize() {
-        AngularVelocity flywheelSpeed = shooterSubsystem.setFlywheelPower();
+//        AngularVelocity flywheelSpeed = shooterSubsystem.setFlywheelPower();
         
 
 
