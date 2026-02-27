@@ -33,6 +33,10 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
 
         public AngularVelocity hoodSpeed = RPM.zero();
 
+        public double turretMaxAngle = 0;
+        public double turretMinAngle = 0;
+        public double hoodMaxAngle = 0;
+        public double hoodMinAngle = 0;
         public boolean reachedMaxTurret = false;
         public boolean reachedMinTurret = false;
         public boolean reachedMaxHood = false;

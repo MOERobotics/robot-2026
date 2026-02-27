@@ -177,10 +177,10 @@ public class ProMOEtheus extends RobotContainer {
                 flywheelMotor,
                 turretMotor.getAbsoluteEncoder(),
                 hoodMotor.getAbsoluteEncoder(),
+                Degrees.of(-90),
+                Degrees.of(90),
                 Degrees.of(0),
-                Degrees.of(100),
-                Degrees.of(-5),
-                Degrees.of(10));
+                Degrees.of(45));
         this.setShooterSubsystem(shooter);
         this.setRobotSwerveDrive(ProMOEtheus);
         this.setClimber(climber);

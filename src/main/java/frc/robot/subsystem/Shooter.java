@@ -34,8 +34,8 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
     private static final Angle TURRET_TOLERANCE = Degree.of(1);
 
 
-    public static double TURRET_CONVERSION_FACTOR = 1;
-    public static double HOOD_CONVERSION_FACTOR = 1;
+    public static double TURRET_CONVERSION_FACTOR = 3.6;
+    public static double HOOD_CONVERSION_FACTOR = 4;
 
 
     public Shooter(SparkMax turretMotor,
@@ -71,8 +71,6 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
 
         ShooterSimulator shooterSimulator = new ShooterSimulator(this);
         setSimulator(shooterSimulator);
-
-
     }
 
     @Override
@@ -90,6 +88,10 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
         getSensors().reachedMaxTurret = reachedTurretMax();
         getSensors().reachedMinTurret =reachedTurretMin();
         getSensors().turretSpeed = RPM.of(turretMotor.getEncoder().getVelocity());
+        getSensors().turretMaxAngle = this.turretMaxAngle.in(Degrees);
+        getSensors().turretMinAngle = this.turretMinAngle.in(Degrees);
+        getSensors().hoodMaxAngle = this.hoodMaxAngle.in(Degrees);
+        getSensors().hoodMinAngle = this.hoodMinAngle.in(Degrees);
     }
 
 
