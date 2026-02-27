@@ -9,6 +9,7 @@ import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.subsystem.*;
 import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
@@ -113,6 +114,14 @@ public class ProMOEtheus extends RobotContainer {
     climberMotor.configure(climberMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     Climber climber = new Climber(climberMotor, Inches.of(29.75), Inches.of(20.0)) {
     };
+        SparkMax collectorArmMotor = new SparkMax(15, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
+        SparkMax collectorRollerMotor= new SparkMax(17, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
+        collectorRollerMotor.setInverted(true);
+        Angle collectorArmBottom = Degrees.of(5);
+        Angle collectorArmTop = Degrees.of(85);
+
+        this.setCollector(new Collector(collectorRollerMotor, collectorArmMotor, collectorArmBottom, collectorArmTop));
+
 
 
 
@@ -183,7 +192,6 @@ public class ProMOEtheus extends RobotContainer {
         this.setRobotSwerveDrive(ProMOEtheus);
         this.setClimber(climber);
         this.setShooterSubsystem(shooter);
-
 
     }
 }
