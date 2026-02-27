@@ -177,8 +177,8 @@ public class ProMOEtheus extends RobotContainer {
                 flywheelMotor,
                 turretMotor.getAbsoluteEncoder(),
                 hoodMotor.getAbsoluteEncoder(),
-                Degrees.of(-5),
-                Degrees.of(10),
+                Degrees.of(0),
+                Degrees.of(100),
                 Degrees.of(-5),
                 Degrees.of(10));
         this.setShooterSubsystem(shooter);

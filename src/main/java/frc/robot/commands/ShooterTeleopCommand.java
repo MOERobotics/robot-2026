@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Joystick;
@@ -23,8 +24,20 @@ public class ShooterTeleopCommand extends  Command {
         public double kP = 1/2000.0;
         public double kI = 0.0001;
         public double kD = 0.1/17500;
+
+        public double hoodKP = 0.1;
+        public double hoodKI = 0;
+        public double hoodKD = 0;
+
+        public double turretKP = 0;
+        public double turretKI = 0;
+        public double turretKD = 0;
         private static final double targetRPM = 3000;
         PIDController shooterPIDController = new PIDController(kP,kI,kD);
+        PIDController hoodPIDController = new PIDController(hoodKP, hoodKI, hoodKD);
+        PIDController turretPIDController = new PIDController(turretKP, turretKI, turretKD);
+
+        public double turretSetpoint;
 
         public ShooterTeleopCommand(RobotContainer robot, Joystick joystick) {
           this.joystick = joystick;
@@ -40,7 +53,10 @@ public class ShooterTeleopCommand extends  Command {
 
         @Override
         public void initialize() {
-        //    shooterPIDController.reset(); isnt needed right now since kI and kD are zero
+            //shooterPIDController.reset(); isnt needed right now since kI and kD are zero
+            turretSetpoint = shooterSubsystem.getTurretAngleinDegrees().magnitude();
+            hoodPIDController.setSetpoint(shooterSubsystem.getHoodAngleinDegrees().magnitude());
+            turretPIDController.setSetpoint(turretSetpoint);
         }
 
         @Override
@@ -65,6 +81,7 @@ public class ShooterTeleopCommand extends  Command {
             // Shoot Button
             if (joystick.getRawAxis(3) > 0.3){
                if(isFlywheelOn && shooterPIDController.atSetpoint()) {
+
                    shooterSubsystem.setSpindexerPower(0.2);
                    shooterSubsystem.setTransitionPower(0.2);
                } else {
@@ -72,6 +89,18 @@ public class ShooterTeleopCommand extends  Command {
                }
             } else {
                 shooterSubsystem.stopFeeding();
+            }
+            if (joystick.getRawAxis(0) > 0.3 && shooterSubsystem.getSensors().reachedMinHood){
+                turretPIDController.setSetpoint( - 25);
+
+                double output = turretPIDController.calculate(shooterSubsystem.getTurretAngleinDegrees().magnitude());
+                shooterSubsystem.setTurretPower(output);
+            } else if (joystick.getRawAxis(0) < -0.3  && shooterSubsystem.getSensors().reachedMaxHood){
+                turretPIDController.setSetpoint(shooterSubsystem.getTurretAngleinDegrees().magnitude() + 25);
+                double output = turretPIDController.calculate(shooterSubsystem.getTurretAngleinDegrees().magnitude());
+                shooterSubsystem.setTurretPower(output);
+            } else {
+                shooterSubsystem.setTurretPower(0);
             }
 
             Logger.recordOutput( "isFlywheelOn", isFlywheelOn);
