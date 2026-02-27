@@ -1,4 +1,4 @@
-package frc.robot.subsystem;
+package frc.robot.subsystem.simulations;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkMaxSim;
@@ -45,12 +45,4 @@ public class CollectorSim implements MOESimulator {
         armMotorEncoderSimulator.setVelocity(armMotorSystem.getAngularVelocity().unaryMinus().in(RotationsPerSecond));
         wheelMotorEncoderSimulator.setVelocity(wheelMotorSystem.getAngularVelocity().unaryMinus().in(RotationsPerSecond));
     }
-
-    @Override
-    public void simulationPeriodic() {
-        updateSimState();
-    }
-
-
-
 }

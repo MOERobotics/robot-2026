@@ -3,12 +3,15 @@ package frc.robot.container;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.config.PIDConstants;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
-import frc.robot.subsystem.SDSSwerveDrive;
-import frc.robot.subsystem.SDSSwerveModule;
-import frc.robot.subsystem.SwerveDriveSubsystem;
-import frc.robot.subsystem.SwerveModule;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import frc.robot.subsystem.*;
+import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
+import frc.robot.subsystem.interfaces.SwerveModuleSubsystem;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
@@ -49,7 +52,8 @@ public class SubMOErine extends RobotContainer {
         SparkMax pivotMotorBR = new SparkMax(16, SparkLowLevel.MotorType.kBrushless);
         CANcoder swerveModuleEncoderBR = new CANcoder(33);
 
-        SwerveModule frontLeftCorner = new SDSSwerveModule(
+
+        SwerveModuleSubsystem frontLeftCorner = new SDSSwerveModule(
                 driveMotorFL,
                 pivotMotorFL,
                 swerveModuleEncoderFL,
@@ -59,7 +63,7 @@ public class SubMOErine extends RobotContainer {
                 driveFeedback,
                 Degrees.of(-45)
         );
-        SwerveModule frontRightCorner = new SDSSwerveModule(
+        SwerveModuleSubsystem frontRightCorner = new SDSSwerveModule(
                 driveMotorFR,
                 pivotMotorFR,
                 swerveModuleEncoderFR,
@@ -69,7 +73,7 @@ public class SubMOErine extends RobotContainer {
                 driveFeedback,
                 Degrees.of(45)
         );
-        SwerveModule backLeftCorner = new SDSSwerveModule(
+        SwerveModuleSubsystem backLeftCorner = new SDSSwerveModule(
                 driveMotorBL,
                 pivotMotorBL,
                 swerveModuleEncoderBL,
@@ -79,7 +83,7 @@ public class SubMOErine extends RobotContainer {
                 driveFeedback,
                 Degrees.of(-135)
         );
-        SwerveModule backRightCorner = new SDSSwerveModule(
+        SwerveModuleSubsystem backRightCorner = new SDSSwerveModule(
                 driveMotorBR,
                 pivotMotorBR,
                 swerveModuleEncoderBR,
@@ -96,7 +100,83 @@ public class SubMOErine extends RobotContainer {
                 backLeftCorner,
                 backRightCorner
         );
+
+        SparkMax climberMotor = new SparkMax(30, SparkLowLevel.MotorType.kBrushless);
+        SparkMaxConfig climberMotorConfig = new SparkMaxConfig();
+        climberMotorConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
+        climberMotor.configure(climberMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        Climber climber = new Climber(climberMotor, Inches.of(29.75), Inches.of(29.75)) {
+        };
+
+
+
+
+        SparkMax turretMotor = new SparkMax(25, SparkLowLevel.MotorType.kBrushless);
+
+        SparkMax hoodMotor = new SparkMax(26, SparkLowLevel.MotorType.kBrushless);
+
+        SparkMax spindexerMotor = new SparkMax(27, SparkLowLevel.MotorType.kBrushless);
+
+        SparkMax transitionMotor = new SparkMax(28, SparkLowLevel.MotorType.kBrushless);
+
+        SparkMax flywheelMotor = new SparkMax(29, SparkLowLevel.MotorType.kBrushless);
+
+
+        SparkMaxConfig flywheelConfig = new SparkMaxConfig();
+
+        SparkMaxConfig turretConfig = new SparkMaxConfig();
+
+        SparkMaxConfig hoodConfig = new SparkMaxConfig();
+
+        SparkMaxConfig spindexerConfig = new SparkMaxConfig();
+
+        SparkMaxConfig transitionConfig = new SparkMaxConfig();
+
+
+
+        flywheelConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
+        flywheelConfig.inverted(false);
+        flywheelMotor.configure(flywheelConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+
+        turretConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
+        turretConfig.inverted(false);
+        turretMotor.configure(turretConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+
+        hoodConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
+        hoodConfig.inverted(false);
+        hoodMotor.configure(hoodConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+
+        spindexerConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
+        spindexerConfig.inverted(false);
+        spindexerMotor.configure(spindexerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+
+        transitionConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
+        transitionConfig.inverted(false);
+        transitionMotor.configure(transitionConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+
+
+
+        Shooter shooter = new Shooter(
+                turretMotor,
+                hoodMotor,
+                spindexerMotor,
+                transitionMotor,
+                flywheelMotor,
+                turretMotor.getAbsoluteEncoder(),
+                hoodMotor.getAbsoluteEncoder(),
+                Degrees.of(-5),
+                Degrees.of(10),
+                Degrees.of(-5),
+                Degrees.of(10));
+
+        this.setShooterSubsystem(shooter);
         this.setRobotSwerveDrive(SubMOErine);
+        this.setClimber(climber);
 
     }
 }
