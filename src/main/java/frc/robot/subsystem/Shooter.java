@@ -8,6 +8,7 @@ import frc.robot.MOESubsystem;
 import frc.robot.subsystem.interfaces.ShooterInputsAutoLogged;
 import frc.robot.subsystem.interfaces.ShooterSubsystem;
 import frc.robot.subsystem.simulations.ShooterSimulator;
+import org.littletonrobotics.junction.Logger;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -104,6 +105,7 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
 
     @Override
     public void setFlywheelPower(double power) {
+        Logger.recordOutput("FlywheelACtualPower", power);
         flywheelMotor.set(power);
     }
 

@@ -20,9 +20,9 @@ public class ShooterTeleopCommand extends  Command {
         double flywheelPower;
         AngularVelocity targetFlywheelPower;
         boolean isFlywheelOn = false;
-        public double kP = 1/500.0;
+        public double kP = 1/2000.0;
         public double kI = 0.0001;
-        public double kD = 0;
+        public double kD = 0.1/17500;
         private static final double targetRPM = 3000;
         PIDController shooterPIDController = new PIDController(kP,kI,kD);
 
@@ -54,8 +54,10 @@ public class ShooterTeleopCommand extends  Command {
                 AngularVelocity currentRPM = shooterSubsystem.getFlywheelSpeed();
                 double output = shooterPIDController.calculate(currentRPM.in(RPM));
                 Logger.recordOutput("FlywheelOutput", output);
+                Logger.recordOutput("FlywheelI", shooterPIDController.getAccumulatedError());
+                if (output > 0.5) output = 0.5;
                 if (output < 0) output = 0;
-                shooterSubsystem.setFlywheelPower(output);
+                shooterSubsystem.setFlywheelPower(0.5+output);
             } else {
                 shooterSubsystem.setFlywheelPower(0);
             }
