@@ -35,12 +35,12 @@ public class ShooterTeleopCommand extends Command {
     public double turretKP = 0.5;
     public double turretKI = 0;
     public double turretKD = 0;
-    private static final double targetRPM = 3000;
+    private static final double targetRPM = 5000;
     PIDController shooterPIDController = new PIDController(kP, kI, kD);
     PIDController hoodPIDController = new PIDController(hoodKP, hoodKI, hoodKD);
     PIDController turretPIDController = new PIDController(turretKP, turretKI, turretKD);
 
-    public double turretSetpoint, hoodSetpoint;
+    public double turretSetpoint, hoodSetpoint, shooterSetpoint;
     public double turretTurnMagnitude = 5;
     public double hoodTurnMagnitude = 5;
     public boolean leftTurretShift, rightTurretShift;
@@ -55,7 +55,7 @@ public class ShooterTeleopCommand extends Command {
         leftTurretShift = true;
 
         shooterPIDController.setSetpoint(targetRPM);
-        shooterPIDController.setTolerance(100); // Dont know if this is needed but a fine safety net ig
+        shooterPIDController.setTolerance(300); // Dont know if this is needed but a fine safety net ig
 
         addRequirements(shooterSubsystem);
     }
@@ -66,6 +66,7 @@ public class ShooterTeleopCommand extends Command {
         //shooterPIDController.reset(); isnt needed right now since kI and kD are zero
         turretSetpoint = shooterSubsystem.getTurretAngleinDegrees().in(Degrees);
         hoodSetpoint = shooterSubsystem.getHoodAngleFromThroughbore().in(Degrees);
+        shooterSetpoint = 4000;
         hoodPIDController.setSetpoint(shooterSubsystem.getHoodAngleFromThroughbore().in(Degrees));
         turretPIDController.setSetpoint(turretSetpoint);
 
@@ -78,29 +79,51 @@ public class ShooterTeleopCommand extends Command {
             isFlywheelOn = !isFlywheelOn;
 
         }
+
+        if (joystick.getRawButton(3)) {
+            shooterSetpoint -= 1;
+
+        }
+
+        if (joystick.getRawButton(4)) {
+            shooterSetpoint += 1;
+        }
+
+        Logger.recordOutput("ShooterSetpoint", shooterSetpoint);
+        shooterPIDController.setSetpoint(shooterSetpoint);
+
+
         if (isFlywheelOn) {
+
             AngularVelocity currentRPM = shooterSubsystem.getFlywheelSpeed();
-            double output = shooterPIDController.calculate(currentRPM.in(RPM));
+
+            double output = shooterPIDController.calculate(currentRPM.in(RPM), shooterSetpoint);
+
             Logger.recordOutput("FlywheelOutput", output);
             Logger.recordOutput("FlywheelI", shooterPIDController.getAccumulatedError());
             if (output > 0.5) output = 0.5;
             if (output < 0) output = 0;
             shooterSubsystem.setFlywheelPower(0.5 + output);
+            shooterSubsystem.setTransitionPower(0.8);
+
         } else {
+            shooterSubsystem.setTransitionPower(0);
             shooterSubsystem.setFlywheelPower(0);
         }
 
         // Shoot Button
         if (joystick.getRawAxis(3) > 0.3) {
-            if (isFlywheelOn && shooterPIDController.atSetpoint()) {
-
-                shooterSubsystem.setSpindexerPower(0.2);
-                shooterSubsystem.setTransitionPower(0.2);
+            if (
+                    true
+                    && isFlywheelOn
+//                    && shooterPIDController.atSetpoint()
+            ) {
+                shooterSubsystem.setSpindexerPower(1);
             } else {
-                shooterSubsystem.stopFeeding();
+                shooterSubsystem.setSpindexerPower(0);
             }
         } else {
-            shooterSubsystem.stopFeeding();
+            shooterSubsystem.setSpindexerPower(0);
         }
 
         if (joystick.getRawAxis(0) > deadZone) { // && !shooterSubsystem.getSensors().reachedMaxHood
@@ -179,9 +202,12 @@ public class ShooterTeleopCommand extends Command {
         Logger.recordOutput("hoodSetpoint", hoodPIDController.getSetpoint());
         Logger.recordOutput("hoodRotation", shooterSubsystem.getHoodAngleFromThroughbore().in(Degrees));
 
-        double outputHood = hoodPIDController.calculate(
-                shooterSubsystem.getHoodAngleFromThroughbore().in(Degrees),
-                hoodSetpoint);
+        double outputHood = hoodPIDController.calculate(shooterSubsystem.getHoodAngleFromThroughbore().in(Degrees), hoodSetpoint);
+
+        if(outputHood > 0.32){
+            outputHood =0.32;
+        }
+
         Logger.recordOutput("hoodOutput", outputHood);
         shooterSubsystem.setHoodPower(outputHood);
 /*

@@ -53,7 +53,12 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
     }
 
     @Override
-    public void robotDrive(ChassisSpeeds robotChassisSpeed) {
+    public void robotDrive(ChassisSpeeds robotChassisSpeed, boolean robotCentric) {
+
+        if(!robotCentric){
+            robotChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(robotChassisSpeed, this.getPose().getRotation());
+        }
+
         SwerveModuleState[] robotModuleStateToChassisSpeed = robotKinematics.toSwerveModuleStates(robotChassisSpeed);
         this.setModuleStates(robotModuleStateToChassisSpeed);
     }

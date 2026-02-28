@@ -9,6 +9,7 @@ import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.subsystem.*;
 import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
@@ -38,7 +39,7 @@ public class ProMOEtheus extends RobotContainer {
         PIDConstants driveFeedback = new PIDConstants(drivekP, drivekI, drivekD);
         //  FeedforwardConstants driveFeedForward = new FeedforwardConstants(drivekS, drivekV, drivekA);
 
-        Pigeon2 robotGyro = new Pigeon2(0);
+        Pigeon2 robotGyro = new Pigeon2(35);
         SparkMax driveMotorFL = new SparkMax(9, SparkLowLevel.MotorType.kBrushless);
         SparkMax pivotMotorFL = new SparkMax(8, SparkLowLevel.MotorType.kBrushless);
         pivotMotorFL.setInverted(true);
@@ -154,7 +155,7 @@ public class ProMOEtheus extends RobotContainer {
 
 
         hoodConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
-        hoodConfig.inverted(false);
+        hoodConfig.inverted(true);
         hoodMotor.configure(hoodConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
 
@@ -175,12 +176,20 @@ public class ProMOEtheus extends RobotContainer {
                 spindexerMotor,
                 transitionMotor,
                 flywheelMotor,
-                turretMotor.getAbsoluteEncoder(),
+                driveMotorBL.getAbsoluteEncoder(),
                 hoodMotor.getAbsoluteEncoder(),
                 Degrees.of(-90),
                 Degrees.of(90),
                 Degrees.of(0),
                 Degrees.of(45));
+
+        SparkMax collectorArmMotor = new SparkMax(15, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
+        SparkMax collectorRollerMotor= new SparkMax(17, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
+        collectorRollerMotor.setInverted(true);
+        Angle collectorArmBottom = Degrees.of(5);
+        Angle collectorArmTop = Degrees.of(85);
+
+        this.setCollectorSubsystem(new Collector(collectorRollerMotor, collectorArmMotor, collectorArmBottom, collectorArmTop));
         this.setShooterSubsystem(shooter);
         this.setRobotSwerveDrive(ProMOEtheus);
         this.setClimber(climber);

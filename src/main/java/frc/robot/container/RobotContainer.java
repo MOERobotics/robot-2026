@@ -1,10 +1,7 @@
 package frc.robot.container;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
-import frc.robot.subsystem.interfaces.ShooterSubsystem;
-import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
-import frc.robot.subsystem.interfaces.TankDriveSubsystem;
-import frc.robot.subsystem.interfaces.ClimberSubsystem;
+import frc.robot.subsystem.interfaces.*;
 import lombok.Data;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
@@ -14,6 +11,9 @@ public abstract @Data class RobotContainer implements LoggableInputs {
     ClimberSubsystem climber;
     private ShooterSubsystem shooterSubsystem;
     private SwerveDriveSubsystem robotSwerveDrive;
+    private CollectorSubsystem collectorSubsystem;
+
+
     private PowerDistribution pdh;
 
     public RobotContainer() {

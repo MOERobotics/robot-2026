@@ -104,6 +104,13 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
         getSensors().turretMinAngle = this.turretMinAngle.in(Degrees);
         getSensors().hoodMaxAngle = this.hoodMaxAngle.in(Degrees);
         getSensors().hoodMinAngle = this.hoodMinAngle.in(Degrees);
+
+        getSensors().flywheelPower = flywheelMotor.get();
+        getSensors().transitionPower = transitionMotor.get();
+        getSensors().spindexerPower = spindexerMotor.get();
+        getSensors().hoodPower = hoodMotor.get();
+        getSensors().turretPower = turretMotor.get();
+
     }
 
 
@@ -114,7 +121,7 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
 
     @Override
     public void setHoodPower(double power) {
-        hoodMotor.set(power);
+//        hoodMotor.set(power);
     }
 
     @Override
