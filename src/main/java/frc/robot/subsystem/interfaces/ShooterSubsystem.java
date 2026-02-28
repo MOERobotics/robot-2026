@@ -14,7 +14,9 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
     class ShooterInputs{
         public Angle turretAngle = Degrees.zero();
 
-        public Angle hoodAngle = Degrees.zero();
+        public Angle hoodAngleThroughbore = Rotation.zero();
+
+        public Angle hoodAngleMotor = Rotation.zero();
 
         public boolean shooting = false;
 
@@ -87,8 +89,16 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
         return getSensors().turretAngle;
     }
 
-    default Angle getHoodAngleinDegrees() {
-        return getSensors().hoodAngle;
+    //default Angle getTurretAngleInRotation() {
+    //    return getSensors().turretRotation;
+    //}
+
+    default Angle getHoodAngleFromThroughbore() {
+        return getSensors().hoodAngleThroughbore;
+    }
+
+    default Angle getHoodAngleFromMotor() {
+        return getSensors().hoodAngleMotor;
     }
 
     default AngularVelocity getFlywheelSpeed() {

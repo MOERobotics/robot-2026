@@ -34,8 +34,19 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
     private static final Angle TURRET_TOLERANCE = Degree.of(1);
 
 
-    public static double TURRET_CONVERSION_FACTOR = 3.6;
-    public static double HOOD_CONVERSION_FACTOR = 4;
+    public static double TURRET_CONVERSION_FACTOR = (
+            Revolutions.of(1)
+                    .div(100) // corner gear ratio
+                    .div(8.266) // chain ratio
+                    .in(Degrees)
+    );
+    ;
+    public static double HOOD_CONVERSION_FACTOR = (
+        Revolutions.of(1)
+            .div(90) // VEX Planetaries
+            .div(3) // Right Angle Sprocket thingy
+            .in(Degrees)
+    );
 
 
     public Shooter(SparkMax turretMotor,
@@ -75,7 +86,8 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
 
     @Override
     public void readSensors(ShooterInputsAutoLogged sensors) {
-        getSensors().hoodAngle = getHoodAngleinDegrees();
+        getSensors().hoodAngleThroughbore = getHoodAngleFromThroughbore();
+        getSensors().hoodAngleMotor = getHoodAngleFromMotor();
         getSensors().turretAngle = getTurretAngleinDegrees();
         getSensors().flywheelSpeed = getFlywheelSpeed();
         getSensors().hoodSpeed = RPM.of(hoodMotor.getAbsoluteEncoder().getVelocity());
@@ -141,8 +153,13 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
     }
 
     @Override
-    public Angle getHoodAngleinDegrees() {
-        return Degrees.of(hoodEncoder.getPosition() * HOOD_CONVERSION_FACTOR);
+    public Angle getHoodAngleFromThroughbore() {
+        //return Degrees.of(hoodEncoder.getPosition() * HOOD_CONVERSION_FACTOR);
+        return Rotation.of(hoodEncoder.getPosition());
+    }
+    @Override
+    public Angle getHoodAngleFromMotor() {
+        return Rotations.of(hoodMotor.getEncoder().getPosition()).times(HOOD_CONVERSION_FACTOR);
 
     }
 
@@ -154,12 +171,12 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
 
     @Override
     public boolean reachedHoodMax() {
-        return this.getHoodAngleinDegrees().gt(Degrees.of(hoodMaxAngle.in(Degrees)).minus(Degrees.of(HOOD_TOLERANCE.in(Degrees))));
+        return this.getHoodAngleFromThroughbore().gt(Degrees.of(hoodMaxAngle.in(Degrees)).minus(Degrees.of(HOOD_TOLERANCE.in(Degrees))));
     }
 
     @Override
     public boolean reachedHoodMin() {
-        return this.getHoodAngleinDegrees().lt(Degrees.of(hoodMinAngle.in(Degrees)).plus(Degrees.of(HOOD_TOLERANCE.in(Degrees))));
+        return this.getHoodAngleFromThroughbore().lt(Degrees.of(hoodMinAngle.in(Degrees)).plus(Degrees.of(HOOD_TOLERANCE.in(Degrees))));
     }
     @Override
     public boolean reachedTurretMax() {

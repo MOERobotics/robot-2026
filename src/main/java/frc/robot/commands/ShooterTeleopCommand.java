@@ -26,9 +26,11 @@ public class ShooterTeleopCommand extends Command {
     public double kI = 0.0001;
     public double kD = 0.1 / 17500;
 
-    public double hoodKP = 0.5;
+    public double hoodKP = 0.05;
     public double hoodKI = 0;
     public double hoodKD = 0;
+
+    public double deadZone = 0.4;
 
     public double turretKP = 0.5;
     public double turretKI = 0;
@@ -63,8 +65,8 @@ public class ShooterTeleopCommand extends Command {
     public void initialize() {
         //shooterPIDController.reset(); isnt needed right now since kI and kD are zero
         turretSetpoint = shooterSubsystem.getTurretAngleinDegrees().in(Degrees);
-        hoodSetpoint = shooterSubsystem.getHoodAngleinDegrees().in(Degrees);
-        hoodPIDController.setSetpoint(shooterSubsystem.getHoodAngleinDegrees().in(Degrees));
+        hoodSetpoint = shooterSubsystem.getHoodAngleFromThroughbore().in(Degrees);
+        hoodPIDController.setSetpoint(shooterSubsystem.getHoodAngleFromThroughbore().in(Degrees));
         turretPIDController.setSetpoint(turretSetpoint);
 
     }
@@ -101,18 +103,26 @@ public class ShooterTeleopCommand extends Command {
             shooterSubsystem.stopFeeding();
         }
 
-        if (joystick.getRawAxis(0) > 0.3) { // && !shooterSubsystem.getSensors().reachedMaxHood
+        if (joystick.getRawAxis(0) > deadZone) { // && !shooterSubsystem.getSensors().reachedMaxHood
+            turretSetpoint -= 0.1;
+            /*
             if (rightTurretShift) {
                 rightTurretShift = false;
                 turretSetpoint -= 5;
             }
+
+             */
         }
 
-        if (joystick.getRawAxis(0) < -0.3) { // && !shooterSubsystem.getSensors().reachedMinHood
+        if (joystick.getRawAxis(0) < -deadZone) { // && !shooterSubsystem.getSensors().reachedMinHood
+            turretSetpoint += 0.1;
+            /*
             if (leftTurretShift) {
                 leftTurretShift = false;
                 turretSetpoint += 5;
             }
+
+             */
         }
         Logger.recordOutput("preClampTurretSetpoint",turretSetpoint);
         turretSetpoint = MathUtil.clamp(
@@ -130,26 +140,34 @@ public class ShooterTeleopCommand extends Command {
         Logger.recordOutput("turretOutput", output);
         shooterSubsystem.setTurretPower(output);
 
-        if (joystick.getRawAxis(0) >= -0.3 && joystick.getRawAxis(0) <= 0.3) {
-            turretSetpoint = shooterSubsystem.getTurretAngleinDegrees().in(Degrees);
-            shooterSubsystem.setTurretPower(0);
-            rightTurretShift = true;
-            leftTurretShift = true;
-        }
+//        if (joystick.getRawAxis(0) >= -deadZone && joystick.getRawAxis(0) <= deadZone) {
+//         //   turretSetpoint = shooterSubsystem.getTurretAngleinDegrees().in(Degrees);
+//            shooterSubsystem.setTurretPower(0);
+//            rightTurretShift = true;
+//            leftTurretShift = true;
+//        }
 
 
-        if (joystick.getRawAxis(1) > 0.3) { // && !shooterSubsystem.getSensors().reachedMaxHood
+        if (joystick.getRawAxis(5) > deadZone) { // && !shooterSubsystem.getSensors().reachedMaxHood
+            hoodSetpoint -= 1/100.0;
+            /*
             if (rightHoodShift) {
                 rightHoodShift = false;
                 hoodSetpoint -= 5;
             }
+
+             */
         }
 
-        if (joystick.getRawAxis(1) < -0.3) { // && !shooterSubsystem.getSensors().reachedMinHood
+        if (joystick.getRawAxis(5) < -deadZone) { // && !shooterSubsystem.getSensors().reachedMinHood
+            hoodSetpoint += 1/100.0;
+            /*
             if (leftHoodShift) {
                 leftHoodShift = false;
                 hoodSetpoint += 5;
             }
+
+             */
         }
         //Logger.recordOutput("preClampTurretSetpoint",turretSetpoint);
         hoodSetpoint = MathUtil.clamp(
@@ -159,20 +177,22 @@ public class ShooterTeleopCommand extends Command {
         );
         hoodPIDController.setSetpoint(hoodSetpoint);
         Logger.recordOutput("hoodSetpoint", hoodPIDController.getSetpoint());
-        Logger.recordOutput("hoodRotation", shooterSubsystem.getHoodAngleinDegrees().in(Degrees));
+        Logger.recordOutput("hoodRotation", shooterSubsystem.getHoodAngleFromThroughbore().in(Degrees));
 
         double outputHood = hoodPIDController.calculate(
-                shooterSubsystem.getHoodAngleinDegrees().in(Degrees),
+                shooterSubsystem.getHoodAngleFromThroughbore().in(Degrees),
                 hoodSetpoint);
         Logger.recordOutput("hoodOutput", outputHood);
         shooterSubsystem.setHoodPower(outputHood);
-
-        if (joystick.getRawAxis(1) >= -0.3 && joystick.getRawAxis(1) <= 0.3) {
+/*
+        if (joystick.getRawAxis(5) >= -deadZone && joystick.getRawAxis(5) <= deadZone) {
             hoodSetpoint = shooterSubsystem.getHoodAngleinDegrees().in(Degrees);
             shooterSubsystem.setHoodPower(0);
             rightHoodShift = true;
             leftHoodShift = true;
         }
+
+ */
 
     }
 
@@ -213,7 +233,7 @@ public class ShooterTeleopCommand extends Command {
         Logger.recordOutput("turretOutput", output);
         shooterSubsystem.setTurretPower(output);
 
-        if (joystick.getRawAxis(0) >= -0.3 && joystick.getRawAxis(0) <= 0.3) {
+        if (joystick.getRawAxis(0) >= -deadZone && joystick.getRawAxis(0) <= deadZone) {
             turretSetpoint = shooterSubsystem.getTurretAngleinDegrees().in(Degrees);
             shooterSubsystem.setTurretPower(0);
             rightTurretShift = true;
