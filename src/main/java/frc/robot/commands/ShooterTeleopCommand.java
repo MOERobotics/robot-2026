@@ -64,8 +64,7 @@ public class ShooterTeleopCommand extends Command {
     public void initialize() {
         //shooterPIDController.reset(); isnt needed right now since kI and kD are zero
         turretSetpoint = shooterSubsystem.getTurretAngleinDegrees().in(Degrees);
-        hoodSetpoint = 25;
-                //shooterSubsystem.getHoodAngleFromThroughbore().in(Degrees);
+        hoodSetpoint = shooterSubsystem.getHoodAngleFromThroughbore().in(Degrees);
         shooterSetpoint = 4000;
         hoodPIDController.setSetpoint(shooterSubsystem.getHoodAngleFromThroughbore().in(Degrees));
         turretPIDController.setSetpoint(turretSetpoint);
@@ -170,7 +169,7 @@ public class ShooterTeleopCommand extends Command {
 //        }
 
 
-        if (joystick.getRawAxis(5) > deadZone) { // && !shooterSubsystem.getSensors().reachedMaxHood
+        if (joystick.getRawAxis(5) > deadZone) { // && !shooterSubsystem.getSensors().reachedMa5xHood
             hoodSetpoint -= 1/100.0;
             /*
             if (rightHoodShift) {
