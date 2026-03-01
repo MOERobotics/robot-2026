@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.FaceTargetCommand;
-import frc.robot.commands.HubLoggingCommand;
+import frc.robot.Commands.HubLoggingCommand;
 import frc.robot.container.MiniBotContainer;
 import frc.robot.commands.*;
 import frc.robot.commands.ClimberTestCommand;
@@ -40,14 +40,6 @@ public class Robot extends LoggedRobot {
 
     public Command hubLogging = new HubLoggingCommand();
 
-
-
-
-
-
-
-
-
     CameraControl photonCameraObject = new CameraControl(new Transform3d( new Translation3d(0,0,0), new Rotation3d(0,0,0)),"HD_Camera");
 
 
@@ -65,9 +57,9 @@ public class Robot extends LoggedRobot {
 
     public Command fuelCollectorTeleopCommand = new FuelCollectorTeleopCommand(robot,functionJoystick);
 
-    public Command rotateCommand = new AutoRotateCommand(robot,functionJoystick);
+    public Command rotateCommand = new frc.robot.commands.AutoRotateCommand(robot,functionJoystick);
 
-    public Command driveTeleopCommand = new DriveTeleopCommand(robot,driverJoystick);
+    public Command driveTeleopCommand = new frc.robot.commands.DriveTeleopCommand(robot,driverJoystick);
 
 
 
