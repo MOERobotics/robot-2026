@@ -23,7 +23,7 @@ public class TurretAutoCommand extends Command {
         this.isTurretAligned = isTurretAligned;
     }
 
-
+/*
     @Override
     public void initialize() {
 //        AngularVelocity flywheelSpeed = shooterSubsystem.setFlywheelPower();
@@ -33,7 +33,7 @@ public class TurretAutoCommand extends Command {
 
 
     }
-
+*/
     @Override
     public void execute() {
 
