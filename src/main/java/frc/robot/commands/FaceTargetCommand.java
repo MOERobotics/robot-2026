@@ -3,30 +3,34 @@ package frc.robot.commands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.container.RobotContainer;
 import frc.robot.subsystem.CameraControl;
 import frc.robot.subsystem.TankDrive;
+import frc.robot.subsystem.interfaces.PhotonCameraSubsystem;
+import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
 import org.littletonrobotics.junction.Logger;
 
 import static edu.wpi.first.units.Units.Degrees;
 
 public class FaceTargetCommand extends Command {
 
-    private final TankDrive driveSystem;
-    private final CameraControl camera;
+    private final SwerveDriveSubsystem driveSystem;
+    private final PhotonCameraSubsystem camera;
     private final PIDController PID;
-    private final double power;
+    private final ChassisSpeeds speeds;
 
     int target;
 
     Angle goalYaw;
 
-    public FaceTargetCommand(double power, TankDrive driveSystem, CameraControl camera, int target) {
+    public FaceTargetCommand(ChassisSpeeds speeds, RobotContainer robot, int target) {
 
-        this.power = power;
-        this.driveSystem = driveSystem;
-        this.camera = camera;
+        this.speeds = speeds;
+        this.driveSystem = robot.getRobotSwerveDrive();
+        this.camera = robot.getPhotonCamera();
 
         this.PID = new PIDController(0.4, 0.0, 0);
         PID.setTolerance(1.5);
@@ -42,7 +46,7 @@ public class FaceTargetCommand extends Command {
         PID.reset();
 
         if(camera.angleToTarget(target).isPresent()){
-            goalYaw = driveSystem.getAngle().plus(Degrees.of(camera.angleToTarget(target).get().getDegrees()));
+            goalYaw = driveSystem.getPose().getRotation().getMeasure().plus(Degrees.of(camera.angleToTarget(target).get().getDegrees()));
         } else {
             goalYaw = Degrees.of(0);
         }
@@ -51,15 +55,15 @@ public class FaceTargetCommand extends Command {
     public void execute() {
 
         if (!camera.hasTargets()) {
-            driveSystem.drive(0,0);
+            driveSystem.robotDrive(speeds,false);
         }
 
 
 
 
-        double output = MathUtil.clamp(PID.calculate(driveSystem.getAngle().in(Degrees)  , goalYaw.in(Degrees)), -1.0, 1.0);
-
-        driveSystem.drive(power * output, -power * output);
+        double output = PID.calculate(driveSystem.getPose().getRotation().getMeasure().in(Degrees), goalYaw.in(Degrees));
+        Logger.recordOutput("face orientation output", output);
+        driveSystem.robotDrive(new ChassisSpeeds(0,0, output * speeds.omegaRadiansPerSecond), false);
 
         Logger.recordOutput("FaceTarget/Yaw", goalYaw);
         Logger.recordOutput("FaceTarget/Output", output);
@@ -73,6 +77,6 @@ public class FaceTargetCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        driveSystem.drive(0,0);
+        driveSystem.robotDrive(new ChassisSpeeds(0,0,0),false);
     }
 }

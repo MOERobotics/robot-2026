@@ -9,9 +9,8 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.FaceTargetCommand;
-import frc.robot.Commands.HubLoggingCommand;
+import frc.robot.commands.HubLoggingCommand;
 import frc.robot.container.MiniBotContainer;
-import frc.robot.commands.*;
 import frc.robot.commands.ClimberTestCommand;
 import frc.robot.commands.ShooterTestCommand;
 import frc.robot.container.ProMOEtheus;
@@ -40,22 +39,13 @@ public class Robot extends LoggedRobot {
 
     public Command hubLogging = new HubLoggingCommand();
 
-    CameraControl photonCameraObject = new CameraControl(new Transform3d( new Translation3d(0,0,0), new Rotation3d(0,0,0)),"HD_Camera");
-
-
-    VisionSystemSim visionSim;
-    PhotonCameraSim cameraSim;
-    SimCameraProperties cameraProps;
-
-    public Command faceTargetCommand = new FaceTargetCommand(0.2, robot.getTankDrive(), photonCameraObject, 1);
-
-
+    public Command faceTargetCommand = new FaceTargetCommand(robot.getRobotSwerveDrive().getChassisSpeed(), robot, 1);
 
     public ClimberTestCommand climberTestCommand = new ClimberTestCommand(robot, driverJoystick);
 
     public Command shooterTestCommand = new ShooterTestCommand(robot,driverJoystick, functionJoystick);
 
-    public Command fuelCollectorTeleopCommand = new FuelCollectorTeleopCommand(robot,functionJoystick);
+    public Command fuelCollectorTeleopCommand = new frc.robot.commands.FuelCollectorTeleopCommand(robot,functionJoystick);
 
     public Command rotateCommand = new frc.robot.commands.AutoRotateCommand(robot,functionJoystick);
 
@@ -135,7 +125,9 @@ public class Robot extends LoggedRobot {
                 scheduler.schedule(driveTeleopCommand);
             }
         }
-
+        if (driverJoystick.getRawButton(10)){
+            scheduler.schedule(faceTargetCommand);
+        }
 
 
     }
@@ -156,28 +148,10 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void simulationInit() {
-        visionSim = new VisionSystemSim("main");
-
-
-        visionSim.addAprilTags(
-                photonCameraObject.photonEstimator.getFieldTags()
-        );
-        cameraProps = new SimCameraProperties();
-
-        cameraProps.setCalibration(640, 480, Rotation2d.fromDegrees(90));
-        cameraProps.setFPS(20);
-        cameraProps.setAvgLatencyMs(35);
-        cameraProps.setLatencyStdDevMs(5);
-
-
-        cameraSim = new PhotonCameraSim(photonCameraObject.camera,cameraProps);
-        visionSim.addCamera(cameraSim,photonCameraObject.robotToCam);
     }
 
     @Override
     public void simulationPeriodic() {
-        Pose2d sim2Pose = robot.getTankDrive().getPose();
-        visionSim.update(sim2Pose);
     }
 
 

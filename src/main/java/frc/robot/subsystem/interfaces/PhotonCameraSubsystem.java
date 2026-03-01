@@ -1,6 +1,7 @@
-package frc.robot.subsystem;
+package frc.robot.subsystem.interfaces;
 
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
@@ -8,6 +9,7 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 import java.util.Optional;
 
 public interface PhotonCameraSubsystem extends Subsystem, LoggableInputs {
+    Optional<Rotation2d> angleToTarget(int target);
     // Change this to match the name of your camera
 
     @AutoLog

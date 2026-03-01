@@ -26,6 +26,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.MOESubsystem;
+import frc.robot.subsystem.interfaces.DriveInputsAutoLogged;
+import frc.robot.subsystem.interfaces.TankDriveSubsystem;
 import lombok.Getter;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.Logger;
@@ -37,7 +39,7 @@ import java.util.Optional;
 import static edu.wpi.first.units.Units.*;
 import static frc.robot.subsystem.CameraControl.kTagLayout;
 
-public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements TankDriveSubsystem{
+public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements TankDriveSubsystem {
 
 
     public SparkMax motorControlL;

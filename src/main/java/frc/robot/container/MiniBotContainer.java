@@ -7,7 +7,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.subsystem.TankDrive;
-import frc.robot.subsystem.TankDriveSubsystem;
+import frc.robot.subsystem.interfaces.TankDriveSubsystem;
 import org.littletonrobotics.junction.LogTable;
 
 public class MiniBotContainer extends RobotContainer {

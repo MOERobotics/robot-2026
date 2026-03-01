@@ -4,6 +4,10 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.Filesystem;
 import frc.robot.MOESubsystem;
+import frc.robot.container.RobotContainer;
+import frc.robot.subsystem.interfaces.PhotonCameraSubsystem;
+import frc.robot.subsystem.interfaces.VisionInputsAutoLogged;
+import frc.robot.subsystem.simulations.CameraSim;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -44,14 +48,19 @@ public class CameraControl extends MOESubsystem<VisionInputsAutoLogged> implemen
         }
     }
 
-    public CameraControl(Transform3d robotToCam, String cameraName) {
+    public CameraSim cameraSim;
+    public RobotContainer robot;
+
+    public CameraControl(Transform3d robotToCam, String cameraName, RobotContainer robot) {
 
         super(new VisionInputsAutoLogged());
         this.robotToCam = robotToCam;
+        this.robot = robot;
         this.camera = new PhotonCamera(cameraName);
         this.photonEstimator = new PhotonPoseEstimator(kTagLayout, robotToCam);
 
-
+        cameraSim = new CameraSim(this, robot);
+        setSimulator(cameraSim);
     }
 
     @Override
@@ -91,13 +100,8 @@ public class CameraControl extends MOESubsystem<VisionInputsAutoLogged> implemen
             }
 
         }
-
-
         selectFinalVisionPose();
         logVisionSummary();
-
-
-
     }
 
 
@@ -224,7 +228,7 @@ public class CameraControl extends MOESubsystem<VisionInputsAutoLogged> implemen
 
         return Optional.of(getSensors().finalVisionPose);
     }
-
+@Override
     public Optional <Rotation2d> angleToTarget(int target){
         if(getFinalVisionPose().isPresent() && !getSensors().finalPoseSource.equals("NONE")) {
             return Optional.of(PhotonUtils.getYawToPose(getSensors().singleTagPose.toPose2d(), kTagLayout.getTagPose(target).get().toPose2d() ));

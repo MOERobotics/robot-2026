@@ -9,6 +9,9 @@ import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.subsystem.*;
@@ -199,6 +202,12 @@ public class ProMOEtheus extends RobotContainer {
 
         Collector collector = new Collector(collectorRollerMotor,collectorArmMotor, collectorArmBottom,collectorArmTop);
         this.setFuelCollector(collector);
+
+        CameraControl photonCameraObject = new CameraControl(new Transform3d( new Translation3d(0,0,0),
+                new Rotation3d(0,0,0)),
+                "HD_Camera",
+                this);
+        this.setPhotonCamera(photonCameraObject);
     }
 }
 
