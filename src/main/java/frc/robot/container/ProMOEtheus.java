@@ -12,11 +12,11 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.subsystem.*;
-import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
-import frc.robot.subsystem.interfaces.SwerveModuleSubsystem;
+import frc.robot.subsystem.interfaces.*;
 
 
-import java.util.stream.Collector;
+
+//import java.util.stream.Collector;
 
 import static com.playingwithfusion.jni.CANVenomJNI.setInverted;
 import static edu.wpi.first.units.Units.Degrees;
@@ -197,8 +197,8 @@ public class ProMOEtheus extends RobotContainer {
         Angle collectorArmBottom = Degrees.of(5);
         Angle collectorArmTop = Degrees.of(85);
 
-        this.fuelCollector = new Collector(collectorRollerMotor,collectorArmMotor, collectorArmBottom,collectorArmTop);
-        this.setFuelCollector(fuelCollector);
+        Collector collector = new Collector(collectorRollerMotor,collectorArmMotor, collectorArmBottom,collectorArmTop);
+        this.setFuelCollector(collector);
     }
 }
 
