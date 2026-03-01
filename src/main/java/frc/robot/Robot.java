@@ -42,6 +42,7 @@ public class Robot extends LoggedRobot {
     public Command driveTeleopCommand = new DriveTeleopCommand(robot,driverJoystick);
 
 
+    public Command hubLoggingCommand = new HubLoggingCommand(driverJoystick);
 
 
 
@@ -69,6 +70,7 @@ public class Robot extends LoggedRobot {
     public void robotPeriodic() {
         MOELogger.log();
         scheduler.run();
+        scheduler.schedule(hubLoggingCommand);
     }
 
     @Override
