@@ -7,16 +7,14 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
-import edu.wpi.first.units.measure.Angle;
-import frc.robot.subsystem.*;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.subsystem.*;
 import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
 import frc.robot.subsystem.interfaces.SwerveModuleSubsystem;
 
-import static com.playingwithfusion.jni.CANVenomJNI.setInverted;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 
@@ -116,6 +114,14 @@ public class ProMOEtheus extends RobotContainer {
     climberMotor.configure(climberMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     Climber climber = new Climber(climberMotor, Inches.of(29.75), Inches.of(20.0)) {
     };
+        SparkMax collectorArmMotor = new SparkMax(15, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
+        SparkMax collectorRollerMotor= new SparkMax(17, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
+        collectorRollerMotor.setInverted(true);
+        Angle collectorArmBottom = Degrees.of(5);
+        Angle collectorArmTop = Degrees.of(85);
+
+        this.setCollector(new Collector(collectorRollerMotor, collectorArmMotor, collectorArmBottom, collectorArmTop));
+
 
 
 
@@ -187,18 +193,5 @@ public class ProMOEtheus extends RobotContainer {
         this.setClimber(climber);
         this.setShooterSubsystem(shooter);
 
-
-
-
-        SparkMax collectorArmMotor = new SparkMax(15, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
-        SparkMax collectorRollerMotor= new SparkMax(17, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
-        collectorRollerMotor.setInverted(true);
-        Angle collectorArmBottom = Degrees.of(5);
-        Angle collectorArmTop = Degrees.of(85);
-
-        this.fuelCollector = new Collector(collectorRollerMotor,collectorArmMotor, collectorArmBottom,collectorArmTop);
-        this.setFuelCollector(fuelCollector);
     }
 }
-
-

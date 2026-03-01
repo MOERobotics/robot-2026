@@ -24,6 +24,4 @@ public interface MOESimulator {
     }
 
     public void updateSimState();
-
-    void simulationPeriodic();
 }

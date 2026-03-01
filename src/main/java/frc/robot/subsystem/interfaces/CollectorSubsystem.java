@@ -1,4 +1,4 @@
-package frc.robot.subsystem;
+package frc.robot.subsystem.interfaces;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -11,7 +11,7 @@ import static edu.wpi.first.units.Units.*;
 public interface CollectorSubsystem extends Subsystem, LoggableInputs {
 
     @AutoLog
-     class CollectorInputs {
+    class CollectorInputs {
         public AngularVelocity wheelVelocity = RPM.zero();
         public AngularVelocity collectorArmVelocity = RadiansPerSecond.zero();
         public boolean inStartPosition = false;
@@ -20,6 +20,7 @@ public interface CollectorSubsystem extends Subsystem, LoggableInputs {
     }
     public void setArmVelocity(AngularVelocity armVelocity);
     public void setRollerVelocity(AngularVelocity wheelVelocity);
+    public AngularVelocity getArmVelocity();
     public Angle getArmAngle();
     public boolean inStartPosition() ;
     public boolean inCollectPosition() ;

@@ -39,5 +39,3 @@ public interface SwerveModuleSubsystem extends Subsystem, LoggableInputs {
 
     }
 }
-
-

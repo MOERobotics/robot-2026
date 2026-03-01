@@ -6,7 +6,11 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Velocity;
 import frc.robot.MOESubsystem;
+import frc.robot.subsystem.interfaces.CollectorInputsAutoLogged;
+import frc.robot.subsystem.interfaces.CollectorSubsystem;
+import frc.robot.subsystem.simulations.CollectorSim;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 import static edu.wpi.first.units.Units.*;
@@ -64,10 +68,14 @@ public class Collector extends MOESubsystem<CollectorInputsAutoLogged> implement
     }
 
     @Override
+    public AngularVelocity getArmVelocity() {
+        return getSensors().collectorArmVelocity;
+    }
+
+    @Override
     public Angle getArmAngle() {
         return Degrees.of(armEncoder.getPosition());
     }
-
     @Override
     public boolean inStartPosition() {
         return getArmAngle().gte(topAngle);

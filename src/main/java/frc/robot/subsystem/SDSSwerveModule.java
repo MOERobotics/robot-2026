@@ -190,5 +190,3 @@ public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> 
         simulate();
     }
 }
-
-
