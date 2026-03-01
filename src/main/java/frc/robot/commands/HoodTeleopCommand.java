@@ -41,19 +41,19 @@ public class HoodTeleopCommand extends Command {
     @Override
     public void initialize() {
 
-      //  initalAngle = shooterSubsystem.getHoodAngleInDegrees();
+       initalAngle = shooterSubsystem.getHoodAngleFromThroughbore();
     }
 
     @Override
     public void execute() {
-      //  double output = hoodPID.calculate(shooterSubsystem.getHoodAngleInDegrees().in(Degree), finalAngle.in(Degrees));
+        double output = hoodPID.calculate(shooterSubsystem.getHoodAngleFromThroughbore().in(Degree), finalAngle.in(Degrees));
         double hoodPow =0;
 
         if(joystick.getRawButton(1)){
             hoodPow=0.5;
         }
 
-       // shooterSubsystem.setHoodPower(output*hoodPow);
+        shooterSubsystem.setHoodPower(output*hoodPow);
 
 
 
