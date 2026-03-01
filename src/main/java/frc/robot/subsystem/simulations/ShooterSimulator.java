@@ -136,5 +136,10 @@ public class ShooterSimulator implements MOESimulator {
 
     }
 
+    @Override
+    public void simulationPeriodic() {
+
+    }
+
 
 }

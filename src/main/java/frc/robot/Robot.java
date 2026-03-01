@@ -4,16 +4,24 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.FaceTargetCommand;
+import frc.robot.commands.HubLoggingCommand;
+import frc.robot.container.MiniBotContainer;
 import frc.robot.commands.ClimberTestCommand;
 import frc.robot.commands.ShooterTestCommand;
 import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
+import frc.robot.subsystem.CameraControl;
+import frc.robot.subsystem.TankDrive;
 import frc.robot.container.SubMOErine;
 import org.littletonrobotics.junction.LoggedRobot;
+import org.photonvision.simulation.VisionSystemSim;
+import org.photonvision.simulation.PhotonCameraSim;
+import org.photonvision.simulation.SimCameraProperties;
 import edu.wpi.first.math.MathUtil;
 
 import static edu.wpi.first.units.Units.InchesPerSecond;
@@ -28,9 +36,22 @@ public class Robot extends LoggedRobot {
     public double deadband = 0.06; // find deadband number;
     private CommandScheduler scheduler;
 
-    private Command shooterTestCommand = new ShooterTestCommand(robot,driverJoystick, functionJoystick);
+
+    public Command hubLogging = new HubLoggingCommand();
+
+    public Command faceTargetCommand = new FaceTargetCommand(robot.getRobotSwerveDrive().getChassisSpeed(), robot, 1);
 
     public ClimberTestCommand climberTestCommand = new ClimberTestCommand(robot, driverJoystick);
+
+    public Command shooterTestCommand = new ShooterTestCommand(robot,driverJoystick, functionJoystick);
+
+    public Command fuelCollectorTeleopCommand = new frc.robot.commands.FuelCollectorTeleopCommand(robot,functionJoystick);
+
+    public Command rotateCommand = new frc.robot.commands.AutoRotateCommand(robot,functionJoystick);
+
+    public Command driveTeleopCommand = new frc.robot.commands.DriveTeleopCommand(robot,driverJoystick);
+
+
 
 
     @Override
@@ -40,9 +61,9 @@ public class Robot extends LoggedRobot {
             DriverStation.silenceJoystickConnectionWarning(true);
 
         MOELogger.setupLogging(this);
+
+
         scheduler = CommandScheduler.getInstance();
-
-
     }
 
 
@@ -54,6 +75,7 @@ public class Robot extends LoggedRobot {
     public void robotPeriodic() {
         MOELogger.log();
         scheduler.run();
+        scheduler.schedule(hubLogging);
     }
 
     @Override
@@ -71,21 +93,42 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousPeriodic() {
+        scheduler.schedule(faceTargetCommand);
     }
 
     @Override
     public void teleopInit() {
+        if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
+            robot.getRobotSwerveDrive().setPose(new Pose2d(robot.getRobotSwerveDrive().getPose().getTranslation(), Rotation2d.kPi));
+        }
+
+
     }
 
     @Override
     public void teleopPeriodic() {
-        ChassisSpeeds robotSpeed = new ChassisSpeeds(
-                MathUtil.applyDeadband(driverJoystick.getRawAxis(1) * -1, deadband),
-                MathUtil.applyDeadband(driverJoystick.getRawAxis(0) * -1, deadband),
-                MathUtil.applyDeadband(driverJoystick.getRawAxis(2) * -1, deadband)
-        );
-      ;
-        robot.getRobotSwerveDrive().robotDrive(robotSpeed);
+
+
+        if(driverJoystick.getRawButtonPressed(1)){
+            robot.getRobotSwerveDrive().setPose(new Pose2d(robot.getRobotSwerveDrive().getPose().getTranslation(), DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue ? Rotation2d.kZero:Rotation2d.kPi));
+        }
+
+
+        if (functionJoystick.getPOV() != -1) {
+
+                scheduler.cancel(driveTeleopCommand);
+                scheduler.schedule(rotateCommand);
+
+        } else {
+            {
+                scheduler.cancel(rotateCommand);
+                scheduler.schedule(driveTeleopCommand);
+            }
+        }
+        if (driverJoystick.getRawButton(10)){
+            scheduler.schedule(faceTargetCommand);
+        }
+
 
     }
 
@@ -95,8 +138,12 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void testPeriodic() {
+        scheduler.schedule(rotateCommand);
+
         scheduler.schedule(climberTestCommand);
         scheduler.schedule(shooterTestCommand);
+        scheduler.schedule(fuelCollectorTeleopCommand);
+
     }
 
     @Override

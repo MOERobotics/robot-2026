@@ -18,6 +18,7 @@ public interface TankDriveSubsystem extends Subsystem, LoggableInputs {
         public Angle angle = Degrees.zero();
         public Pose2d pose = Pose2d.kZero;
         public LoggableInputs debugInfo;
+        public Pose2d simPose;
     }
 
     public DriveInputs getSensors();
@@ -37,6 +38,14 @@ public interface TankDriveSubsystem extends Subsystem, LoggableInputs {
     public default Angle getAngle() {
         return getSensors().angle;
     }
+
+    public default Pose2d setPose(Pose2d newPose) {
+        return null;
+    }
+    public default Pose2d getPose() {
+        return null;
+    }
+
 
 
 }

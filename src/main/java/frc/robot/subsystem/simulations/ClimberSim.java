@@ -38,4 +38,9 @@ public class ClimberSim implements MOESimulator {
         climberMotorSim.iterate(climberSystem.getAngularVelocityRPM(), 12.0, 0.02);
 
     }
+
+    @Override
+    public void simulationPeriodic() {
+
+    }
 }

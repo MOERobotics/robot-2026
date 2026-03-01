@@ -9,11 +9,19 @@ import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.subsystem.*;
-import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
-import frc.robot.subsystem.interfaces.SwerveModuleSubsystem;
+import frc.robot.subsystem.interfaces.*;
 
+
+
+//import java.util.stream.Collector;
+
+import static com.playingwithfusion.jni.CANVenomJNI.setInverted;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 
@@ -117,15 +125,16 @@ public class ProMOEtheus extends RobotContainer {
 
 
 
-        SparkMax turretMotor = new SparkMax(25, SparkLowLevel.MotorType.kBrushless);
+        SparkMax turretMotor = new SparkMax(2, SparkLowLevel.MotorType.kBrushless);
 
-        SparkMax hoodMotor = new SparkMax(26, SparkLowLevel.MotorType.kBrushless);
+        SparkMax hoodMotor = new SparkMax(5, SparkLowLevel.MotorType.kBrushless);
 
-        SparkMax spindexerMotor = new SparkMax(27, SparkLowLevel.MotorType.kBrushless);
+        SparkMax spindexerMotor = new SparkMax(16, SparkLowLevel.MotorType.kBrushless);
 
-        SparkMax transitionMotor = new SparkMax(28, SparkLowLevel.MotorType.kBrushless);
+        SparkMax transitionMotor = new SparkMax(3, SparkLowLevel.MotorType.kBrushless);
 
-        SparkMax flywheelMotor = new SparkMax(29, SparkLowLevel.MotorType.kBrushless);
+        SparkMax flywheelMotor = new SparkMax(4, SparkLowLevel.MotorType.kBrushless);
+
 
 
 
@@ -157,7 +166,7 @@ public class ProMOEtheus extends RobotContainer {
 
 
         spindexerConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
-        spindexerConfig.inverted(false);
+        spindexerConfig.inverted(true);
         spindexerMotor.configure(spindexerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
 
@@ -179,12 +188,26 @@ public class ProMOEtheus extends RobotContainer {
                 Degrees.of(10),
                 Degrees.of(-5),
                 Degrees.of(10));
-
+        this.setShooterSubsystem(shooter);
         this.setRobotSwerveDrive(ProMOEtheus);
         this.setClimber(climber);
-        this.setShooterSubsystem(shooter);
 
 
+
+        SparkMax collectorArmMotor = new SparkMax(15, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
+        SparkMax collectorRollerMotor= new SparkMax(17, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
+        collectorRollerMotor.setInverted(true);
+        Angle collectorArmBottom = Degrees.of(5);
+        Angle collectorArmTop = Degrees.of(85);
+
+        Collector collector = new Collector(collectorRollerMotor,collectorArmMotor, collectorArmBottom,collectorArmTop);
+        this.setFuelCollector(collector);
+
+        CameraControl photonCameraObject = new CameraControl(new Transform3d( new Translation3d(0,0,0),
+                new Rotation3d(0,0,0)),
+                "HD_Camera",
+                this);
+        this.setPhotonCamera(photonCameraObject);
     }
 }
 
