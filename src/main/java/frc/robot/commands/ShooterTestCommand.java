@@ -101,9 +101,6 @@ public class ShooterTestCommand extends Command {
         Logger.recordOutput("reachedHoodMin", shooterSubsystem.reachedHoodMin());
         Logger.recordOutput("reachedTurretMax", shooterSubsystem.reachedTurretMax());
         Logger.recordOutput("reachedTurretMin", shooterSubsystem.reachedTurretMin());
-
-
-
     }
 
     @Override
@@ -118,7 +115,6 @@ public class ShooterTestCommand extends Command {
     @Override
     public boolean isFinished() {
         return false;
-
     }
 
 }

@@ -21,6 +21,7 @@ import frc.robot.MOESimulator;
 import frc.robot.MOESubsystem;
 import frc.robot.subsystem.interfaces.SwerveModuleInputsAutoLogged;
 import frc.robot.subsystem.interfaces.SwerveModuleSubsystem;
+import frc.robot.subsystem.simulations.SwerveModuleSim;
 
 import static edu.wpi.first.units.Units.*;
 import static java.lang.Math.PI;
@@ -100,6 +101,8 @@ public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> 
         pidPivotController = new PIDController(pivotFeedback.kP, pivotFeedback.kI, pivotFeedback.kD);
         pidDriveController = new PIDController(driveFeedback.kP, driveFeedback.kI, driveFeedback.kD);
 
+        SwerveModuleSim swerveModuleSim = new SwerveModuleSim(moduleOffset, driveMotor,pivotMotor, swerveModuleEncoder);
+        setSimulator(swerveModuleSim);
     }
 
     @Override
@@ -170,6 +173,7 @@ public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> 
         );
     }
 
+    /*
     public void simulate() {
         driveMotorSystem.setInputVoltage(driveMotor.getBusVoltage() * driveMotor.get());
         pivotMotorSystem.setInputVoltage(-pivotMotor.getBusVoltage() * pivotMotor.get());
@@ -185,10 +189,9 @@ public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> 
         pivotEncoderSim.setVelocity(pivotMotorSystem.getAngularVelocity().unaryMinus());
     }
 
-    @Override
-    public void simulationPeriodic() {
-        simulate();
-    }
+
+     */
+
 }
 
 

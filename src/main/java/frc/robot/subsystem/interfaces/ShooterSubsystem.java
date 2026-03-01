@@ -29,8 +29,6 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
         public AngularVelocity spindexerSpeed =  RPM.zero();
         public AngularVelocity transitionSpeed =  RPM.zero();
 
-
-
         public AngularVelocity turretSpeed = RPM.zero();
 
         public AngularVelocity hoodSpeed = RPM.zero();

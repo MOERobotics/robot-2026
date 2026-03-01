@@ -110,7 +110,8 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
         getSensors().spindexerPower = spindexerMotor.get();
         getSensors().hoodPower = hoodMotor.get();
         getSensors().turretPower = turretMotor.get();
-
+        getSensors().spindexerOn = spindexerMotor.get()>0;
+        getSensors().transitionOn = transitionMotor.get()>0;
     }
 
 
@@ -121,12 +122,12 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
 
     @Override
     public void setHoodPower(double power) {
-//        hoodMotor.set(power);
+       hoodMotor.set(power);
     }
 
     @Override
     public void setFlywheelPower(double power) {
-        Logger.recordOutput("FlywheelACtualPower", power);
+        Logger.recordOutput("FlywheelActualPower", power);
         flywheelMotor.set(power);
     }
 

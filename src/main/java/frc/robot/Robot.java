@@ -37,7 +37,7 @@ public class Robot extends LoggedRobot {
 
     private Command shooterTeleopCommand = new ShooterTeleopCommand(robot, functionJoystick);
 
-    public Command rotateCommand = new AutoRotateCommand(robot,functionJoystick);
+    public Command rotateCommand = new AutoRotateCommand(robot,driverJoystick);
 
     public Command driveTeleopCommand = new DriveTeleopCommand(robot,driverJoystick);
 
@@ -125,7 +125,7 @@ public class Robot extends LoggedRobot {
 
 
 
-        if (functionJoystick.getPOV() != -1) {
+        if (driverJoystick.getPOV() != -1) {
             scheduler.cancel(driveTeleopCommand);
             scheduler.schedule(rotateCommand);
 

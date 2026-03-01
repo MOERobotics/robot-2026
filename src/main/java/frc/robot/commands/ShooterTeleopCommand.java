@@ -49,7 +49,6 @@ public class ShooterTeleopCommand extends Command {
     public ShooterTeleopCommand(RobotContainer robot, Joystick joystick) {
         this.joystick = joystick;
         shooterSubsystem = robot.getShooterSubsystem();
-        this.flywheelPower = flywheelPower;
 
         rightTurretShift = true;
         leftTurretShift = true;
@@ -82,14 +81,13 @@ public class ShooterTeleopCommand extends Command {
 
         if (joystick.getRawButton(3)) {
             shooterSetpoint -= 1;
-
         }
 
         if (joystick.getRawButton(4)) {
             shooterSetpoint += 1;
         }
 
-        Logger.recordOutput("ShooterSetpoint", shooterSetpoint);
+        Logger.recordOutput("FlywheelSetpoint", shooterSetpoint);
         shooterPIDController.setSetpoint(shooterSetpoint);
 
 
@@ -210,6 +208,7 @@ public class ShooterTeleopCommand extends Command {
 
         Logger.recordOutput("hoodOutput", outputHood);
         shooterSubsystem.setHoodPower(outputHood);
+
 /*
         if (joystick.getRawAxis(5) >= -deadZone && joystick.getRawAxis(5) <= deadZone) {
             hoodSetpoint = shooterSubsystem.getHoodAngleinDegrees().in(Degrees);

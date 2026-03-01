@@ -8,14 +8,15 @@ import frc.robot.MOESubsystem;
 import frc.robot.subsystem.interfaces.SwerveDriveInputsAutoLogged;
 import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
 import frc.robot.subsystem.interfaces.SwerveModuleSubsystem;
+import frc.robot.subsystem.simulations.SwerveDriveSim;
 
 import java.util.Arrays;
 
 public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> implements SwerveDriveSubsystem {
-    SwerveDriveKinematics robotKinematics;
+    public SwerveDriveKinematics robotKinematics;
     SwerveModuleSubsystem[] swerveModules;
     SwerveDriveOdometry robotOdometry;
-    Pigeon2 robotGyro;
+    public Pigeon2 robotGyro;
     // Pigeon2SimState simGyro;
 
 
@@ -31,6 +32,11 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
                 robotGyro.getRotation2d(),
                 Arrays.stream(swerveModules).map(SwerveModuleSubsystem::getTravelDistanceNRobotAngle).toArray(SwerveModulePosition[]::new)
         );
+
+        SwerveDriveSim swerveSim = new SwerveDriveSim(this);
+        setSimulator(swerveSim);
+
+
     }
 
     @Override
