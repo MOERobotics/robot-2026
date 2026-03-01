@@ -13,7 +13,7 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 public interface SwerveDriveSubsystem extends Subsystem, LoggableInputs {
     public SwerveModuleSubsystem[] getModules();
 
-    public void robotDrive(ChassisSpeeds robotChassisSpeed);
+    public void robotDrive(ChassisSpeeds robotChassisSpeed, boolean robotCentric);
 
     public void setModuleStates(SwerveModuleState... robotModuleStates);
 

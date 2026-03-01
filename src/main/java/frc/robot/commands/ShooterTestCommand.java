@@ -54,35 +54,35 @@ public class ShooterTestCommand extends Command {
     public void execute() {
         double transitionPower =0;
         if (driverJoystick.getRawButton(transitionFWBtn)) {
-            transitionPower =0.2;
+            transitionPower =0.1;
         } else if (driverJoystick.getRawButton(transitionBackBtn)) {
-           transitionPower=-0.2;
+           transitionPower=-0.1;
         }
 
         shooterSubsystem.setTransitionPower(transitionPower);
 
         double hoodPower =0;
         if (functionJoystick.getRawButton(hoodUpBtn)) {
-            hoodPower=0.2;
+            hoodPower=0.1;
         } else if (functionJoystick.getRawButton(hoodDownBtn)) {
-            hoodPower=-0.2;
+            hoodPower=-0.1;
         }
         shooterSubsystem.setHoodPower(hoodPower);
 
         double turretPower =0;
         if (functionJoystick.getRawButton(turretLeftBtn)) {
-           turretPower=0.2;
+           turretPower=0.1;
         } else if (functionJoystick.getRawButton(turretRightBtn)) {
-            turretPower=-0.2;
+            turretPower=-0.1;
         }
 
         shooterSubsystem.setTurretPower(turretPower);
 
         double spindexerPower=0;
         if (driverJoystick.getRawButton(spindexerFWBtn)) {
-           spindexerPower =0.2;
+           spindexerPower =0.1;
         } else if (driverJoystick.getRawButton(spindexerBackBtn)) {
-            spindexerPower=-0.2;
+            spindexerPower=-0.1;
         }
 
         shooterSubsystem.setSpindexerPower(spindexerPower);

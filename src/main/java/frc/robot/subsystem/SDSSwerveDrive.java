@@ -8,15 +8,19 @@ import frc.robot.MOESubsystem;
 import frc.robot.subsystem.interfaces.SwerveDriveInputsAutoLogged;
 import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
 import frc.robot.subsystem.interfaces.SwerveModuleSubsystem;
+import frc.robot.subsystem.simulations.ShooterSimulator;
+import frc.robot.subsystem.simulations.SwerveDriveSim;
+import frc.robot.subsystem.simulations.SwerveModuleSim;
+import org.littletonrobotics.junction.Logger;
 
 import java.util.Arrays;
 
 public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> implements SwerveDriveSubsystem {
-    SwerveDriveKinematics robotKinematics;
-    SwerveModuleSubsystem[] swerveModules;
-    SwerveDriveOdometry robotOdometry;
-    Pigeon2 robotGyro;
-   // Pigeon2SimState simGyro;
+    public SwerveDriveKinematics robotKinematics;
+    public SwerveModuleSubsystem[] swerveModules;
+    public SwerveDriveOdometry robotOdometry;
+    public Pigeon2 robotGyro;
+    // Pigeon2SimState simGyro;
 
 
     public SDSSwerveDrive(Pigeon2 robotGyro, SwerveModuleSubsystem... swerveModules) {
@@ -31,6 +35,11 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
                 robotGyro.getRotation2d(),
                 Arrays.stream(swerveModules).map(SwerveModuleSubsystem::getTravelDistanceNRobotAngle).toArray(SwerveModulePosition[]::new)
         );
+        SwerveDriveSim swerveSim = new SwerveDriveSim(this);
+        setSimulator(swerveSim);
+
+
+
     }
 
     @Override
@@ -53,7 +62,12 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
     }
 
     @Override
-    public void robotDrive(ChassisSpeeds robotChassisSpeed) {
+    public void robotDrive(ChassisSpeeds robotChassisSpeed, boolean robotCentric) {
+
+        if(!robotCentric){
+            robotChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(robotChassisSpeed,this.getPose().getRotation());
+        }
+
         SwerveModuleState[] robotModuleStateToChassisSpeed = robotKinematics.toSwerveModuleStates(robotChassisSpeed);
         this.setModuleStates(robotModuleStateToChassisSpeed);
     }
@@ -69,7 +83,12 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
 
             swerveModules[i].setPivot(moduleState.angle);
             swerveModules[i].setSpeed(moduleState.speedMetersPerSecond);
+
         }
+
+        Logger.recordOutput("FL Desired", robotModuleStates[0].angle.getDegrees());
+        Logger.recordOutput("FL Actual",
+                swerveModules[0].getTravelDistanceNRobotAngle().angle.getDegrees());
     }
 
     @Override
