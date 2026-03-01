@@ -8,6 +8,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.FuelCollectorTeleopCommand;
 import frc.robot.commands.FuelCollectorTestCommand;
 import frc.robot.commands.ClimberTestCommand;
 import frc.robot.commands.ShooterTestCommand;
@@ -29,7 +30,9 @@ public class Robot extends LoggedRobot {
 
     public double deadband = 0.06; // find deadband number;
     private CommandScheduler scheduler;
-    private Command collectorTestCommand;
+    private Command collectorTestCommand = new FuelCollectorTestCommand(robot, functionJoystick);
+    private Command collectorTeleopCommand = new FuelCollectorTeleopCommand(robot, functionJoystick);
+
     private Command shooterTestCommand = new ShooterTestCommand(robot,driverJoystick, functionJoystick);
     public ClimberTestCommand climberTestCommand = new ClimberTestCommand(robot, driverJoystick);
 
@@ -39,7 +42,6 @@ public class Robot extends LoggedRobot {
 
         if (isSimulation())
             DriverStation.silenceJoystickConnectionWarning(true);
-        collectorTestCommand = new FuelCollectorTestCommand(robot, functionJoystick);
         MOELogger.setupLogging(this);
         scheduler = CommandScheduler.getInstance();
 
@@ -76,7 +78,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopInit() {
-        scheduler.schedule(collectorTestCommand);
+        scheduler.schedule(collectorTeleopCommand);
     }
 
     @Override
@@ -99,7 +101,7 @@ public class Robot extends LoggedRobot {
     public void testPeriodic() {
         scheduler.schedule(climberTestCommand);
         scheduler.schedule(shooterTestCommand);
-        //scheduler.schedule(collectorTestCommand);
+        scheduler.schedule(collectorTestCommand);
     }
 
     @Override

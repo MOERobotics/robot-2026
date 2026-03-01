@@ -44,5 +44,8 @@ public class CollectorSim implements MOESimulator {
         armMotorEncoderSimulator.setPosition(armMotorSystem.getAngularPosition().in(Rotations));
         armMotorEncoderSimulator.setVelocity(armMotorSystem.getAngularVelocity().unaryMinus().in(RotationsPerSecond));
         wheelMotorEncoderSimulator.setVelocity(wheelMotorSystem.getAngularVelocity().unaryMinus().in(RotationsPerSecond));
+
+        armMotorSim.iterate(armMotorSystem.getAngularVelocityRPM(), armMotor.getBusVoltage(), 0.02);
+        wheelMotorSim.iterate(wheelMotorSystem.getAngularVelocityRPM(), wheelMotor.getBusVoltage(), 0.02);
     }
 }

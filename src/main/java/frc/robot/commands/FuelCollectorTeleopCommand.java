@@ -1,26 +1,24 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.container.RobotContainer;
-import frc.robot.subsystem.Collector;
 import frc.robot.subsystem.interfaces.CollectorSubsystem;
 import org.littletonrobotics.junction.Logger;
 
-import static edu.wpi.first.units.Units.Degree;
-import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.*;
 
 public class FuelCollectorTeleopCommand extends Command {
     CollectorSubsystem collectorSubsystem;
-
+    boolean shouldGoToStartPosition;
+    boolean shouldGoToCollectPosition;
     Joystick joystick;
-    double armkp =1;
-    double armki = 1;
-    double armkd=1;
+    double armkp = 0.1;
+    double armki = 0.020;
+    double armkd = 0.0001;
     PIDController fuelCollectorArmPID = new PIDController(
             armkp, armki, armkd
     );
@@ -43,37 +41,58 @@ public class FuelCollectorTeleopCommand extends Command {
     public void execute() {
 
         AngularVelocity rollerVelocity;
-        AngularVelocity targetArmVelocity;
-        AngularVelocity currentArmVelocity;
-        int collectorINButton= 5;
-        int collectorOUTButton= 6;
-        if (joystick.getRawButtonPressed(collectorINButton)) {
-             rollerVelocity = RPM.of(1);
-        } else if (joystick.getRawButtonPressed(collectorOUTButton)) {
-             rollerVelocity = RPM.of(-1);
-        } else {  rollerVelocity = RPM.of(0);
+        Angle targetArmPosition;
+        Angle currentArmPosition;
+        int collectorINButton = 5;
+        int collectorOUTButton = 6;
+        if (joystick.getRawButton(collectorINButton)) {
+            rollerVelocity = RPM.of(1);
+        } else if (joystick.getRawButton(collectorOUTButton)) {
+            rollerVelocity = RPM.of(-1);
+        } else {
+            rollerVelocity = RPM.of(0);
 
-    }
+        }
         collectorSubsystem.setRollerVelocity(rollerVelocity);
-        int collectorStartButton = 7 ;
-        int collectorIntakeButton = 8;
+        int collectorStartPositionButton = 7;
+        int collectorIntakePositionButton = 8;
+        currentArmPosition = collectorSubsystem.getArmAngle();
+        if (joystick.getRawButtonPressed(collectorStartPositionButton)) {
+            shouldGoToStartPosition = true;
+            shouldGoToCollectPosition = false;
 
-        if (joystick.getRawButton(collectorStartButton)) {
-            currentArmVelocity = collectorSubsystem.getArmVelocity();
-            targetArmVelocity = RPM.of(0.2);
-            AngularVelocity armError = currentArmVelocity.minus(targetArmVelocity);
-            double newVelocity = fuelCollectorArmPID.calculate(armError.in(RPM));
-            collectorSubsystem.setArmVelocity(RPM.of(newVelocity));
-        } else if (joystick.getRawButton(collectorIntakeButton)) {
-            currentArmVelocity = collectorSubsystem.getArmVelocity();
-            targetArmVelocity = RPM.of(-0.2);
-            AngularVelocity armError = currentArmVelocity.minus(targetArmVelocity);
-            double newVelocity = fuelCollectorArmPID.calculate(armError.in(RPM));
-            collectorSubsystem.setArmVelocity(RPM.of(newVelocity));
+
+        } else if (joystick.getRawButtonPressed(collectorIntakePositionButton)) {
+            shouldGoToCollectPosition = true;
+            shouldGoToStartPosition = false;
         }
 
-        //Logger.recordOutput("FuelCollector/ArmVelocity", armVelocity); TODO
+        if (shouldGoToStartPosition) {
+            targetArmPosition = Degrees.of(84);
+
+
+        } else if (shouldGoToCollectPosition) {
+            targetArmPosition = Degrees.of(6);
+        } else {
+            targetArmPosition = currentArmPosition;
+        }
+        Logger.recordOutput("TargetArmPos", targetArmPosition);
+        Logger.recordOutput("ShouldGoToCollectPosition", shouldGoToCollectPosition);
+        Logger.recordOutput("shouldGoToStartPosition", shouldGoToStartPosition);
+        fuelCollectorArmPID.setSetpoint(targetArmPosition.in(Degrees));
+
+        if (!fuelCollectorArmPID.atSetpoint()) {
+            double armCorrection = fuelCollectorArmPID.calculate(currentArmPosition.in(Degrees));
+            collectorSubsystem.setArmVelocity(DegreesPerSecond.of(armCorrection));
+            Logger.recordOutput("FuelCollector/ArmCorrection", armCorrection);
+        } else {
+            shouldGoToCollectPosition = false;
+            shouldGoToStartPosition = false;
+            collectorSubsystem.setArmVelocity(DegreesPerSecond.of(0));
+        }
+
         Logger.recordOutput("FuelCollector/RollerVelocity", rollerVelocity);
+        Logger.recordOutput("TargetArmPos", targetArmPosition);
     }
 
     @Override
