@@ -39,8 +39,8 @@ public class MOELogger {
         SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
 
         if (robot.robot.getPdh() != null) LoggedPowerDistribution.getInstance(
-            robot.robot.getPdh().getModule(),
-            robot.robot.getPdh().getType()
+                robot.robot.getPdh().getModule(),
+                robot.robot.getPdh().getType()
         );
         if (REPLAY) {
             //run as fast as possible
@@ -48,7 +48,7 @@ public class MOELogger {
             String logPath = LogFileUtil.findReplayLog();
             WPILOGReader wpilogReader = new WPILOGReader(logPath);
             org.littletonrobotics.junction.Logger.setReplaySource(wpilogReader);
-            org.littletonrobotics.junction.Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath,"_sim")));
+            org.littletonrobotics.junction.Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
         } else {
             org.littletonrobotics.junction.Logger.addDataReceiver(new NT4Publisher());
             org.littletonrobotics.junction.Logger.addDataReceiver(new WPILOGWriter());
@@ -56,7 +56,7 @@ public class MOELogger {
 
 
         org.littletonrobotics.junction.Logger.start();
-        frequency = (int) Math.round(1/robot.getPeriod());
+        frequency = (int) Math.round(1 / robot.getPeriod());
 
     }
 
@@ -66,7 +66,6 @@ public class MOELogger {
         Logger.recordOutput("heartbeat", heartbeat = (heartbeat + 1) % frequency);
         Logger.processInputs("robot", _robot.robot);
     }
-
 
 
 }

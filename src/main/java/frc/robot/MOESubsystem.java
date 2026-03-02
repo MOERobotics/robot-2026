@@ -12,7 +12,8 @@ import java.util.Optional;
 
 public abstract class MOESubsystem<SensorType extends LoggableInputs> extends SubsystemBase implements LoggableInputs {
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private SensorType sensors;
     public String inputsKey;
     public Optional<MOESimulator> simulator = Optional.empty();
@@ -43,7 +44,8 @@ public abstract class MOESubsystem<SensorType extends LoggableInputs> extends Su
         simulator.ifPresent(MOESimulator::updateSimState);
     }
 
-    public void readSensors(SensorType sensors) {}
+    public void readSensors(SensorType sensors) {
+    }
 
     @Override
     public void toLog(LogTable table) {
