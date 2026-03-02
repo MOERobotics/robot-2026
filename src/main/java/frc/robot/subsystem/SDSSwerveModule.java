@@ -19,6 +19,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.MOESimulator;
 import frc.robot.MOESubsystem;
+import frc.robot.simulators.SwerveModuleSim;
 import frc.robot.subsystem.interfaces.SwerveModuleInputsAutoLogged;
 import frc.robot.subsystem.interfaces.SwerveModuleSubsystem;
 
@@ -27,9 +28,9 @@ import static java.lang.Math.PI;
 
 public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> implements SwerveModuleSubsystem {
 
-    private final SparkMax pivotMotor;
-    private final SparkMax driveMotor;
-    private final CANcoder swerveModuleEncoder;
+    public final SparkMax pivotMotor;
+    public final SparkMax driveMotor;
+    public final CANcoder swerveModuleEncoder;
     public Distance xCordinate;
     public Distance yCordinate;
     PIDController pidPivotController;
@@ -38,15 +39,13 @@ public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> 
 
     public RelativeEncoder driveMotorEncoder;
     public RelativeEncoder pivotMotorEncoder;
-    SparkMaxSim pivotMotorSimulator, driveMotorSimulator;
-    public SparkRelativeEncoderSim pivotMotorEncoderSimulator;
-    public SparkRelativeEncoderSim driveMotorEncoderSimulator;
-    public DCMotorSim pivotMotorSystem;
-    public DCMotorSim driveMotorSystem;
+
     public CANcoderSimState pivotEncoderSim;
     public PIDConstants pivotFeedback;
     public PIDConstants driveFeedback;
     public final Angle moduleOffset;
+
+    public SwerveModuleSim swerveModuleSim;
 
 
     // SparkRelativeEncoderSim pivotMotorEncoder, driveMotorEncoder;
@@ -70,35 +69,16 @@ public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> 
         this.xCordinate = xCordinate;
         this.yCordinate = yCordinate;
         this.moduleOffset = moduleOffset;
-        this.pivotEncoderSim = swerveModuleEncoder.getSimState();
+
         this.pivotFeedback = pivotFeedback;
         this.driveFeedback = driveFeedback;
-        pivotMotorSimulator = new SparkMaxSim(pivotMotor, DCMotor.getNEO(1));
-        driveMotorSimulator = new SparkMaxSim(driveMotor, DCMotor.getNEO(1));
 
-
-        pivotMotorEncoderSimulator = pivotMotorSimulator.getRelativeEncoderSim();
-        driveMotorEncoderSimulator = driveMotorSimulator.getRelativeEncoderSim();
-
-        pivotMotorSystem = new DCMotorSim(
-                LinearSystemId.createDCMotorSystem(
-                        DCMotor.getNEO(1),
-                        0.005,
-                        25.0
-                ),
-                DCMotor.getNEO(1)
-        );
-
-        driveMotorSystem = new DCMotorSim(
-                LinearSystemId.createDCMotorSystem(
-                        DCMotor.getNEO(1),
-                        0.005,
-                        25.0
-                ),
-                DCMotor.getNEO(1)
-        );
         pidPivotController = new PIDController(pivotFeedback.kP, pivotFeedback.kI, pivotFeedback.kD);
         pidDriveController = new PIDController(driveFeedback.kP, driveFeedback.kI, driveFeedback.kD);
+
+        swerveModuleSim = new SwerveModuleSim(this);
+
+        setSimulator(swerveModuleSim);
 
     }
 
@@ -170,25 +150,6 @@ public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> 
         );
     }
 
-    public void simulate() {
-        driveMotorSystem.setInputVoltage(driveMotor.getBusVoltage() * driveMotor.get());
-        pivotMotorSystem.setInputVoltage(-pivotMotor.getBusVoltage() * pivotMotor.get());
-        driveMotorSystem.setAngularVelocity(MOESimulator.decelerate(driveMotorSystem.getAngularVelocity(), 60).in(RadiansPerSecond));
-        pivotMotorSystem.setAngularVelocity(MOESimulator.decelerate(pivotMotorSystem.getAngularVelocity(), 60).in(RadiansPerSecond));
-
-        driveMotorSystem.update(.02);
-        pivotMotorSystem.update(.02);
-
-        driveMotorSimulator.iterate(driveMotorSystem.getAngularVelocityRPM() * 6.75, 12.0, .02);
-        pivotMotorSimulator.iterate(-pivotMotorSystem.getAngularVelocityRPM() * (150.0 / 7.0), 12.0, .02);
-        pivotEncoderSim.setRawPosition(pivotMotorSystem.getAngularPosition().unaryMinus());
-        pivotEncoderSim.setVelocity(pivotMotorSystem.getAngularVelocity().unaryMinus());
-    }
-
-    @Override
-    public void simulationPeriodic() {
-        simulate();
-    }
 }
 
 
