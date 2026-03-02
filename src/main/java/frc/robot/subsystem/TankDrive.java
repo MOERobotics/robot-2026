@@ -17,12 +17,14 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.MOESubsystem;
+import frc.robot.subsystem.interfaces.DriveInputsAutoLogged;
+import frc.robot.subsystem.interfaces.TankDriveSubsystem;
 import lombok.Getter;
 import org.littletonrobotics.junction.Logger;
 
 import static edu.wpi.first.units.Units.*;
 
-public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements TankDriveSubsystem{
+public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements TankDriveSubsystem {
 
     public SparkMax motorControlL;
     public SparkMax motorControlR;
@@ -110,10 +112,6 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
         Logger.recordOutput("PigeonRotationDegrees",pigeon2.getRotation2d().getMeasure().in(Degrees));
     }
 
-    @Override
-    public void simulationInit() {
-
-    }
 
     @Override
     public void drive(double leftPercent, double rightPercent) {

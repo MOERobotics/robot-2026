@@ -1,26 +1,17 @@
 package frc.robot.container;
 
-import com.ctre.phoenix6.hardware.Pigeon2;
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPLTVController;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
-import frc.robot.subsystem.TankDrive;
-import frc.robot.subsystem.TankDriveSubsystem;
-import frc.robot.subsystem.Vision;
-import org.littletonrobotics.junction.LogTable;
+import frc.robot.subsystem.interfaces.TankDriveSubsystem;
 
 public class MiniBotContainer extends RobotContainer {
 
     private TankDriveSubsystem tankDrive;
     private PowerDistribution pdh;
     public SparkMax motorControlL = new SparkMax(1, SparkLowLevel.MotorType.kBrushless);
-    public Vision visionSubsystem;
+   // public Vision visionSubsystem;
 
     public SparkMax motorControlR = new SparkMax(2, SparkLowLevel.MotorType.kBrushless);
 
@@ -28,10 +19,10 @@ public class MiniBotContainer extends RobotContainer {
     public MiniBotContainer() {
         System.out.println("Constructed RobotContainer type: " + getClass());
         System.out.println("Constructed RobotContainer type: " + getClass());
-        tankDrive = new TankDrive(motorControlL, motorControlR);
-        visionSubsystem = new Vision();
+        //tankDrive = new TankDrive(motorControlL, motorControlR);
+        //visionSubsystem = new Vision();
         RobotConfig config = null;
-        try{
+        try {
             config = RobotConfig.fromGUISettings();
         } catch (Exception e) {
             // Handle exception as needed
@@ -39,6 +30,7 @@ public class MiniBotContainer extends RobotContainer {
         }
 
         // Configure AutoBuilder last
+        /*
         AutoBuilder.configure(
                 tankDrive::getPose, // Robot pose supplier
                 tankDrive::setPose, // Method to reset odometry (will be called if your auto has a starting pose)
@@ -60,6 +52,8 @@ public class MiniBotContainer extends RobotContainer {
                 tankDrive // Reference to this subsystem to set requirements
         );
 
+
+
     }
     @Override
     public void toLog(LogTable table) {
@@ -76,4 +70,7 @@ public class MiniBotContainer extends RobotContainer {
         return (TankDrive) tankDrive;
     }
 
+         */
+
+    }
 }

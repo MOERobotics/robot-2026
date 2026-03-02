@@ -22,6 +22,7 @@ import frc.robot.container.RobotContainer;
 import frc.robot.container.SubMOErine;
 import org.littletonrobotics.junction.LoggedRobot;
 import edu.wpi.first.math.MathUtil;
+import org.littletonrobotics.junction.Logger;
 
 import static edu.wpi.first.units.Units.InchesPerSecond;
 
@@ -38,7 +39,7 @@ public class Robot extends LoggedRobot {
     private Command shooterTestCommand = new ShooterTestCommand(robot,driverJoystick, functionJoystick);
 
     public ClimberTestCommand climberTestCommand = new ClimberTestCommand(robot, driverJoystick);
-    public PathsFollower testPath = new PathsFollower("New Path");
+    public PathsFollower testPath = new PathsFollower("Test Path");
 
     @Override
     public void robotInit() {
@@ -74,7 +75,7 @@ public class Robot extends LoggedRobot {
     @Override
     public void autonomousInit() {
 
-        robot.getTankDrive().setPose(testPath.path.getStartingDifferentialPose());
+        robot.getRobotSwerveDrive().setPose(testPath.path.getStartingDifferentialPose());
         scheduler.schedule(testPath);
         Logger.recordOutput("Auto Start Pose", testPath.path.getStartingDifferentialPose());
         //Logger.recordOutput("Auto End Pose", testPath.path.ge());

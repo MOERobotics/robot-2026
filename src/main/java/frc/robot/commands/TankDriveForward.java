@@ -1,16 +1,10 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystem.TankDrive;
-import frc.robot.subsystem.Vision;
-import org.littletonrobotics.junction.Logger;
 
 public class TankDriveForward extends Command {
     public TankDrive localDriveSystem;
@@ -18,10 +12,10 @@ public class TankDriveForward extends Command {
     public PIDController drivePID = new PIDController(0.2,0,0);
     public Pose3d finalPose;
     public Pose3d initPose;
-    public Vision localVisionSubsystem;
+    //public Vision localVisionSubsystem;
 
     public double localPower;
-    public TankDriveForward(TankDrive driveSystem, double travelInInches, double power, Pose3d inputPose, Vision visionSubsystem){
+    public TankDriveForward(TankDrive driveSystem, double travelInInches, double power, Pose3d inputPose){
         desiredDistance = travelInInches;
         localDriveSystem = driveSystem;
         localPower = power;
@@ -31,7 +25,7 @@ public class TankDriveForward extends Command {
                 initPose.getTranslation().getZ()),
                 initPose.getRotation()
                 );
-        localVisionSubsystem = visionSubsystem;
+      //  localVisionSubsystem = visionSubsystem;
         addRequirements(localDriveSystem);
 
     }
@@ -59,7 +53,7 @@ public class TankDriveForward extends Command {
 
     @Override
     public boolean isFinished() {
-        return localVisionSubsystem.getPose().getTranslation().getX() == finalPose.getTranslation().getX();
+        //return localVisionSubsystem.getPose().getTranslation().getX() == finalPose.getTranslation().getX();
         //if ()
         //return drivePID.atSetpoint();
         /*
@@ -80,6 +74,7 @@ public class TankDriveForward extends Command {
         //return (localDriveSystem.ReturnEncoderTicksInches(false).minus(initDistanceR).abs(Units.Inches) > desiredDistance.abs(Units.Inches));
         //Distance currentDistanceR = localDriveSystem.ReturnEncoderTicksInches(false).minus(initDistanceR);
         //return currentDistanceR.gte(desiredDistance);
+        return true;
     }
 
     @Override
