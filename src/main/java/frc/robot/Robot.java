@@ -75,9 +75,9 @@ public class Robot extends LoggedRobot {
     @Override
     public void autonomousInit() {
 
-        robot.getRobotSwerveDrive().setPose(testPath.path.getStartingDifferentialPose());
+        robot.getRobotSwerveDrive().setPose(testPath.path.getStartingHolonomicPose().get());
         scheduler.schedule(testPath);
-        Logger.recordOutput("Auto Start Pose", testPath.path.getStartingDifferentialPose());
+        Logger.recordOutput("Auto Start Pose", testPath.path.getStartingHolonomicPose().get());
         //Logger.recordOutput("Auto End Pose", testPath.path.ge());
     }
 
