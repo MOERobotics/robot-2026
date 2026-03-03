@@ -2,6 +2,9 @@ package frc.robot.subsystem;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.sim.Pigeon2SimState;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPLTVController;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.sim.SparkRelativeEncoderSim;
@@ -15,6 +18,7 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.MOESubsystem;
 import frc.robot.subsystem.interfaces.DriveInputsAutoLogged;
@@ -47,15 +51,15 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
     public DifferentialDriveOdometry driveOdometry;
 
     @Getter
-    public Pose2d simPose = new Pose2d(0,0,Rotation2d.fromDegrees(0));
+    public Pose2d simPose = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
 
     Pigeon2SimState pigeonSim;
 
-    DifferentialDriveWheelSpeeds wheelSpeeds= new DifferentialDriveWheelSpeeds(
+    DifferentialDriveWheelSpeeds wheelSpeeds = new DifferentialDriveWheelSpeeds(
             0, 0);
 
 
-    public TankDrive(SparkMax motorControlL, SparkMax motorControlR){
+    public TankDrive(SparkMax motorControlL, SparkMax motorControlR) {
         super(new DriveInputsAutoLogged());
         this.motorControlL = motorControlL;
         this.motorControlR = motorControlR;
@@ -91,11 +95,47 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
 
         pigeonSim = pigeon2.getSimState();
 
-        driveOdometry =  new DifferentialDriveOdometry(pigeon2.getRotation2d(),getLeftPosition(),getRightPosition());
+        driveOdometry = new DifferentialDriveOdometry(pigeon2.getRotation2d(), getLeftPosition(), getRightPosition());
         getSensors().angle = getAngle();
         getSensors().leftPosition = getLeftPosition();
         getSensors().rightPosition = getRightPosition();
         getSensors().simPose = getPose();
+
+        // All other subsystem initialization
+        // ...
+
+        // Load the RobotConfig from the GUI settings. You should probably
+        // store this in your Constants file
+        RobotConfig config = null;
+        try {
+            config = RobotConfig.fromGUISettings();
+        } catch (Exception e) {
+            // Handle exception as needed
+            e.printStackTrace();
+        }
+
+        // Configure AutoBuilder last
+        AutoBuilder.configure(
+                this::getPose, // Robot pose supplier
+                this::setPose, // Method to reset odometry (will be called if your auto has a starting pose)
+                this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+                new PPLTVController(0.02), // PPLTVController is the built in path following controller for differential drive trains
+                config, // The robot configuration
+                () -> {
+                    // Boolean supplier that controls when the path will be mirrored for the red alliance
+                    // This will flip the path being followed to the red side of the field.
+                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+                    var alliance = DriverStation.getAlliance();
+                    if (alliance.isPresent()) {
+                        return alliance.get() == DriverStation.Alliance.Red;
+                    }
+                    return false;
+                },
+                this // Reference to this subsystem to set requirements
+        );
+
 
     }
 
@@ -109,7 +149,7 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
         sensors.chassisSpeeds = getChassisSpeeds(wheelSpeeds);
         Logger.recordOutput("InchesTraveledPeriodicR", rightEncoder.getPosition() * 4 * Math.PI / 20);
         Logger.recordOutput("InchesTraveledPeriodicL", leftEncoder.getPosition() * 4 * Math.PI / 20);
-        Logger.recordOutput("PigeonRotationDegrees",pigeon2.getRotation2d().getMeasure().in(Degrees));
+        Logger.recordOutput("PigeonRotationDegrees", pigeon2.getRotation2d().getMeasure().in(Degrees));
     }
 
 
@@ -117,31 +157,33 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
     public void drive(double leftPercent, double rightPercent) {
         motorControlL.set(leftPercent);
         motorControlR.set(rightPercent);
-        wheelSpeeds.leftMetersPerSecond = leftEncoder.getVelocity()/20*Units.inchesToMeters(4*Math.PI)/60;
-        wheelSpeeds.rightMetersPerSecond = rightEncoder.getVelocity()/20*Units.inchesToMeters(4*Math.PI)/60;
+        wheelSpeeds.leftMetersPerSecond = leftEncoder.getVelocity() / 20 * Units.inchesToMeters(4 * Math.PI) / 60;
+        wheelSpeeds.rightMetersPerSecond = rightEncoder.getVelocity() / 20 * Units.inchesToMeters(4 * Math.PI) / 60;
     }
+
     @Override
-    public Distance getRightPosition(){
+    public Distance getRightPosition() {
         return Distance.ofRelativeUnits(rightEncoder.getPosition() * 4 * Math.PI / 20, Inches);
 
     }
+
     @Override
-    public Distance getLeftPosition(){
+    public Distance getLeftPosition() {
         return Distance.ofRelativeUnits(leftEncoder.getPosition() * 4 * Math.PI / 20, Inches);
 
     }
 
     @Override
-    public Angle getAngle(){
-        return  pigeon2.getRotation2d().getMeasure();
+    public Angle getAngle() {
+        return pigeon2.getRotation2d().getMeasure();
     }
 
     @Override
-    public void setPose(Pose2d newPose){
-         driveOdometry.resetPose(newPose);
+    public void setPose(Pose2d newPose) {
+        driveOdometry.resetPose(newPose);
     }
 
-    public Pose2d getPose(){
+    public Pose2d getPose() {
         return driveOdometry.getPoseMeters();
     }
 
@@ -151,8 +193,8 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
         double leftMotorPower = leftMotorSimulator.getSetpoint();
         double rightMotorPower = rightMotorSimulator.getSetpoint();
         // Step 2
-        leftMotorSystem.setInputVoltage(leftMotorPower*12.0);
-        rightMotorSystem.setInputVoltage(rightMotorPower*12.0);
+        leftMotorSystem.setInputVoltage(leftMotorPower * 12.0);
+        rightMotorSystem.setInputVoltage(rightMotorPower * 12.0);
 
         leftMotorSystem.update(0.020);
         rightMotorSystem.update(0.020);
@@ -168,9 +210,9 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
         );
         pigeonSim.addYaw(Radian.of(twist1.dtheta));
 
-        rightMotorSimulator.iterate(velocityRight*60.0, 12, 0.02);
+        rightMotorSimulator.iterate(velocityRight * 60.0, 12, 0.02);
 
-        leftMotorSimulator.iterate(velocityLeft*60.0, 12, 0.02);
+        leftMotorSimulator.iterate(velocityLeft * 60.0, 12, 0.02);
         simPose = driveOdometry.update(
                 pigeon2.getRotation2d(),
                 new DifferentialDriveWheelPositions(
@@ -181,10 +223,12 @@ public class TankDrive extends MOESubsystem<DriveInputsAutoLogged> implements Ta
         Logger.recordOutput("updated drive Pos", simPose);
 
     }
-    public ChassisSpeeds getChassisSpeeds (DifferentialDriveWheelSpeeds wheelSpeeds){
+
+    public ChassisSpeeds getChassisSpeeds(DifferentialDriveWheelSpeeds wheelSpeeds) {
 
         return driveKinematics.toChassisSpeeds(wheelSpeeds);
     }
+
     @Override
     public void driveRobotRelative(ChassisSpeeds speeds) {
 

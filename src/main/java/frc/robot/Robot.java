@@ -39,7 +39,9 @@ public class Robot extends LoggedRobot {
     private Command shooterTestCommand = new ShooterTestCommand(robot,driverJoystick, functionJoystick);
 
     public ClimberTestCommand climberTestCommand = new ClimberTestCommand(robot, driverJoystick);
-    public PathsFollower testPath = new PathsFollower("Test Path");
+    public PathsFollower testPath = new PathsFollower("Curved Path");
+
+    AutosChooser autoCommand = new AutosChooser();
 
     @Override
     public void robotInit() {
@@ -55,6 +57,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void driverStationConnected() {
+        AutosChooser.setupAutos(robot);
     }
 
     @Override
@@ -74,11 +77,19 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousInit() {
-
-        robot.getRobotSwerveDrive().setPose(testPath.path.getStartingHolonomicPose().get());
-        scheduler.schedule(testPath);
+        robot.getRobotSwerveDrive().setPose(autoCommand.getAuto().path.getStartingHolonomicPose().get());
+        scheduler.schedule(autoCommand.getAuto());
         Logger.recordOutput("Auto Start Pose", testPath.path.getStartingHolonomicPose().get());
-        //Logger.recordOutput("Auto End Pose", testPath.path.ge());
+
+        Logger.recordOutput("Auto End Pose", testPath.path.getGoalEndState());
+/*
+        robot.getTankDrive().setPose(testPath.path.getStartingDifferentialPose());
+        scheduler.schedule(testPath);
+        Logger.recordOutput("Auto Start Pose", testPath.path.getStartingDifferentialPose());
+
+        Logger.recordOutput("Auto End Pose", testPath.path.getGoalEndState());
+
+ */
     }
 
     @Override
@@ -91,6 +102,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopPeriodic() {
+
         ChassisSpeeds robotSpeed = new ChassisSpeeds(
                 MathUtil.applyDeadband(driverJoystick.getRawAxis(1) * -1, deadband),
                 MathUtil.applyDeadband(driverJoystick.getRawAxis(0) * -1, deadband),
@@ -98,6 +110,8 @@ public class Robot extends LoggedRobot {
         );
       ;
         robot.getRobotSwerveDrive().robotDrive(robotSpeed);
+
+
 
     }
 

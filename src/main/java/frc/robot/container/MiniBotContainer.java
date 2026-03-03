@@ -1,9 +1,13 @@
 package frc.robot.container;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPLTVController;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import frc.robot.subsystem.TankDrive;
 import frc.robot.subsystem.interfaces.TankDriveSubsystem;
 
 public class MiniBotContainer extends RobotContainer {
@@ -19,8 +23,11 @@ public class MiniBotContainer extends RobotContainer {
     public MiniBotContainer() {
         System.out.println("Constructed RobotContainer type: " + getClass());
         System.out.println("Constructed RobotContainer type: " + getClass());
-        //tankDrive = new TankDrive(motorControlL, motorControlR);
+        tankDrive = new TankDrive(motorControlL, motorControlR);
         //visionSubsystem = new Vision();
+
+        this.setTankDrive(tankDrive);
+        /*
         RobotConfig config = null;
         try {
             config = RobotConfig.fromGUISettings();
@@ -30,7 +37,7 @@ public class MiniBotContainer extends RobotContainer {
         }
 
         // Configure AutoBuilder last
-        /*
+
         AutoBuilder.configure(
                 tankDrive::getPose, // Robot pose supplier
                 tankDrive::setPose, // Method to reset odometry (will be called if your auto has a starting pose)
@@ -51,26 +58,12 @@ public class MiniBotContainer extends RobotContainer {
                 },
                 tankDrive // Reference to this subsystem to set requirements
         );
+        */
 
 
 
     }
-    @Override
-    public void toLog(LogTable table) {
-        table.put("TankDrive", tankDrive);
-        table.put("rightPower", tankDrive);
-    }
 
-    @Override
-    public void fromLog(LogTable table) {
-        tankDrive = table.get("TankDrive", tankDrive);
-    }
 
-    public TankDrive getTankDrive(){
-        return (TankDrive) tankDrive;
-    }
 
-         */
-
-    }
 }
