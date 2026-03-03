@@ -51,8 +51,8 @@ public class FuelCollectorTestCommand extends Command {
         collectorSubsystem.setRollerVelocity(rollerVelocity);
 
 
-        Logger.recordOutput("FuelCollector/ArmVelocity", armVelocity);
-        Logger.recordOutput("FuelCollector/RollerVelocity", rollerVelocity);
+
+
     }
 
     @Override

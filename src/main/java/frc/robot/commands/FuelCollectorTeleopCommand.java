@@ -16,9 +16,9 @@ public class FuelCollectorTeleopCommand extends Command {
     boolean shouldGoToStartPosition;
     boolean shouldGoToCollectPosition;
     Joystick joystick;
-    double armkp = 0.1;
-    double armki = 0.020;
-    double armkd = 0.0001;
+    double armkp = 0.1/90;
+    double armki = 0.020/90;
+    double armkd = 0.0001/90;
     PIDController fuelCollectorArmPID = new PIDController(
             armkp, armki, armkd
     );
@@ -29,10 +29,13 @@ public class FuelCollectorTeleopCommand extends Command {
         this.joystick = joystick;
         addRequirements(collectorSubsystem);
 
+
     }
 
     @Override
     public void initialize() {
+        fuelCollectorArmPID.setTolerance(1);
+
 
     }
 
@@ -76,22 +79,20 @@ public class FuelCollectorTeleopCommand extends Command {
         } else {
             targetArmPosition = currentArmPosition;
         }
-        Logger.recordOutput("TargetArmPos", targetArmPosition);
         Logger.recordOutput("ShouldGoToCollectPosition", shouldGoToCollectPosition);
         Logger.recordOutput("shouldGoToStartPosition", shouldGoToStartPosition);
         fuelCollectorArmPID.setSetpoint(targetArmPosition.in(Degrees));
 
         if (!fuelCollectorArmPID.atSetpoint()) {
             double armCorrection = fuelCollectorArmPID.calculate(currentArmPosition.in(Degrees));
-            collectorSubsystem.setArmVelocity(DegreesPerSecond.of(armCorrection));
-            Logger.recordOutput("FuelCollector/ArmCorrection", armCorrection);
+            collectorSubsystem.setArmVelocity(RPM.of(armCorrection));
+            Logger.recordOutput("FuelCollector/ArmCorrection", DegreesPerSecond.of(armCorrection));
         } else {
             shouldGoToCollectPosition = false;
             shouldGoToStartPosition = false;
             collectorSubsystem.setArmVelocity(DegreesPerSecond.of(0));
         }
 
-        Logger.recordOutput("FuelCollector/RollerVelocity", rollerVelocity);
         Logger.recordOutput("TargetArmPos", targetArmPosition);
     }
 
