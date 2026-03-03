@@ -26,6 +26,7 @@ public abstract @Data class RobotContainer implements LoggableInputs {
         table.put("Shooter", shooterSubsystem);
         table.put("SwerveDrive", robotSwerveDrive);
         table.put("Climber", climber);
+        table.put("Collector", collectorSubsystem);
     }
 
     @Override

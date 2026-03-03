@@ -185,9 +185,16 @@ public class ProMOEtheus extends RobotContainer {
 
         SparkMax collectorArmMotor = new SparkMax(15, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
         SparkMax collectorRollerMotor= new SparkMax(17, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
+
+
         collectorRollerMotor.setInverted(true);
         Angle collectorArmBottom = Degrees.of(5);
         Angle collectorArmTop = Degrees.of(85);
+
+        SparkMaxConfig collectorArmConfig = new SparkMaxConfig();
+        collectorArmConfig.inverted(true);
+        collectorArmMotor.configure(collectorArmConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
 
         this.setCollectorSubsystem(new Collector(collectorRollerMotor, collectorArmMotor, collectorArmBottom, collectorArmTop));
         this.setShooterSubsystem(shooter);

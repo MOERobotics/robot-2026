@@ -123,7 +123,21 @@ public class Robot extends LoggedRobot {
             rollerVelocity = RPM.of(0);
         }
 
+        AngularVelocity armVelocity;
+
+        if (functionJoystick.getRawButton(7)) {
+            armVelocity = RPM.of(0.5);
+        } else if (functionJoystick.getRawButton(8)) {
+            armVelocity = RPM.of(-0.25);
+        } else {
+            armVelocity = RPM.of(0);
+        }
+
         robot.getCollectorSubsystem().setRollerVelocity(rollerVelocity);
+
+        robot.getCollectorSubsystem().setArmVelocity(armVelocity);
+
+
 
 
 

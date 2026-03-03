@@ -117,12 +117,12 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
 
     @Override
     public void setTurretPower(double power) {
-        turretMotor.set(power);
+        //turretMotor.set(power);
     }
 
     @Override
     public void setHoodPower(double power) {
-       hoodMotor.set(power);
+       // hoodMotor.set(power);
     }
 
     @Override
