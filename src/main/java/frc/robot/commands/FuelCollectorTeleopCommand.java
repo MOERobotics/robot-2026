@@ -16,9 +16,9 @@ public class FuelCollectorTeleopCommand extends Command {
     boolean shouldGoToStartPosition;
     boolean shouldGoToCollectPosition;
     Joystick joystick;
-    double armkp = 0.1/90;
-    double armki = 0.020/90;
-    double armkd = 0.0001/90;
+    double armkp = 0.05/180;
+    double armki = 0.02/180;
+    double armkd = 0.0002/180;
     PIDController fuelCollectorArmPID = new PIDController(
             armkp, armki, armkd
     );
