@@ -100,5 +100,6 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
         // this is our fallback system in case setVelocity() stops getting called before we need it to;
         // it just makes sure that the motors can get to their set points and then stop.
         velocityLimits(getSensors().lastVelocity);
+        Logger.recordOutput("climberPower", climberSparkMax.get());
     }
 }

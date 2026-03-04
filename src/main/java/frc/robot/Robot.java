@@ -16,6 +16,7 @@ import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
 import org.littletonrobotics.junction.LoggedRobot;
 import edu.wpi.first.math.MathUtil;
+import org.littletonrobotics.junction.Logger;
 
 
 public class Robot extends LoggedRobot {
@@ -103,6 +104,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void testPeriodic() {
+
     }
 
     @Override
