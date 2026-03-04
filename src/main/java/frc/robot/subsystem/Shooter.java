@@ -110,19 +110,21 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
         getSensors().spindexerPower = spindexerMotor.get();
         getSensors().hoodPower = hoodMotor.get();
         getSensors().turretPower = turretMotor.get();
+
         getSensors().spindexerOn = spindexerMotor.get()>0;
         getSensors().transitionOn = transitionMotor.get()>0;
+
     }
 
 
     @Override
     public void setTurretPower(double power) {
-        //turretMotor.set(power);
+        turretMotor.set(power);
     }
 
     @Override
     public void setHoodPower(double power) {
-       // hoodMotor.set(power);
+        hoodMotor.set(power);
     }
 
     @Override
@@ -157,7 +159,7 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
 
     @Override
     public Angle getTurretAngleinDegrees() {
-        return Degrees.of(turretEncoder.getPosition() * TURRET_CONVERSION_FACTOR);
+        return Rotations.of(turretEncoder.getPosition());
     }
 
     @Override

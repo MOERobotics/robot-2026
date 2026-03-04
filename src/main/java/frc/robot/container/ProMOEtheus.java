@@ -176,12 +176,12 @@ public class ProMOEtheus extends RobotContainer {
                 spindexerMotor,
                 transitionMotor,
                 flywheelMotor,
-                driveMotorBL.getAbsoluteEncoder(),
+                turretMotor.getAbsoluteEncoder(),
                 hoodMotor.getAbsoluteEncoder(),
-                Degrees.of(-90),
-                Degrees.of(90),
-                Degrees.of(0),
-                Degrees.of(45));
+                Degrees.of(30),
+                Degrees.of(330),
+                Degrees.of(10),
+                Degrees.of(35));
 
         SparkMax collectorArmMotor = new SparkMax(15, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
         SparkMax collectorRollerMotor= new SparkMax(17, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id

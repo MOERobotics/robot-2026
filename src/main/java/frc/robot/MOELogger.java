@@ -35,7 +35,7 @@ public class MOELogger {
     public static void setupLogging(Robot robot) {
         // Set up data logging
         _robot = robot;
-        org.littletonrobotics.junction.Logger.recordMetadata("ProjectName", "robot-2025");
+        org.littletonrobotics.junction.Logger.recordMetadata("ProjectName", "robot-2026");
         SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
 
         if (robot.robot.getPdh() != null) LoggedPowerDistribution.getInstance(
