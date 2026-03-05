@@ -6,17 +6,26 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import com.fasterxml.jackson.databind.util.Converter;
+import com.pathplanner.lib.commands.FollowPathCommand;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.*;
+import frc.robot.commands.*;
+import frc.robot.container.MiniBotContainer;
 import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
 import frc.robot.container.SubMOErine;
+import frc.robot.subsystem.Collector;
 import org.littletonrobotics.junction.LoggedRobot;
 import edu.wpi.first.math.MathUtil;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.Logger;
 
 import static edu.wpi.first.units.Units.InchesPerSecond;
 import static edu.wpi.first.units.Units.RPM;
@@ -24,12 +33,14 @@ import static edu.wpi.first.units.Units.RPM;
 
 public class Robot extends LoggedRobot {
 
-    public RobotContainer robot = new ProMOEtheus();
+    public RobotContainer robot = new SubMOErine();
     public Joystick driverJoystick = new Joystick(0);
     public Joystick functionJoystick = new Joystick(1);
 
     public double deadband = 0.06; // find deadband number;
     private CommandScheduler scheduler;
+    private Command collectorTestCommand = new FuelCollectorTestCommand(robot, functionJoystick);
+    private Command collectorTeleopCommand = new FuelCollectorTeleopCommand(robot, functionJoystick);
 
     public ClimberTestCommand climberTestCommand = new ClimberTestCommand(robot, driverJoystick);
 
@@ -47,24 +58,32 @@ public class Robot extends LoggedRobot {
 
     public Command autoShootercommand = new ShooterAutoCommand(robot, ShooterAutoCommand.Target.HUB);
 
+    private Command shooterTestCommand = new ShooterTestCommand(robot,driverJoystick, functionJoystick);
+    public Command climberTestCommand = new ClimberTestCommand(robot, driverJoystick);
+    public PathsFollower testPath = new PathsFollower("Curved Path");
 
+    public Command climberTeleopCommand = new ClimberTeleopCommand(robot, driverJoystick);
+
+    public Command climberAutoCommand = new ClimberAutoCommand(robot, true, 1.0,true);
+
+    public Command collectorAutoCommand = new FuelCollectorAutoCommand(robot, false, false, "out");
+
+    AutosChooser autoCommand = new AutosChooser();
 
     @Override
     public void robotInit() {
 
         if (isSimulation())
             DriverStation.silenceJoystickConnectionWarning(true);
-
         MOELogger.setupLogging(this);
         scheduler = CommandScheduler.getInstance();
-
-
-
+        scheduler.schedule(FollowPathCommand.warmupCommand());
     }
 
 
     @Override
     public void driverStationConnected() {
+        AutosChooser.setupAutos(robot);
     }
 
     @Override
@@ -87,6 +106,22 @@ public class Robot extends LoggedRobot {
     public void autonomousInit() {
         scheduler.schedule(autoShootercommand);
 
+       // scheduler.schedule(collectorAutoCommand);
+        //scheduler.schedule(climberAutoCommand);
+
+        robot.getRobotSwerveDrive().setPose( new PathsFollower("ALT-Depot").path.getStartingHolonomicPose().get());
+        scheduler.schedule(autoCommand.getAuto());
+        Logger.recordOutput("Auto Start Pose", testPath.path.getStartingHolonomicPose().get());
+
+        Logger.recordOutput("Auto End Pose", testPath.path.getGoalEndState());
+/*
+        robot.getTankDrive().setPose(testPath.path.getStartingDifferentialPose());
+        scheduler.schedule(testPath);
+        Logger.recordOutput("Auto Start Pose", testPath.path.getStartingDifferentialPose());
+
+        Logger.recordOutput("Auto End Pose", testPath.path.getGoalEndState());
+
+ */
     }
 
     @Override
@@ -98,6 +133,8 @@ public class Robot extends LoggedRobot {
     @Override
     public void teleopInit() {
         scheduler.schedule(shooterTeleopCommand);
+        scheduler.schedule(collectorTeleopCommand);
+        scheduler.schedule(climberTeleopCommand);
     }
 
     @Override
@@ -146,6 +183,9 @@ public class Robot extends LoggedRobot {
 
 
 
+
+
+
         if (driverJoystick.getPOV() != -1) {
             scheduler.cancel(driveTeleopCommand);
             scheduler.schedule(rotateCommand);
@@ -169,7 +209,7 @@ public class Robot extends LoggedRobot {
     public void testPeriodic() {
         scheduler.schedule(climberTestCommand);
         scheduler.schedule(shooterTestCommand);
-
+        scheduler.schedule(collectorTestCommand);
     }
 
     @Override

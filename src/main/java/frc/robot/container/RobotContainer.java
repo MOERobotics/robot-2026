@@ -5,14 +5,15 @@ import frc.robot.subsystem.interfaces.*;
 import lombok.Data;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
+import com.pathplanner.lib.config.RobotConfig;
+import org.photonvision.simulation.VisionSystemSim;
 
 public abstract @Data class RobotContainer implements LoggableInputs {
     private TankDriveSubsystem tankDrive;
-    ClimberSubsystem climber;
     private ShooterSubsystem shooterSubsystem;
+    private CollectorSubsystem collector;
     private SwerveDriveSubsystem robotSwerveDrive;
-    private CollectorSubsystem collectorSubsystem;
-
+    ClimberSubsystem climber;
 
     private PowerDistribution pdh;
 
@@ -26,14 +27,16 @@ public abstract @Data class RobotContainer implements LoggableInputs {
         table.put("Shooter", shooterSubsystem);
         table.put("SwerveDrive", robotSwerveDrive);
         table.put("Climber", climber);
-        table.put("Collector", collectorSubsystem);
+        table.put("Collector", collector);
     }
 
     @Override
     public void fromLog(LogTable table) {
         tankDrive = table.get("TankDrive", tankDrive);
         robotSwerveDrive = table.get("SwerveDrive", robotSwerveDrive);
-        climber = table.get("Climber", climber);
         shooterSubsystem = table.get("Shooter", shooterSubsystem);
+        climber = table.get("Climber", climber);
+        collector = table.get("Collector", collector);
+
     }
 }

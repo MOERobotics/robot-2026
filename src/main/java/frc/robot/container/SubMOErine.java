@@ -10,8 +10,10 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.subsystem.*;
+import frc.robot.subsystem.fakes.ClimberFake;
+import frc.robot.subsystem.fakes.CollectorFake;
+import frc.robot.subsystem.fakes.ShooterFake;
 import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
-import frc.robot.subsystem.interfaces.SwerveModuleSubsystem;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
@@ -107,6 +109,8 @@ public class SubMOErine extends RobotContainer {
         climberMotor.configure(climberMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         Climber climber = new Climber(climberMotor, Inches.of(29.75), Inches.of(29.75)) {
         };
+        this.setRobotSwerveDrive(SubMOErine);
+        this.setClimber(climber);
 
 
 
@@ -177,7 +181,11 @@ public class SubMOErine extends RobotContainer {
         this.setRobotSwerveDrive(SubMOErine);
         this.setClimber(climber);
 
+        this.setShooterSubsystem(new ShooterFake());
+        this.setClimber(new ClimberFake());
+        this.setCollector(new CollectorFake());
+        this.setRobotSwerveDrive(SubMOErine);
+
+
     }
-
-
 }

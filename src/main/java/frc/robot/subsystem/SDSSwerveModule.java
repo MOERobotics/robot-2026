@@ -4,33 +4,26 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.pathplanner.lib.config.PIDConstants;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.sim.SparkMaxSim;
-import com.revrobotics.sim.SparkRelativeEncoderSim;
 import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import frc.robot.MOESimulator;
 import frc.robot.MOESubsystem;
-import frc.robot.subsystem.interfaces.SwerveModuleInputsAutoLogged;
-import frc.robot.subsystem.interfaces.SwerveModuleSubsystem;
-import frc.robot.subsystem.simulations.SwerveModuleSim;
 
+import frc.robot.subsystem.simulations.SwerveModuleSim;
+import frc.robot.subsystem.simulations.SwerveModuleSim;
 import static edu.wpi.first.units.Units.*;
 import static java.lang.Math.PI;
 
 public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> implements SwerveModuleSubsystem {
 
-    private final SparkMax pivotMotor;
-    private final SparkMax driveMotor;
-    private final CANcoder swerveModuleEncoder;
+    public final SparkMax pivotMotor;
+    public final SparkMax driveMotor;
+    public final CANcoder swerveModuleEncoder;
     public Distance xCordinate;
     public Distance yCordinate;
     PIDController pidPivotController;
@@ -39,15 +32,13 @@ public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> 
 
     public RelativeEncoder driveMotorEncoder;
     public RelativeEncoder pivotMotorEncoder;
-    SparkMaxSim pivotMotorSimulator, driveMotorSimulator;
-    public SparkRelativeEncoderSim pivotMotorEncoderSimulator;
-    public SparkRelativeEncoderSim driveMotorEncoderSimulator;
-    public DCMotorSim pivotMotorSystem;
-    public DCMotorSim driveMotorSystem;
+
     public CANcoderSimState pivotEncoderSim;
     public PIDConstants pivotFeedback;
     public PIDConstants driveFeedback;
     public final Angle moduleOffset;
+
+    public SwerveModuleSim swerveModuleSim;
 
 
     // SparkRelativeEncoderSim pivotMotorEncoder, driveMotorEncoder;
@@ -100,6 +91,10 @@ public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> 
         );
         pidPivotController = new PIDController(pivotFeedback.kP, pivotFeedback.kI, pivotFeedback.kD);
         pidDriveController = new PIDController(driveFeedback.kP, driveFeedback.kI, driveFeedback.kD);
+
+        swerveModuleSim = new SwerveModuleSim(this);
+
+        setSimulator(swerveModuleSim);
 
         SwerveModuleSim swerveModuleSim = new SwerveModuleSim(moduleOffset, driveMotor,pivotMotor, swerveModuleEncoder);
         setSimulator(swerveModuleSim);

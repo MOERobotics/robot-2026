@@ -1,18 +1,14 @@
 package frc.robot.subsystem;
 
-import com.pathplanner.lib.config.PIDConstants;
-import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import frc.robot.MOESubsystem;
 import frc.robot.subsystem.interfaces.ClimberInputsAutoLogged;
 import frc.robot.subsystem.interfaces.ClimberSubsystem;
-import frc.robot.subsystem.simulators.ClimberSim;
+import frc.robot.subsystem.simulations.ClimberSim;
+import org.littletonrobotics.junction.Logger;
 
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.InchesPerSecond;
@@ -93,10 +89,17 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
         }
     }
     @Override
+    public void unlatchHooks(){
+        getSensors().hooksLatched = false;
+    }
+
+
+    @Override
     public void periodic() {
         super.periodic();
         // this is our fallback system in case setVelocity() stops getting called before we need it to;
         // it just makes sure that the motors can get to their set points and then stop.
         velocityLimits(getSensors().lastVelocity);
+        Logger.recordOutput("climberPower", climberSparkMax.get());
     }
 }

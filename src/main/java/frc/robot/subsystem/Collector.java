@@ -1,5 +1,6 @@
 package frc.robot.subsystem;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.spark.SparkMax;
@@ -11,60 +12,65 @@ import frc.robot.MOESubsystem;
 import frc.robot.subsystem.interfaces.CollectorInputsAutoLogged;
 import frc.robot.subsystem.interfaces.CollectorSubsystem;
 import frc.robot.subsystem.simulations.CollectorSim;
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 import static edu.wpi.first.units.Units.*;
 
 public class Collector extends MOESubsystem<CollectorInputsAutoLogged> implements CollectorSubsystem, LoggableInputs {
 
-    public SparkMax wheelMotor;
+    public SparkMax rollerMotor;
     public SparkMax armMotor;
 
-    private final RelativeEncoder wheelEncoder;
-    private final RelativeEncoder armEncoder;
+    private final RelativeEncoder rollerEncoder;
+    private final AbsoluteEncoder armEncoder;
 
     private final Angle bottomAngle;
     private final Angle topAngle;
 
-    public Collector(SparkMax wheelMotor, SparkMax armMotor, Angle bottomAngle, Angle topAngle) {
+    public Collector(SparkMax rollerMotor, SparkMax armMotor, Angle bottomAngle, Angle topAngle) {
         super(new CollectorInputsAutoLogged());
-        this.wheelMotor = wheelMotor;
+        this.rollerMotor = rollerMotor;
         this.armMotor = armMotor;
 
-        this.wheelEncoder = wheelMotor.getEncoder();
-        this.armEncoder = armMotor.getEncoder();
+        this.rollerEncoder = rollerMotor.getEncoder();
+        this.armEncoder = armMotor.getAbsoluteEncoder();
 
         this.bottomAngle = bottomAngle;
         this.topAngle = topAngle;
-        this.setSimulator(new CollectorSim(armMotor, wheelMotor, new SparkMaxSim(armMotor, DCMotor.getNEO(1)), new SparkMaxSim(wheelMotor, DCMotor.getNEO(1))));
+        this.setSimulator(new CollectorSim(armMotor, rollerMotor, new SparkMaxSim(armMotor, DCMotor.getNEO(1)), new SparkMaxSim(rollerMotor, DCMotor.getNEO(1))));
 
     }
 
 
     @Override
     public void readSensors(CollectorInputsAutoLogged sensors) {
-        sensors.wheelVelocity = RPM.of(wheelEncoder.getVelocity());
+        sensors.rollerVelocity = RPM.of(rollerEncoder.getVelocity());
         sensors.collectorArmVelocity = RPM.of(armEncoder.getVelocity());
-        sensors.collectorArmAngle = Degrees.of(armEncoder.getPosition());
-        sensors.inStartPosition = sensors.collectorArmAngle.lte(bottomAngle);
-        sensors.inCollectPosition = sensors.collectorArmAngle.gte(topAngle);
+        sensors.collectorArmAngle = Rotations.of(armEncoder.getPosition());
+        sensors.inStartPosition = Rotations.of(armEncoder.getPosition()).gte(topAngle);
+        sensors.inCollectPosition = Rotations.of(armEncoder.getPosition()).lte(bottomAngle);
+        sensors.armMotorPower = armMotor.get();
+        sensors.rollerMotorPower = rollerMotor.get();
     }
 
     @Override
     public void setArmVelocity(AngularVelocity armVelocity) {
-        if (inStartPosition()& armVelocity.gt(RPM.zero())) { //can't go up
+        if (inStartPosition() && armVelocity.gt(RPM.zero())) { //can't go up
             armMotor.set(0);
-        } else if (inCollectPosition()& armVelocity.lte(RPM.zero())) { //can't go down
+        } else if (inCollectPosition() && armVelocity.lte(RPM.zero())) { //can't go down
             armMotor.set(0);
         } else {
+            Logger.recordOutput("ArmVelocityRPM", armVelocity);
             armMotor.set(armVelocity.in(RPM));
         }
-
+        Logger.recordOutput("Top Angle", topAngle);
+        Logger.recordOutput("Bottom Angle", bottomAngle);
     }
 
     @Override
-    public void setRollerVelocity(AngularVelocity wheelVelocity) {
-        wheelMotor.set(wheelVelocity.in(RPM));
+    public void setRollerVelocity(AngularVelocity rollerVelocity) {
+        rollerMotor.set(rollerVelocity.in(RPM));
     }
 
     @Override
@@ -74,15 +80,15 @@ public class Collector extends MOESubsystem<CollectorInputsAutoLogged> implement
 
     @Override
     public Angle getArmAngle() {
-        return Degrees.of(armEncoder.getPosition());
+        return getSensors().collectorArmAngle;
     }
     @Override
     public boolean inStartPosition() {
-        return getArmAngle().gte(topAngle);
+        return getSensors().inStartPosition;
     }
 
     @Override
     public boolean inCollectPosition() {
-        return getArmAngle().lte(bottomAngle);
+        return getSensors().inCollectPosition;
     }
 }

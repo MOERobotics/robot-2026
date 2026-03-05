@@ -54,6 +54,7 @@ public class MOELogger {
             org.littletonrobotics.junction.Logger.addDataReceiver(new WPILOGWriter());
         }
 
+
         org.littletonrobotics.junction.Logger.start();
         frequency = (int) Math.round(1 / robot.getPeriod());
 

@@ -108,13 +108,22 @@ public class ProMOEtheus extends RobotContainer {
                 backLeftCorner,
                 backRightCorner
         );
-    // TODO: get actual id from electrical when they have it
-    SparkMax climberMotor = new SparkMax(30, SparkLowLevel.MotorType.kBrushless);
+
+    SparkMax climberMotor = new SparkMax(6, SparkLowLevel.MotorType.kBrushless);
     SparkMaxConfig climberMotorConfig = new SparkMaxConfig();
     climberMotorConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
     climberMotor.configure(climberMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     Climber climber = new Climber(climberMotor, Inches.of(29.75), Inches.of(20.0)) {
     };
+        SparkMax collectorArmMotor = new SparkMax(15, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
+        SparkMax collectorRollerMotor= new SparkMax(17, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
+        collectorRollerMotor.setInverted(true);
+        Angle collectorArmBottom = Degrees.of(137);
+        Angle collectorArmTop = Degrees.of(223);
+
+        this.setCollector(new Collector(collectorRollerMotor, collectorArmMotor, collectorArmBottom, collectorArmTop));
+
+
 
 
 
@@ -183,13 +192,10 @@ public class ProMOEtheus extends RobotContainer {
                 Degrees.of(10),
                 Degrees.of(35));
 
-        SparkMax collectorArmMotor = new SparkMax(15, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
-        SparkMax collectorRollerMotor= new SparkMax(17, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
+        this.setRobotSwerveDrive(ProMOEtheus);
+        this.setClimber(climber);
 
 
-        collectorRollerMotor.setInverted(true);
-        Angle collectorArmBottom = Degrees.of(5);
-        Angle collectorArmTop = Degrees.of(85);
 
         SparkMaxConfig collectorArmConfig = new SparkMaxConfig();
         collectorArmConfig.inverted(true);
