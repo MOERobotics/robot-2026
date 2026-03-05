@@ -23,26 +23,20 @@ public class FuelCollectorTeleopCommand extends Command {
             armkp, armki, armkd
     );
 
-
     public FuelCollectorTeleopCommand(RobotContainer robot, Joystick joystick) {
         this.collectorSubsystem = robot.getCollector();
         this.joystick = joystick;
         addRequirements(collectorSubsystem);
-
-
     }
 
     @Override
     public void initialize() {
         fuelCollectorArmPID.setTolerance(1);
-
-
     }
 
 
     @Override
     public void execute() {
-
         AngularVelocity rollerVelocity;
         Angle targetArmPosition;
         Angle currentArmPosition;
