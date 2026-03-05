@@ -12,6 +12,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.FuelCollectorTeleopCommand;
+import frc.robot.commands.FuelCollectorTestCommand;
 import frc.robot.commands.PathsFollower;
 import frc.robot.commands.TankDriveForward;
 import frc.robot.container.MiniBotContainer;
@@ -21,6 +23,8 @@ import frc.robot.commands.ClimberTestCommand;
 import frc.robot.commands.ShooterTestCommand;
 import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
+import frc.robot.container.SubMOErine;
+import frc.robot.subsystem.Collector;
 import org.littletonrobotics.junction.LoggedRobot;
 import edu.wpi.first.math.MathUtil;
 import org.littletonrobotics.junction.Logger;
@@ -37,9 +41,10 @@ public class Robot extends LoggedRobot {
 
     public double deadband = 0.06; // find deadband number;
     private CommandScheduler scheduler;
+    private Command collectorTestCommand = new FuelCollectorTestCommand(robot, functionJoystick);
+    private Command collectorTeleopCommand = new FuelCollectorTeleopCommand(robot, functionJoystick);
 
     private Command shooterTestCommand = new ShooterTestCommand(robot,driverJoystick, functionJoystick);
-
     public ClimberTestCommand climberTestCommand = new ClimberTestCommand(robot, driverJoystick);
     public PathsFollower testPath = new PathsFollower("Curved Path");
 
@@ -54,7 +59,6 @@ public class Robot extends LoggedRobot {
 
         if (isSimulation())
             DriverStation.silenceJoystickConnectionWarning(true);
-
         MOELogger.setupLogging(this);
         scheduler = CommandScheduler.getInstance();
         scheduler.schedule(FollowPathCommand.warmupCommand());
@@ -105,6 +109,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopInit() {
+        scheduler.schedule(collectorTeleopCommand);
         scheduler.schedule(climberTeleopCommand);
     }
 
@@ -128,6 +133,7 @@ public class Robot extends LoggedRobot {
     public void testPeriodic() {
         scheduler.schedule(climberTestCommand);
         scheduler.schedule(shooterTestCommand);
+        scheduler.schedule(collectorTestCommand);
     }
 
     @Override
