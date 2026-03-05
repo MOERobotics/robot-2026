@@ -45,7 +45,7 @@ public class Robot extends LoggedRobot {
 
     public Command climberAutoCommand = new ClimberAutoCommand(robot, true, 1.0,true);
 
-    public Command collectorAutoCommand = new FuelCollectorAutoCommand(robot, true, true, "in");
+    public Command collectorAutoCommand = new FuelCollectorAutoCommand(robot, false, false, "out");
 
     AutosChooser autoCommand = new AutosChooser();
 
