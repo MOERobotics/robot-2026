@@ -29,6 +29,7 @@ public class FuelCollectorAutoCommand extends Command {
         this.hold = hold;
         this.collectPosition = collectPosition;
         this.collectRollers = collectRollers;
+
         addRequirements(collectorSubsystem);
     }
 
@@ -60,21 +61,17 @@ public class FuelCollectorAutoCommand extends Command {
         } else {
             targetArmPosition = Degrees.of(135);
         }
-        Logger.recordOutput("ShouldGoToCollectPosition", shouldGoToCollectPosition);
-        Logger.recordOutput("ShouldGoToStartPosition", shouldGoToStartPosition);
         fuelCollectorArmPID.setSetpoint(targetArmPosition.in(Degrees));
 
-        if (!fuelCollectorArmPID.atSetpoint()) {
             double armCorrection = fuelCollectorArmPID.calculate(currentArmPosition.in(Degrees));
             collectorSubsystem.setArmVelocity(RPM.of(armCorrection));
             Logger.recordOutput("FuelCollector/ArmCorrection", armCorrection);
             Logger.recordOutput("FuelCollector/ArmCorrectionVel", DegreesPerSecond.of(armCorrection));
-        } else if (!hold) {
-            shouldGoToCollectPosition = false;
-            shouldGoToStartPosition = false;
+        if (!hold && fuelCollectorArmPID.atSetpoint()) {
             collectorSubsystem.setArmVelocity(DegreesPerSecond.of(0));
         }
-
+        Logger.recordOutput("at setpoint", fuelCollectorArmPID.atSetpoint());
+      //  Logger.recordOutput("actual collecotr velocity", collectorSubsystem.getArmVelocity());
         Logger.recordOutput("TargetArmPos", targetArmPosition);
     }
 
