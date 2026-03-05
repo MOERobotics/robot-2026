@@ -12,15 +12,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.FuelCollectorTeleopCommand;
-import frc.robot.commands.FuelCollectorTestCommand;
-import frc.robot.commands.PathsFollower;
-import frc.robot.commands.TankDriveForward;
+import frc.robot.commands.*;
 import frc.robot.container.MiniBotContainer;
-import frc.robot.commands.ClimberAutoCommand;
-import frc.robot.commands.ClimberTeleopCommand;
-import frc.robot.commands.ClimberTestCommand;
-import frc.robot.commands.ShooterTestCommand;
 import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
 import frc.robot.container.SubMOErine;
@@ -45,12 +38,14 @@ public class Robot extends LoggedRobot {
     private Command collectorTeleopCommand = new FuelCollectorTeleopCommand(robot, functionJoystick);
 
     private Command shooterTestCommand = new ShooterTestCommand(robot,driverJoystick, functionJoystick);
-    public ClimberTestCommand climberTestCommand = new ClimberTestCommand(robot, driverJoystick);
+    public Command climberTestCommand = new ClimberTestCommand(robot, driverJoystick);
     public PathsFollower testPath = new PathsFollower("Curved Path");
 
-    public ClimberTeleopCommand climberTeleopCommand = new ClimberTeleopCommand(robot, driverJoystick);
+    public Command climberTeleopCommand = new ClimberTeleopCommand(robot, driverJoystick);
 
-    public ClimberAutoCommand climberAutoCommand = new ClimberAutoCommand(robot, true, 1.0,true);
+    public Command climberAutoCommand = new ClimberAutoCommand(robot, true, 1.0,true);
+
+    public Command collectorAutoCommand = new FuelCollectorAutoCommand(robot, true, true, "in");
 
     AutosChooser autoCommand = new AutosChooser();
 
@@ -87,13 +82,15 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousInit() {
+        scheduler.schedule(collectorAutoCommand);
         //scheduler.schedule(climberAutoCommand);
+        /*
         robot.getRobotSwerveDrive().setPose(autoCommand.getAuto().path.getStartingHolonomicPose().get());
         scheduler.schedule(autoCommand.getAuto());
         Logger.recordOutput("Auto Start Pose", testPath.path.getStartingHolonomicPose().get());
 
         Logger.recordOutput("Auto End Pose", testPath.path.getGoalEndState());
-/*
+
         robot.getTankDrive().setPose(testPath.path.getStartingDifferentialPose());
         scheduler.schedule(testPath);
         Logger.recordOutput("Auto Start Pose", testPath.path.getStartingDifferentialPose());
