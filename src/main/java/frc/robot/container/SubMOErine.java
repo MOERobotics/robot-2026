@@ -10,6 +10,9 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import frc.robot.subsystem.*;
+import frc.robot.subsystem.fakes.ClimberFake;
+import frc.robot.subsystem.fakes.CollectorFake;
+import frc.robot.subsystem.fakes.ShooterFake;
 import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
 import frc.robot.subsystem.interfaces.SwerveModuleSubsystem;
 
@@ -174,9 +177,11 @@ public class SubMOErine extends RobotContainer {
                 Degrees.of(-5),
                 Degrees.of(10));
 
-        this.setShooterSubsystem(shooter);
+        this.setShooterSubsystem(new ShooterFake());
+        this.setClimber(new ClimberFake());
+        this.setCollector(new CollectorFake());
         this.setRobotSwerveDrive(SubMOErine);
-        this.setClimber(climber);
+
 
     }
 }

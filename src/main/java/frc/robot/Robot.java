@@ -28,7 +28,7 @@ import static edu.wpi.first.units.Units.InchesPerSecond;
 
 public class Robot extends LoggedRobot {
 
-    public RobotContainer robot = new ProMOEtheus();
+    public RobotContainer robot = new SubMOErine();
     public Joystick driverJoystick = new Joystick(0);
     public Joystick functionJoystick = new Joystick(1);
 

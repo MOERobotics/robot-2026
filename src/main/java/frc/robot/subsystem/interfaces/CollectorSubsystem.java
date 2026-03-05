@@ -20,6 +20,9 @@ public interface CollectorSubsystem extends Subsystem, LoggableInputs {
         public double armMotorPower;
         public double rollerMotorPower;
     }
+
+    CollectorInputsAutoLogged getSensors();
+
     public void setArmVelocity(AngularVelocity armVelocity);
     public void setRollerVelocity(AngularVelocity rollerVelocity);
     public AngularVelocity getArmVelocity();
