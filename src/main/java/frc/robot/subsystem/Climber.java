@@ -8,6 +8,7 @@ import frc.robot.MOESubsystem;
 import frc.robot.subsystem.interfaces.ClimberInputsAutoLogged;
 import frc.robot.subsystem.interfaces.ClimberSubsystem;
 import frc.robot.subsystem.simulations.ClimberSim;
+import org.littletonrobotics.junction.Logger;
 
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.InchesPerSecond;
@@ -88,10 +89,17 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
         }
     }
     @Override
+    public void unlatchHooks(){
+        getSensors().hooksLatched = false;
+    }
+
+
+    @Override
     public void periodic() {
         super.periodic();
         // this is our fallback system in case setVelocity() stops getting called before we need it to;
         // it just makes sure that the motors can get to their set points and then stop.
         velocityLimits(getSensors().lastVelocity);
+        Logger.recordOutput("climberPower", climberSparkMax.get());
     }
 }

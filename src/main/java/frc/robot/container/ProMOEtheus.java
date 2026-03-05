@@ -106,8 +106,8 @@ public class ProMOEtheus extends RobotContainer {
                 backLeftCorner,
                 backRightCorner
         );
-    // TODO: get actual id from electrical when they have it
-    SparkMax climberMotor = new SparkMax(30, SparkLowLevel.MotorType.kBrushless);
+
+    SparkMax climberMotor = new SparkMax(6, SparkLowLevel.MotorType.kBrushless);
     SparkMaxConfig climberMotorConfig = new SparkMaxConfig();
     climberMotorConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
     climberMotor.configure(climberMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);

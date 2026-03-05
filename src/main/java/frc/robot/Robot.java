@@ -15,13 +15,15 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.PathsFollower;
 import frc.robot.commands.TankDriveForward;
 import frc.robot.container.MiniBotContainer;
+import frc.robot.commands.ClimberAutoCommand;
+import frc.robot.commands.ClimberTeleopCommand;
 import frc.robot.commands.ClimberTestCommand;
 import frc.robot.commands.ShooterTestCommand;
 import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
-import frc.robot.container.SubMOErine;
 import org.littletonrobotics.junction.LoggedRobot;
 import edu.wpi.first.math.MathUtil;
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.Logger;
 
 import static edu.wpi.first.units.Units.InchesPerSecond;
@@ -40,6 +42,10 @@ public class Robot extends LoggedRobot {
 
     public ClimberTestCommand climberTestCommand = new ClimberTestCommand(robot, driverJoystick);
     public PathsFollower testPath = new PathsFollower("Curved Path");
+
+    public ClimberTeleopCommand climberTeleopCommand = new ClimberTeleopCommand(robot, driverJoystick);
+
+    public ClimberAutoCommand climberAutoCommand = new ClimberAutoCommand(robot, true, 1.0,true);
 
     AutosChooser autoCommand = new AutosChooser();
 
@@ -77,6 +83,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousInit() {
+        scheduler.schedule(climberAutoCommand);
         robot.getRobotSwerveDrive().setPose(autoCommand.getAuto().path.getStartingHolonomicPose().get());
         scheduler.schedule(autoCommand.getAuto());
         Logger.recordOutput("Auto Start Pose", testPath.path.getStartingHolonomicPose().get());
@@ -98,11 +105,11 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopInit() {
+        scheduler.schedule(climberTeleopCommand);
     }
 
     @Override
     public void teleopPeriodic() {
-
         ChassisSpeeds robotSpeed = new ChassisSpeeds(
                 MathUtil.applyDeadband(driverJoystick.getRawAxis(1) * -1, deadband),
                 MathUtil.applyDeadband(driverJoystick.getRawAxis(0) * -1, deadband),
@@ -110,8 +117,6 @@ public class Robot extends LoggedRobot {
         );
       ;
         robot.getRobotSwerveDrive().robotDrive(robotSpeed);
-
-
 
     }
 
