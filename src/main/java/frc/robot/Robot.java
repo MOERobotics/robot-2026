@@ -45,6 +45,7 @@ public class Robot extends LoggedRobot {
     public Command hubLoggingCommand = new HubLoggingCommand(driverJoystick);
 
 
+   // public Command autoShootercommand = new ShooterAutoCommand(robot, ShooterAutoCommand.Target.HUB);
 
 
 
@@ -84,10 +85,12 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousInit() {
+      //  scheduler.schedule(autoShootercommand);
     }
 
     @Override
     public void autonomousPeriodic() {
+
     }
 
     @Override

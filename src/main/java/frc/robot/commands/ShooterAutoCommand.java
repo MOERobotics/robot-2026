@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.container.RobotContainer;
 import frc.robot.subsystem.interfaces.ShooterSubsystem;
 import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
+import org.littletonrobotics.junction.Logger;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RPM;
@@ -81,19 +82,30 @@ public class ShooterAutoCommand extends Command {
         flywheelOutput = MathUtil.clamp(flywheelOutput, 0, 0.5);
 
 
+        Logger.recordOutput("flywheelOutput", flywheelOutput);
+
         shooter.setFlywheelPower(0.5 + flywheelOutput);
 
 
 
 
-        Rotation2d targetAngle = targetPosition.minus(pose.getTranslation()).getAngle();
+        Rotation2d targetTurretAngle = targetPosition.minus(pose.getTranslation()).getAngle();
+
+
+        Logger.recordOutput("targetTurretAngle", targetTurretAngle.getDegrees());
+
 
         Rotation2d robotHeading = pose.getRotation();
 
-        Rotation2d desiredTurret = targetAngle.minus(robotHeading);
+        Rotation2d desiredTurret = targetTurretAngle.minus(robotHeading);
 
 
         double turretOutput = turretPID.calculate(shooter.getTurretAngleinDegrees().in(Degrees), MathUtil.clamp(desiredTurret.getDegrees(), 30, 330));
+
+
+        Logger.recordOutput("turretOutput", turretOutput);
+        Logger.recordOutput("desiredTurret", desiredTurret.getDegrees());
+
 
         turretOutput = MathUtil.clamp(turretOutput, -0.3, 0.3);
 
@@ -137,7 +149,8 @@ public class ShooterAutoCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return feeding && shootTimer.hasElapsed(0 /*TODO PICK A TIME*/);
+        return false;
+      //   return feeding && shootTimer.hasElapsed(0 /*TODO PICK A TIME*/);
     }
 
     @Override
@@ -167,9 +180,9 @@ public class ShooterAutoCommand extends Command {
         if (target == Target.HUB) {
 
             if (isRed) {
-                return new Translation2d(0, 0);
+                return new Translation2d(5, 1.4);
             } else {
-                return new Translation2d(0, 0);
+                return new Translation2d(2, 2);
             }
 
         } else if (target == Target.DEPOT) {
