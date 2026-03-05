@@ -83,14 +83,14 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopPeriodic() {
-        ChassisSpeeds robotSpeed = new ChassisSpeeds(
+       /* ChassisSpeeds robotSpeed = new ChassisSpeeds(
                 MathUtil.applyDeadband(driverJoystick.getRawAxis(1) * -1, deadband),
                 MathUtil.applyDeadband(driverJoystick.getRawAxis(0) * -1, deadband),
                 MathUtil.applyDeadband(driverJoystick.getRawAxis(2) * -1, deadband)
         );
       ;
         robot.getRobotSwerveDrive().robotDrive(robotSpeed);
-
+*/
     }
 
     @Override
