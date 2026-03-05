@@ -71,11 +71,11 @@ public class FuelCollectorTeleopCommand extends Command {
         }
 
         if (shouldGoToStartPosition) {
-            targetArmPosition = Degrees.of(84);
+            targetArmPosition = Degrees.of(225);
 
 
         } else if (shouldGoToCollectPosition) {
-            targetArmPosition = Degrees.of(6);
+            targetArmPosition = Degrees.of(135);
         } else {
             targetArmPosition = currentArmPosition;
         }
