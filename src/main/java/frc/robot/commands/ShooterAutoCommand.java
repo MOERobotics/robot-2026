@@ -13,8 +13,7 @@ import frc.robot.subsystem.interfaces.ShooterSubsystem;
 import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
 import org.littletonrobotics.junction.Logger;
 
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.*;
 
 public class ShooterAutoCommand extends Command {
 
@@ -92,7 +91,6 @@ public class ShooterAutoCommand extends Command {
         Rotation2d targetTurretAngle = targetPosition.minus(pose.getTranslation()).getAngle();
 
 
-        Logger.recordOutput("targetTurretAngle", targetTurretAngle.getDegrees());
 
 
         Rotation2d robotHeading = pose.getRotation();
@@ -100,16 +98,26 @@ public class ShooterAutoCommand extends Command {
         Rotation2d desiredTurret = targetTurretAngle.minus(robotHeading);
 
 
-        double turretOutput = turretPID.calculate(shooter.getTurretAngleinDegrees().in(Degrees), MathUtil.clamp(desiredTurret.getDegrees(), 30, 330));
+        double currTurretAngle = shooter.getTurretAngleinDegrees().in(Degrees);
 
 
-        Logger.recordOutput("turretOutput", turretOutput);
-        Logger.recordOutput("desiredTurret", desiredTurret.getDegrees());
+        double turretOutput = turretPID.calculate(currTurretAngle, desiredTurret.getDegrees());
 
 
-        turretOutput = MathUtil.clamp(turretOutput, -0.3, 0.3);
+
+        /*
+       if( turretOutput >0.3) {
+           turretOutput=0.3;
+        }
+
+
+         */
 
         shooter.setTurretPower(turretOutput);
+
+        Logger.recordOutput("turretOutput", turretOutput);
+        Logger.recordOutput("turretDesiredAngle", desiredTurret.getDegrees());
+        Logger.recordOutput("turretCurrentAngle", targetTurretAngle.getDegrees());
 
 
         double distance = pose.getTranslation().getDistance(targetPosition);
@@ -133,6 +141,12 @@ public class ShooterAutoCommand extends Command {
 
         boolean hoodReady = hoodPID.atSetpoint();
 
+
+        Logger.recordOutput("hoodReady", flywheelReady);
+        Logger.recordOutput("turretReady", turretReady);
+        Logger.recordOutput("hoodReady", hoodReady);
+
+
         if (flywheelReady && turretReady && hoodReady) {
 
             if (!feeding) {
@@ -149,8 +163,8 @@ public class ShooterAutoCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return false;
-      //   return feeding && shootTimer.hasElapsed(0 /*TODO PICK A TIME*/);
+      //  return false;
+        return feeding && shootTimer.hasElapsed(5 /*TODO PICK A TIME*/);
     }
 
     @Override
