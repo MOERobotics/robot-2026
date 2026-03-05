@@ -4,6 +4,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.commands.ClimberAutoCommand;
+import frc.robot.commands.FuelCollectorAutoCommand;
 import frc.robot.commands.PathsFollower;
 import frc.robot.container.RobotContainer;
 
@@ -12,26 +15,34 @@ import java.util.function.Consumer;
 public class AutosChooser {
     public RobotContainer robot;
 
-    public static SendableChooser<PathsFollower> autoChooser = new SendableChooser<>();
+    public static SendableChooser<Command> autoChooser = new SendableChooser<>();
 
     public static void setupAutos(RobotContainer robot) {
 
-        autoChooser.setDefaultOption("Auto1", new PathsFollower("Curved Path"));
-        autoChooser.addOption("Auto2", new PathsFollower("Example Path"));
-        autoChooser.addOption("Auto3", new PathsFollower("Test Path"));
-        autoChooser.addOption("Auto4", new PathsFollower("New Path"));
+        autoChooser.setDefaultOption("TESTAuto1", Commands.sequence(
+                Commands.parallel(new PathsFollower("ALT-Depot"),
+                                    new FuelCollectorAutoCommand(robot,true, true,"in")),
+                new PathsFollower("Depot Collect"),
+                Commands.parallel(new PathsFollower("Depot Shoot"),
+                        new FuelCollectorAutoCommand(robot,true, false,"stop")),
+                new PathsFollower("Depot Climb"),
+                new PathsFollower("LC Adjust"),
+                new ClimberAutoCommand(robot, true, 1.0, true)
+                ));
         Consumer<CommandAndPose> onAutoUpdate = (commandandPose) ->
                 robot.getRobotSwerveDrive().
-                        setPose(autoChooser.getSelected().
-                                path.getStartingHolonomicPose().get());
-        //autoChooser.onChange(onAutoUpdate);
-        //nAutoUpdate.accept(autoChooser.getSelected());
+                        setPose(new PathsFollower("ALT-Depot").path.getStartingHolonomicPose().get());
+//                        setPose(autoChooser.getSelected().
+//                                path.getStartingHolonomicPose().get());
+//
+//        autoChooser.onChange(onAutoUpdate);
+//        AutoUpdate.accept(autoChooser.getSelected());
         SmartDashboard.putData("Autos Chooser",autoChooser);
     }
 /*
 
 */
-    public PathsFollower getAuto() {
+    public Command getAuto() {
         return autoChooser.getSelected();
     }
 

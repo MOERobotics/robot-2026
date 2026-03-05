@@ -82,15 +82,15 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousInit() {
-        scheduler.schedule(collectorAutoCommand);
+       // scheduler.schedule(collectorAutoCommand);
         //scheduler.schedule(climberAutoCommand);
-        /*
-        robot.getRobotSwerveDrive().setPose(autoCommand.getAuto().path.getStartingHolonomicPose().get());
+
+        robot.getRobotSwerveDrive().setPose( new PathsFollower("ALT-Depot").path.getStartingHolonomicPose().get());
         scheduler.schedule(autoCommand.getAuto());
         Logger.recordOutput("Auto Start Pose", testPath.path.getStartingHolonomicPose().get());
 
         Logger.recordOutput("Auto End Pose", testPath.path.getGoalEndState());
-
+/*
         robot.getTankDrive().setPose(testPath.path.getStartingDifferentialPose());
         scheduler.schedule(testPath);
         Logger.recordOutput("Auto Start Pose", testPath.path.getStartingDifferentialPose());
