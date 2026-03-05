@@ -22,9 +22,9 @@ public class ShooterTeleopCommand extends Command {
     double flywheelPower;
     AngularVelocity targetFlywheelPower;
     boolean isFlywheelOn = false;
-    public double kP = 1 / 200.0;
+    public double kP = 1 / 2500.0;
     public double kI = 0.0001;
-    public double kD = 0.1 / 17500;
+    public double kD = 0.1 / 14000;
 
     public double hoodKP = 0.056;
     public double hoodKI = 0;
