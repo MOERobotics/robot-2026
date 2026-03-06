@@ -100,7 +100,7 @@ public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> 
         );
         pidPivotController = new PIDController(pivotFeedback.kP, pivotFeedback.kI, pivotFeedback.kD);
         pidDriveController = new PIDController(driveFeedback.kP, driveFeedback.kI, driveFeedback.kD);
-
+        pidPivotController.enableContinuousInput(-180,180);
         SwerveModuleSim swerveModuleSim = new SwerveModuleSim(moduleOffset, driveMotor,pivotMotor, swerveModuleEncoder);
         setSimulator(swerveModuleSim);
     }
