@@ -22,9 +22,9 @@ public class ShooterTeleopCommand extends Command {
     double flywheelPower;
     AngularVelocity targetFlywheelPower;
     boolean isFlywheelOn = false;
-    public double kP = 1 / 200.0;
+    public double kP = 1 / 2500.0;
     public double kI = 0.0001;
-    public double kD = 0.1 / 17500;
+    public double kD = 0.1 / 14000;
 
     public double hoodKP = 0.056;
     public double hoodKI = 0;
@@ -113,7 +113,7 @@ public class ShooterTeleopCommand extends Command {
         if (joystick.getRawAxis(3) > 0.3) {
             if (
                     true
-                    && isFlywheelOn
+                            && isFlywheelOn
 //                    && shooterPIDController.atSetpoint()
             ) {
                 shooterSubsystem.setSpindexerPower(1);
@@ -147,9 +147,9 @@ public class ShooterTeleopCommand extends Command {
         }
         Logger.recordOutput("preClampTurretSetpoint",turretSetpoint);
         turretSetpoint = MathUtil.clamp(
-               turretSetpoint,
-               shooterSubsystem.getSensors().turretMinAngle,
-              shooterSubsystem.getSensors().turretMaxAngle);
+                turretSetpoint,
+                shooterSubsystem.getSensors().turretMinAngle,
+                shooterSubsystem.getSensors().turretMaxAngle);
 
 
         turretPIDController.setSetpoint(turretSetpoint);
@@ -233,11 +233,11 @@ public class ShooterTeleopCommand extends Command {
 
     // will need to make what we are doing for turret and hood but as its own function.
     public void turnIncremental(double deadZone,
-                                  boolean rightShift,
-                                  boolean leftShift,
-                                  PIDController pidController,
-                                  double setpoint,
-                                  double magnitude){
+                                boolean rightShift,
+                                boolean leftShift,
+                                PIDController pidController,
+                                double setpoint,
+                                double magnitude){
 
         if (joystick.getRawAxis(0) > deadZone) { // && !shooterSubsystem.getSensors().reachedMaxHood
             if (rightShift) {
@@ -291,5 +291,4 @@ public class ShooterTeleopCommand extends Command {
     }
 
 }
-
 

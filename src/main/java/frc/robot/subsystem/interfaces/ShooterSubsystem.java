@@ -10,6 +10,7 @@ import static edu.wpi.first.units.Units.*;
 
 public interface ShooterSubsystem extends Subsystem, LoggableInputs {
 
+
     @AutoLog
     class ShooterInputs{
         public Angle turretAngle = Degrees.zero();

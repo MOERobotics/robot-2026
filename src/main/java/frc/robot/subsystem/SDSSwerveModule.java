@@ -12,8 +12,11 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.MOESubsystem;
 
+import frc.robot.subsystem.interfaces.SwerveModuleInputsAutoLogged;
+import frc.robot.subsystem.interfaces.SwerveModuleSubsystem;
 import frc.robot.subsystem.simulations.SwerveModuleSim;
 import frc.robot.subsystem.simulations.SwerveModuleSim;
 import static edu.wpi.first.units.Units.*;
@@ -65,34 +68,10 @@ public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> 
         this.pivotEncoderSim = swerveModuleEncoder.getSimState();
         this.pivotFeedback = pivotFeedback;
         this.driveFeedback = driveFeedback;
-        pivotMotorSimulator = new SparkMaxSim(pivotMotor, DCMotor.getNEO(1));
-        driveMotorSimulator = new SparkMaxSim(driveMotor, DCMotor.getNEO(1));
-
-
-        pivotMotorEncoderSimulator = pivotMotorSimulator.getRelativeEncoderSim();
-        driveMotorEncoderSimulator = driveMotorSimulator.getRelativeEncoderSim();
-
-        pivotMotorSystem = new DCMotorSim(
-                LinearSystemId.createDCMotorSystem(
-                        DCMotor.getNEO(1),
-                        0.005,
-                        25.0
-                ),
-                DCMotor.getNEO(1)
-        );
-
-        driveMotorSystem = new DCMotorSim(
-                LinearSystemId.createDCMotorSystem(
-                        DCMotor.getNEO(1),
-                        0.005,
-                        25.0
-                ),
-                DCMotor.getNEO(1)
-        );
         pidPivotController = new PIDController(pivotFeedback.kP, pivotFeedback.kI, pivotFeedback.kD);
         pidDriveController = new PIDController(driveFeedback.kP, driveFeedback.kI, driveFeedback.kD);
-
-        swerveModuleSim = new SwerveModuleSim(this);
+        pidPivotController.enableContinuousInput(-180,180);
+        swerveModuleSim = new SwerveModuleSim(this.moduleOffset, this.driveMotor, this.pivotMotor, this.swerveModuleEncoder);
 
         setSimulator(swerveModuleSim);
 
@@ -166,6 +145,11 @@ public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> 
                         getAngle()
                 )
         );
+    }
+
+    @Override
+    public void setDefaultCommand(Command defaultCommand) {
+        super.setDefaultCommand(defaultCommand);
     }
 
     /*

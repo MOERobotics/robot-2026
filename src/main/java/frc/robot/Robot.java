@@ -58,8 +58,6 @@ public class Robot extends LoggedRobot {
 
     public Command autoShootercommand = new ShooterAutoCommand(robot, ShooterAutoCommand.Target.HUB);
 
-    private Command shooterTestCommand = new ShooterTestCommand(robot,driverJoystick, functionJoystick);
-    public Command climberTestCommand = new ClimberTestCommand(robot, driverJoystick);
     public PathsFollower testPath = new PathsFollower("Curved Path");
 
     public Command climberTeleopCommand = new ClimberTeleopCommand(robot, driverJoystick);
@@ -70,6 +68,8 @@ public class Robot extends LoggedRobot {
 
     AutosChooser autoCommand = new AutosChooser();
 
+
+
     @Override
     public void robotInit() {
 
@@ -77,7 +77,9 @@ public class Robot extends LoggedRobot {
             DriverStation.silenceJoystickConnectionWarning(true);
         MOELogger.setupLogging(this);
         scheduler = CommandScheduler.getInstance();
-        scheduler.schedule(FollowPathCommand.warmupCommand());
+//        scheduler.schedule(FollowPathCommand.warmupCommand());
+        scheduler.schedule(hubLoggingCommand);
+
     }
 
 
@@ -90,7 +92,7 @@ public class Robot extends LoggedRobot {
     public void robotPeriodic() {
         MOELogger.log();
         scheduler.run();
-        scheduler.schedule(hubLoggingCommand);
+        Logger.recordOutput("command", autoCommand.getAuto().getName());
     }
 
     @Override
@@ -104,16 +106,13 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousInit() {
-        scheduler.schedule(autoShootercommand);
+  //      scheduler.schedule(autoShootercommand);
 
        // scheduler.schedule(collectorAutoCommand);
         //scheduler.schedule(climberAutoCommand);
-
-        robot.getRobotSwerveDrive().setPose( new PathsFollower("ALT-Depot").path.getStartingHolonomicPose().get());
+        testPath =  new PathsFollower("ALT-Depot");
+        robot.getRobotSwerveDrive().setPose( testPath.path.getStartingHolonomicPose().get());
         scheduler.schedule(autoCommand.getAuto());
-        Logger.recordOutput("Auto Start Pose", testPath.path.getStartingHolonomicPose().get());
-
-        Logger.recordOutput("Auto End Pose", testPath.path.getGoalEndState());
 /*
         robot.getTankDrive().setPose(testPath.path.getStartingDifferentialPose());
         scheduler.schedule(testPath);
@@ -127,6 +126,10 @@ public class Robot extends LoggedRobot {
     @Override
     public void autonomousPeriodic() {
 
+        Logger.recordOutput("Auto Start Pose", testPath.path.getStartingHolonomicPose().get());
+
+        Logger.recordOutput("Auto End Pose", testPath.path.getGoalEndState());
+        Logger.recordOutput("idfk lmao", testPath.path.getPathPoses().toArray(Pose2d[]::new));
 
     }
 
@@ -175,12 +178,9 @@ public class Robot extends LoggedRobot {
             armVelocity = RPM.of(0);
         }
 
-        robot.getCollectorSubsystem().setRollerVelocity(rollerVelocity);
+        robot.getCollector().setRollerVelocity(rollerVelocity);
 
-        robot.getCollectorSubsystem().setArmVelocity(armVelocity);
-
-
-
+        robot.getCollector().setArmVelocity(armVelocity);
 
 
 

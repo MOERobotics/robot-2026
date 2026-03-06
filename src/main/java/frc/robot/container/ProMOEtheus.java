@@ -202,7 +202,7 @@ public class ProMOEtheus extends RobotContainer {
         collectorArmMotor.configure(collectorArmConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
 
-        this.setCollectorSubsystem(new Collector(collectorRollerMotor, collectorArmMotor, collectorArmBottom, collectorArmTop));
+        this.setCollector(new Collector(collectorRollerMotor, collectorArmMotor, collectorArmBottom, collectorArmTop));
         this.setShooterSubsystem(shooter);
         this.setRobotSwerveDrive(ProMOEtheus);
         this.setClimber(climber);

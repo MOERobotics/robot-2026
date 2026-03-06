@@ -14,6 +14,7 @@ import frc.robot.subsystem.fakes.ClimberFake;
 import frc.robot.subsystem.fakes.CollectorFake;
 import frc.robot.subsystem.fakes.ShooterFake;
 import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
+import frc.robot.subsystem.interfaces.SwerveModuleSubsystem;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
@@ -109,19 +110,17 @@ public class SubMOErine extends RobotContainer {
         climberMotor.configure(climberMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         Climber climber = new Climber(climberMotor, Inches.of(29.75), Inches.of(29.75)) {
         };
-        this.setRobotSwerveDrive(SubMOErine);
-        this.setClimber(climber);
 
 
 
 
-        SparkMax turretMotor = new SparkMax(2, SparkLowLevel.MotorType.kBrushless);
+        SparkMax turretMotor = new SparkMax(7, SparkLowLevel.MotorType.kBrushless);
 
         SparkMax hoodMotor = new SparkMax(26, SparkLowLevel.MotorType.kBrushless);
 
-        SparkMax spindexerMotor = new SparkMax(16, SparkLowLevel.MotorType.kBrushless);
+        SparkMax spindexerMotor = new SparkMax(45, SparkLowLevel.MotorType.kBrushless);
 
-        SparkMax transitionMotor = new SparkMax(3, SparkLowLevel.MotorType.kBrushless);
+        SparkMax transitionMotor = new SparkMax(50, SparkLowLevel.MotorType.kBrushless);
 
         SparkMax flywheelMotor = new SparkMax(29, SparkLowLevel.MotorType.kBrushless);
 
@@ -177,13 +176,12 @@ public class SubMOErine extends RobotContainer {
                 Degrees.of(10),
                 Degrees.of(-5),
                 Degrees.of(10));
-        this.setShooterSubsystem(shooter);
-        this.setRobotSwerveDrive(SubMOErine);
-        this.setClimber(climber);
+
 
         this.setShooterSubsystem(new ShooterFake());
         this.setClimber(new ClimberFake());
         this.setCollector(new CollectorFake());
+
         this.setRobotSwerveDrive(SubMOErine);
 
 
