@@ -25,6 +25,7 @@ public interface SwerveDriveSubsystem extends Subsystem, LoggableInputs {
 
     default void stop(){}
 
+
     @AutoLog
     public static class SwerveDriveInputs {
         public Angle robotAngle;

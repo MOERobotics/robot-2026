@@ -100,8 +100,9 @@ public class ShooterAutoCommand extends Command {
 
         double currTurretAngle = shooter.getTurretAngleinDegrees().in(Degrees);
 
+        double desTurretAngle = MathUtil.clamp(desiredTurret.getDegrees(), 30,330);
 
-        double turretOutput = turretPID.calculate(currTurretAngle, desiredTurret.getDegrees());
+        double turretOutput = turretPID.calculate(currTurretAngle, desTurretAngle);
 
 
 
@@ -123,8 +124,12 @@ public class ShooterAutoCommand extends Command {
         double distance = pose.getTranslation().getDistance(targetPosition);
 
 
+        double currHoodAngle = shooter.getHoodAngleFromThroughbore().in(Degrees);
 
-        double hoodOutput = hoodPID.calculate(shooter.getHoodAngleFromThroughbore().in(Degrees), MathUtil.clamp(calculateHoodAngle(distance), 0, 35));
+        double desHoodAngle = MathUtil.clamp(calculateHoodAngle(distance), 0,35);
+
+
+        double hoodOutput = hoodPID.calculate(currHoodAngle,desHoodAngle);
 
         hoodOutput = MathUtil.clamp(hoodOutput, -0.32, 0.32);
 

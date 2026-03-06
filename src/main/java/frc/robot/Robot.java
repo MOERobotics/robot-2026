@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.*;
 import frc.robot.commands.*;
+import frc.robot.commands.autos.DepotRun;
 import frc.robot.container.MiniBotContainer;
 import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
@@ -67,6 +68,7 @@ public class Robot extends LoggedRobot {
     public Command collectorAutoCommand = new FuelCollectorAutoCommand(robot, false, false, "out");
 
     //AutosChooser autoCommand = new AutosChooser();
+    private AutosChooser.CommandAndPose auto;
 
 
 
@@ -80,19 +82,28 @@ public class Robot extends LoggedRobot {
 //        scheduler.schedule(FollowPathCommand.warmupCommand());
         scheduler.schedule(hubLoggingCommand);
 
+        auto = DepotRun.getAuto(robot);
+
     }
 
 
     @Override
     public void driverStationConnected() {
-        AutosChooser.setupAutos(robot);
+      //  AutosChooser.setupAutos(robot);
     }
 
     @Override
     public void robotPeriodic() {
         MOELogger.log();
         scheduler.run();
-        //Logger.recordOutput("command", autoCommand.getAuto().getName());
+       // Logger.recordOutput("command", autoCommand.getAuto().getName());
+
+        if (auto != null) {
+            Logger.recordOutput("command", auto.command().getName());
+
+        }
+
+
     }
 
     @Override
@@ -110,8 +121,8 @@ public class Robot extends LoggedRobot {
 
        // scheduler.schedule(collectorAutoCommand);
         //scheduler.schedule(climberAutoCommand);
-        testPath =  new PathsFollower("ALT-Depot");
-        robot.getRobotSwerveDrive().setPose( testPath.path.getStartingHolonomicPose().get());
+       // testPath =  new PathsFollower("ALT-Depot");
+       // robot.getRobotSwerveDrive().setPose( testPath.path.getStartingHolonomicPose().get());
         //scheduler.schedule(autoCommand.getAuto());
 /*
         robot.getTankDrive().setPose(testPath.path.getStartingDifferentialPose());
@@ -121,15 +132,20 @@ public class Robot extends LoggedRobot {
         Logger.recordOutput("Auto End Pose", testPath.path.getGoalEndState());
 
  */
+        robot.getRobotSwerveDrive().setPose(auto.pose());
+        scheduler.schedule(auto.command());
     }
 
     @Override
     public void autonomousPeriodic() {
 
+        /*
         Logger.recordOutput("Auto Start Pose", testPath.path.getStartingHolonomicPose().get());
 
         Logger.recordOutput("Auto End Pose", testPath.path.getGoalEndState());
         Logger.recordOutput("idfk lmao", testPath.path.getPathPoses().toArray(Pose2d[]::new));
+
+         */
 
     }
 

@@ -30,12 +30,10 @@ public class AutosChooser {
                 ).withTimeout(3),
 
                 Commands.runOnce(
-                        () -> {
-                            robot.getRobotSwerveDrive().getCurrentCommand().cancel();
-                            robot.getRobotSwerveDrive().robotDrive(new ChassisSpeeds(0, 0, 0), true);
-                        }
+                        () -> robot.getRobotSwerveDrive().stop()
+
                 ),
-                Commands.run(
+                Commands.runOnce(
                         () -> System.err.println("\n\n\n\n\n\n\n\nDone!\n\n\n\n\n\n\n\n\n\n\n")
                 )
                 /*

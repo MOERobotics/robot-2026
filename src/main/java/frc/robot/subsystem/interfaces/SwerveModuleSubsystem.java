@@ -25,6 +25,7 @@ public interface SwerveModuleSubsystem extends Subsystem, LoggableInputs {
     public SwerveModuleInputsAutoLogged getSensors();
 
 
+
     @AutoLog
     public class SwerveModuleInputs {
         public Angle moduleAngle;

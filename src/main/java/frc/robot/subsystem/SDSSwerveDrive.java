@@ -133,16 +133,18 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
                 robotPose2D);
     }
 
+
+    @Override
+    public void stop() {
+        for (SwerveModuleSubsystem module : swerveModules) {
+            module.stop();
+        }
+
+    }
+
     @Override
     public ChassisSpeeds getChassisSpeed() {
         return robotKinematics.toChassisSpeeds(Arrays.stream(swerveModules).map(SwerveModuleSubsystem::getSpeedNDirectionOfMod).toArray(SwerveModuleState[]::new));
     }
 
-    @Override
-    public void stop(){
-        getSensors().moduleBL.stop();
-        getSensors().moduleBR.stop();
-        getSensors().moduleFL.stop();
-        getSensors().moduleFR.stop();
-    }
 }

@@ -75,8 +75,7 @@ public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> 
 
         setSimulator(swerveModuleSim);
 
-        SwerveModuleSim swerveModuleSim = new SwerveModuleSim(moduleOffset, driveMotor,pivotMotor, swerveModuleEncoder);
-        setSimulator(swerveModuleSim);
+
     }
 
     @Override
@@ -146,6 +145,7 @@ public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> 
                 )
         );
     }
+
 
     @Override
     public void setDefaultCommand(Command defaultCommand) {
