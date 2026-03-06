@@ -23,6 +23,8 @@ public interface SwerveDriveSubsystem extends Subsystem, LoggableInputs {
 
     public ChassisSpeeds getChassisSpeed();
 
+    default void stop(){}
+
     @AutoLog
     public static class SwerveDriveInputs {
         public Angle robotAngle;

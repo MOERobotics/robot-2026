@@ -66,7 +66,7 @@ public class Robot extends LoggedRobot {
 
     public Command collectorAutoCommand = new FuelCollectorAutoCommand(robot, false, false, "out");
 
-    AutosChooser autoCommand = new AutosChooser();
+    //AutosChooser autoCommand = new AutosChooser();
 
 
 
@@ -92,7 +92,7 @@ public class Robot extends LoggedRobot {
     public void robotPeriodic() {
         MOELogger.log();
         scheduler.run();
-        Logger.recordOutput("command", autoCommand.getAuto().getName());
+        //Logger.recordOutput("command", autoCommand.getAuto().getName());
     }
 
     @Override
@@ -112,7 +112,7 @@ public class Robot extends LoggedRobot {
         //scheduler.schedule(climberAutoCommand);
         testPath =  new PathsFollower("ALT-Depot");
         robot.getRobotSwerveDrive().setPose( testPath.path.getStartingHolonomicPose().get());
-        scheduler.schedule(autoCommand.getAuto());
+        //scheduler.schedule(autoCommand.getAuto());
 /*
         robot.getTankDrive().setPose(testPath.path.getStartingDifferentialPose());
         scheduler.schedule(testPath);

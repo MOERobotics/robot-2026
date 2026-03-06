@@ -16,6 +16,7 @@ public interface SwerveModuleSubsystem extends Subsystem, LoggableInputs {
     public void setSpeed(double moduleSpeed);
 
     public void setPivot(Rotation2d modulePivot);
+    default void stop(){};
 
     public Translation2d getCoordsOfModule();
 
