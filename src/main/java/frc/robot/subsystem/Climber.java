@@ -47,8 +47,8 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
     @Override
     public void readSensors(ClimberInputsAutoLogged sensors) {
         sensors.height = getHeight();
-        sensors.canGoUp = getHeight().lte(maxHeight);
-        sensors.canGoDown = getHeight().gte(minHeight);
+        sensors.canGoUp = climberSparkMax.getForwardLimitSwitch().isPressed();
+        sensors.canGoDown = climberSparkMax.getReverseLimitSwitch().isPressed();
         sensors.velocity = getVelocity();
 
         // will update later when needed
