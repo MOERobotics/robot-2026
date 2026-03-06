@@ -43,7 +43,7 @@ public class Robot extends LoggedRobot {
 
     public Command climberTeleopCommand = new ClimberTeleopCommand(robot, driverJoystick);
 
-    public Command climberAutoCommand = new ClimberAutoCommand(robot, true, 1.0,true);
+    public Command climberAutoCommand = new ClimberAutoCommand(robot, true, 1.0,false);
 
     public Command collectorAutoCommand = new FuelCollectorAutoCommand(robot, true, false, "out");
 
@@ -82,8 +82,8 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousInit() {
-        scheduler.schedule(collectorAutoCommand);
-        //scheduler.schedule(climberAutoCommand);
+       // scheduler.schedule(collectorAutoCommand);
+        scheduler.schedule(climberAutoCommand);
 
         //robot.getRobotSwerveDrive().setPose( new PathsFollower("ALT-Depot").path.getStartingHolonomicPose().get());
       //  scheduler.schedule(autoCommand.getAuto());
@@ -106,7 +106,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopInit() {
-        scheduler.schedule(collectorTeleopCommand);
+       // scheduler.schedule(collectorTeleopCommand);
         scheduler.schedule(climberTeleopCommand);
     }
 
@@ -129,8 +129,8 @@ public class Robot extends LoggedRobot {
     @Override
     public void testPeriodic() {
         scheduler.schedule(climberTestCommand);
-        scheduler.schedule(shooterTestCommand);
-        scheduler.schedule(collectorTestCommand);
+        //scheduler.schedule(shooterTestCommand);
+        scheduler.schedule(collectorTeleopCommand);
     }
 
     @Override
