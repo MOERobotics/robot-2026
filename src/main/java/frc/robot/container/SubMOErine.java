@@ -36,9 +36,11 @@ public class SubMOErine extends RobotContainer {
 
         PIDConstants pivotFeedback = new PIDConstants(pivotkP, pivotkI, pivotkD, pivotkIMax);
         PIDConstants driveFeedback = new PIDConstants(drivekP, drivekI, drivekD);
+
         //  FeedforwardConstants driveFeedForward = new FeedforwardConstants(drivekS, drivekV, drivekA);
 
         Pigeon2 robotGyro = new Pigeon2(0);
+
         SparkMax driveMotorFL = new SparkMax(1, SparkLowLevel.MotorType.kBrushless);
         SparkMax pivotMotorFL = new SparkMax(20, SparkLowLevel.MotorType.kBrushless);
         CANcoder swerveModuleEncoderFL = new CANcoder(31);
@@ -96,6 +98,40 @@ public class SubMOErine extends RobotContainer {
                 driveFeedback,
                 Degrees.of(135)
         );
+        /*
+        SparkMaxConfig FRdConfig = new SparkMaxConfig();
+        FRdConfig.inverted(true);
+        driveMotorFR.configure(FRdConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+        SparkMaxConfig FRpConfig = new SparkMaxConfig();
+        FRpConfig.inverted(true);
+        pivotMotorFR.configure(FRpConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+        SparkMaxConfig FLdConfig = new SparkMaxConfig();
+        FRdConfig.inverted(false);
+        driveMotorFR.configure(FRdConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+        SparkMaxConfig FRdConfig = new SparkMaxConfig();
+        FRdConfig.inverted(false);
+        driveMotorFR.configure(FRdConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+        SparkMaxConfig FRdConfig = new SparkMaxConfig();
+        FRdConfig.inverted(false);
+        driveMotorFR.configure(FRdConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+        SparkMaxConfig FRdConfig = new SparkMaxConfig();
+        FRdConfig.inverted(false);
+        driveMotorFR.configure(FRdConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+        SparkMaxConfig FRdConfig = new SparkMaxConfig();
+        FRdConfig.inverted(false);
+        driveMotorFR.configure(FRdConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+
+         */
+
+
+
         SwerveDriveSubsystem SubMOErine = new SDSSwerveDrive(
                 robotGyro,
                 frontLeftCorner,
@@ -103,6 +139,8 @@ public class SubMOErine extends RobotContainer {
                 backLeftCorner,
                 backRightCorner
         );
+
+
 
         SparkMax climberMotor = new SparkMax(30, SparkLowLevel.MotorType.kBrushless);
         SparkMaxConfig climberMotorConfig = new SparkMaxConfig();
@@ -181,7 +219,6 @@ public class SubMOErine extends RobotContainer {
         this.setShooterSubsystem(new ShooterFake());
         this.setClimber(new ClimberFake());
         this.setCollector(new CollectorFake());
-
         this.setRobotSwerveDrive(SubMOErine);
 
 

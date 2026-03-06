@@ -56,6 +56,8 @@ public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> 
             PIDConstants driveFeedback,
             Angle moduleOffset //BOLT ON RIGHT
     ) {
+
+
         super(new SwerveModuleInputsAutoLogged());
         this.driveMotor = driveMotor;
         this.driveMotorEncoder = driveMotor.getEncoder();
@@ -71,6 +73,7 @@ public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> 
         pidPivotController = new PIDController(pivotFeedback.kP, pivotFeedback.kI, pivotFeedback.kD);
         pidDriveController = new PIDController(driveFeedback.kP, driveFeedback.kI, driveFeedback.kD);
         pidPivotController.enableContinuousInput(-180,180);
+
         swerveModuleSim = new SwerveModuleSim(this.moduleOffset, this.driveMotor, this.pivotMotor, this.swerveModuleEncoder);
 
         setSimulator(swerveModuleSim);

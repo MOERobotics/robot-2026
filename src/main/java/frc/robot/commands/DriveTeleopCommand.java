@@ -27,7 +27,8 @@ public class DriveTeleopCommand extends Command {
                 MathUtil.applyDeadband(joystick.getRawAxis(2) * -1, 0.06)
         );
 
-        drive.robotDrive(speeds, false);
+        drive.robotDrive(speeds, true);
+
     }
 
     @Override

@@ -199,25 +199,25 @@ public class ShooterAutoCommand extends Command {
         if (target == Target.HUB) {
 
             if (isRed) {
-                return new Translation2d(5, 1.4);
+                return new Translation2d(12.040, 4.164);
             } else {
-                return new Translation2d(2, 2);
+                return new Translation2d(4.524, 4.212);
             }
 
         } else if (target == Target.DEPOT) {
 
             if (isRed) {
-                return new Translation2d(0, 0);
+                return new Translation2d(16.232, 2.026);
             } else {
-                return new Translation2d(0, 0);
+                return new Translation2d(0.286, 5.837);
             }
 
         } else if (target == Target.OUTPOST) {
 
             if (isRed) {
-                return new Translation2d(0, 0);
+                return new Translation2d(16.383, 7.310);
             } else {
-                return new Translation2d(0, 0);
+                return new Translation2d(-0.152, 0.734);
             }
         }
 
@@ -230,7 +230,7 @@ public class ShooterAutoCommand extends Command {
     private double calculateHoodAngle(double distance) {
 
         //TODO implement this with linear regression????
-        return 0;
+        return 10;
     }
 
 
