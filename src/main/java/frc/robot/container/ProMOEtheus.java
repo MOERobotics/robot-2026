@@ -111,6 +111,7 @@ public class ProMOEtheus extends RobotContainer {
     SparkMax climberMotor = new SparkMax(6, SparkLowLevel.MotorType.kBrushless);
     SparkMaxConfig climberMotorConfig = new SparkMaxConfig();
     climberMotorConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
+    //climberMotorConfig.
     climberMotor.configure(climberMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     Climber climber = new Climber(climberMotor, Inches.of(29.75), Inches.of(20.0)) {
     };
