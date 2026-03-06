@@ -28,7 +28,7 @@ import static edu.wpi.first.units.Units.InchesPerSecond;
 
 public class Robot extends LoggedRobot {
 
-    public RobotContainer robot = new SubMOErine();
+    public RobotContainer robot = new ProMOEtheus();
     public Joystick driverJoystick = new Joystick(0);
     public Joystick functionJoystick = new Joystick(1);
 
@@ -45,7 +45,7 @@ public class Robot extends LoggedRobot {
 
     public Command climberAutoCommand = new ClimberAutoCommand(robot, true, 1.0,true);
 
-    public Command collectorAutoCommand = new FuelCollectorAutoCommand(robot, false, false, "out");
+    public Command collectorAutoCommand = new FuelCollectorAutoCommand(robot, true, false, "out");
 
     AutosChooser autoCommand = new AutosChooser();
 
@@ -82,11 +82,11 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void autonomousInit() {
-       // scheduler.schedule(collectorAutoCommand);
+        scheduler.schedule(collectorAutoCommand);
         //scheduler.schedule(climberAutoCommand);
 
-        robot.getRobotSwerveDrive().setPose( new PathsFollower("ALT-Depot").path.getStartingHolonomicPose().get());
-        scheduler.schedule(autoCommand.getAuto());
+        //robot.getRobotSwerveDrive().setPose( new PathsFollower("ALT-Depot").path.getStartingHolonomicPose().get());
+      //  scheduler.schedule(autoCommand.getAuto());
         Logger.recordOutput("Auto Start Pose", testPath.path.getStartingHolonomicPose().get());
 
         Logger.recordOutput("Auto End Pose", testPath.path.getGoalEndState());
