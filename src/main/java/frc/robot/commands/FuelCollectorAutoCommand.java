@@ -67,9 +67,6 @@ public class FuelCollectorAutoCommand extends Command {
             collectorSubsystem.setArmVelocity(RPM.of(armCorrection));
             Logger.recordOutput("FuelCollector/ArmCorrection", armCorrection);
             Logger.recordOutput("FuelCollector/ArmCorrectionVel", DegreesPerSecond.of(armCorrection));
-        if (!hold && fuelCollectorArmPID.atSetpoint()) {
-            collectorSubsystem.setArmVelocity(DegreesPerSecond.of(0));
-        }
         Logger.recordOutput("at setpoint", fuelCollectorArmPID.atSetpoint());
       //  Logger.recordOutput("actual collecotr velocity", collectorSubsystem.getArmVelocity());
         Logger.recordOutput("TargetArmPos", targetArmPosition);
@@ -83,7 +80,10 @@ public class FuelCollectorAutoCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return false;
+        if(hold){
+            return false;
+        }
+        return fuelCollectorArmPID.atSetpoint();
     }
 
 

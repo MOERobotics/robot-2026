@@ -32,6 +32,7 @@ public class FuelCollectorTeleopCommand extends Command {
     @Override
     public void initialize() {
         fuelCollectorArmPID.setTolerance(1);
+        fuelCollectorArmPID.setSetpoint(collectorSubsystem.getArmAngle().in(Degrees));
     }
 
 
@@ -54,6 +55,7 @@ public class FuelCollectorTeleopCommand extends Command {
         int collectorStartPositionButton = 7;
         int collectorIntakePositionButton = 8;
         currentArmPosition = collectorSubsystem.getArmAngle();
+
         if (joystick.getRawButtonPressed(collectorStartPositionButton)) {
             shouldGoToStartPosition = true;
             shouldGoToCollectPosition = false;
@@ -69,10 +71,11 @@ public class FuelCollectorTeleopCommand extends Command {
 
 
         } else if (shouldGoToCollectPosition) {
-            targetArmPosition = Degrees.of(135);
+            targetArmPosition = Degrees.of(200);
         } else {
             targetArmPosition = currentArmPosition;
         }
+
         Logger.recordOutput("ShouldGoToCollectPosition", shouldGoToCollectPosition);
         Logger.recordOutput("shouldGoToStartPosition", shouldGoToStartPosition);
         fuelCollectorArmPID.setSetpoint(targetArmPosition.in(Degrees));

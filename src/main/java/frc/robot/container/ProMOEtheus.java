@@ -112,12 +112,15 @@ public class ProMOEtheus extends RobotContainer {
     SparkMax climberMotor = new SparkMax(6, SparkLowLevel.MotorType.kBrushless);
     SparkMaxConfig climberMotorConfig = new SparkMaxConfig();
     climberMotorConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
+    //climberMotorConfig.
     climberMotor.configure(climberMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     Climber climber = new Climber(climberMotor, Inches.of(29.75), Inches.of(20.0)) {
     };
         SparkMax collectorArmMotor = new SparkMax(15, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
         SparkMax collectorRollerMotor= new SparkMax(17, SparkLowLevel.MotorType.kBrushless); // not confrimed arm id
         collectorRollerMotor.setInverted(true);
+        collectorArmMotor.setInverted(true);
+
         Angle collectorArmBottom = Degrees.of(137);
         Angle collectorArmTop = Degrees.of(223);
 

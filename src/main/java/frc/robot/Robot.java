@@ -63,9 +63,9 @@ public class Robot extends LoggedRobot {
 
     public Command climberTeleopCommand = new ClimberTeleopCommand(robot, driverJoystick);
 
-    public Command climberAutoCommand = new ClimberAutoCommand(robot, true, 1.0,true);
+    public Command climberAutoCommand = new ClimberAutoCommand(robot, true, 1.0,false);
 
-    public Command collectorAutoCommand = new FuelCollectorAutoCommand(robot, false, false, "out");
+    public Command collectorAutoCommand = new FuelCollectorAutoCommand(robot, true, false, "out");
 
     //AutosChooser autoCommand = new AutosChooser();
     private AutosChooser.CommandAndPose auto;
@@ -218,7 +218,6 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void testInit() {
-
     }
 
     @Override
