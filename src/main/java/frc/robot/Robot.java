@@ -6,29 +6,18 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import com.fasterxml.jackson.databind.util.Converter;
-import com.pathplanner.lib.commands.FollowPathCommand;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.math.geometry.*;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.*;
-import frc.robot.commands.*;
-import frc.robot.commands.autos.DepotRun;
-import frc.robot.container.MiniBotContainer;
-import frc.robot.container.ProMOEtheus;
+import frc.robot.commands.autos.DepotRunTest;
 import frc.robot.container.RobotContainer;
 import frc.robot.container.SubMOErine;
-import frc.robot.subsystem.Collector;
 import org.littletonrobotics.junction.LoggedRobot;
-import edu.wpi.first.math.MathUtil;
-import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.Logger;
 
-import static edu.wpi.first.units.Units.InchesPerSecond;
 import static edu.wpi.first.units.Units.RPM;
 
 
@@ -40,21 +29,19 @@ public class Robot extends LoggedRobot {
 
     public double deadband = 0.06; // find deadband number;
     private CommandScheduler scheduler;
-    private Command collectorTestCommand = new FuelCollectorTestCommand(robot, functionJoystick);
     private Command collectorTeleopCommand = new FuelCollectorTeleopCommand(robot, functionJoystick);
 
     public ClimberTestCommand climberTestCommand = new ClimberTestCommand(robot, driverJoystick);
 
-    private Command shooterTestCommand = new ShooterTestCommand(robot,driverJoystick, functionJoystick);
-
     private Command shooterTeleopCommand = new ShooterTeleopCommand(robot, functionJoystick);
 
-    public Command rotateCommand = new AutoRotateCommand(robot,driverJoystick);
 
     public Command driveTeleopCommand = new DriveTeleopCommand(robot,driverJoystick);
 
 
     public Command hubLoggingCommand = new HubLoggingCommand(driverJoystick);
+    public Command autoRotate = new AutoRotateCommand(robot, driverJoystick);
+
 
 
     public Command autoShootercommand = new ShooterAutoCommand(robot, ShooterAutoCommand.Target.HUB);
@@ -67,7 +54,10 @@ public class Robot extends LoggedRobot {
 
     public Command collectorAutoCommand = new FuelCollectorAutoCommand(robot, true, false, "out");
 
-    AutosChooser autoCommand = new AutosChooser();
+
+    Autos.CommandAndPose autoCommand = new Autos.CommandAndPose(Commands.none(),new Pose2d());
+
+    Autos.CommandAndPose auto;
 
     @Override
     public void robotInit() {
@@ -79,7 +69,7 @@ public class Robot extends LoggedRobot {
 //        scheduler.schedule(FollowPathCommand.warmupCommand());
         scheduler.schedule(hubLoggingCommand);
 
-        auto = DepotRun.getAuto(robot);
+        auto = DepotRunTest.getAuto(robot);
 
     }
 
@@ -129,6 +119,13 @@ public class Robot extends LoggedRobot {
         Logger.recordOutput("Auto End Pose", testPath.path.getGoalEndState());
 
  */
+
+        /*
+        autoCommand = Autos.getSelectedAuto();
+        scheduler.schedule(autoCommand);
+
+         */
+
         robot.getRobotSwerveDrive().setPose(auto.pose());
         scheduler.schedule(auto.command());
     }
@@ -171,7 +168,7 @@ public class Robot extends LoggedRobot {
         if(driverJoystick.getRawButton(1)){
             robot.getRobotSwerveDrive().setPose(new Pose2d(robot.getRobotSwerveDrive().getPose().getTranslation(), DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue ? Rotation2d.kZero : Rotation2d.kPi));
         }
-
+        /*
 
         AngularVelocity rollerVelocity;
 
@@ -199,18 +196,21 @@ public class Robot extends LoggedRobot {
 
 
 
-
+        */
 
         if (driverJoystick.getPOV() != -1) {
             scheduler.cancel(driveTeleopCommand);
-            scheduler.schedule(rotateCommand);
+            scheduler.schedule(autoRotate);
 
         } else {
             {
-                scheduler.cancel(rotateCommand);
+                scheduler.cancel(autoRotate);
                 scheduler.schedule(driveTeleopCommand);
             }
         }
+
+
+
 
 
     }

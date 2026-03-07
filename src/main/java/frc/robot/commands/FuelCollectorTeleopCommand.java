@@ -71,7 +71,7 @@ public class FuelCollectorTeleopCommand extends Command {
 
 
         } else if (shouldGoToCollectPosition) {
-            targetArmPosition = Degrees.of(200);
+            targetArmPosition = Degrees.of(135);
         } else {
             targetArmPosition = currentArmPosition;
         }
@@ -82,7 +82,7 @@ public class FuelCollectorTeleopCommand extends Command {
 
         if (!fuelCollectorArmPID.atSetpoint()) {
             double armCorrection = fuelCollectorArmPID.calculate(currentArmPosition.in(Degrees));
-            collectorSubsystem.setArmVelocity(RPM.of(armCorrection));
+            collectorSubsystem.setArmVelocity(DegreesPerSecond.of(armCorrection));
             Logger.recordOutput("FuelCollector/ArmCorrection", DegreesPerSecond.of(armCorrection));
         } else {
             shouldGoToCollectPosition = false;

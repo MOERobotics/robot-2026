@@ -100,7 +100,11 @@ public class ShooterAutoCommand extends Command {
 
         double currTurretAngle = shooter.getTurretAngleinDegrees().in(Degrees);
 
-        double desTurretAngle = MathUtil.clamp(desiredTurret.getDegrees(), 30,330);
+        double desiredAngle = desiredTurret.getDegrees();
+
+        desiredAngle = MathUtil.inputModulus(desiredAngle, 0, 360);
+
+        double desTurretAngle = MathUtil.clamp(desiredAngle, 30,330);
 
         double turretOutput = turretPID.calculate(currTurretAngle, desTurretAngle);
 
