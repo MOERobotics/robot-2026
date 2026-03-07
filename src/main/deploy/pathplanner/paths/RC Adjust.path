@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.46,
-        "y": 0.725
+        "x": 1.0552272727272725,
+        "y": 2.6745000000000005
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.71,
-        "y": 0.7249999999999996
+        "x": 1.0552272727272725,
+        "y": 2.9245000000000005
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "RC"
     },
     {
       "anchor": {
-        "x": 8.903994293865905,
-        "y": 5.076562054208274
+        "x": 1.0552272727272725,
+        "y": 3.0063766048502147
       },
       "prevControl": {
-        "x": 8.903994293865905,
-        "y": 4.826562054208274
+        "x": 1.0208965307469025,
+        "y": 2.7587450233524637
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -90.0
   },
   "reversed": false,
-  "folder": "Test Paths",
+  "folder": "Climbs",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

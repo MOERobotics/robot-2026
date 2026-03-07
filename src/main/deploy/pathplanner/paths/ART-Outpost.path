@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.46,
+        "x": 3.56,
         "y": 0.725
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.71,
-        "y": 0.7249999999999996
+        "x": 2.2923395149786017,
+        "y": 0.7291726105563496
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "ART"
     },
     {
       "anchor": {
-        "x": 8.903994293865905,
-        "y": 5.076562054208274
+        "x": 0.7138231098430812,
+        "y": 0.725
       },
       "prevControl": {
-        "x": 8.903994293865905,
-        "y": 4.826562054208274
+        "x": 1.2054921540656205,
+        "y": 0.7291726105563499
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Outpost"
     }
   ],
   "rotationTargets": [],
@@ -42,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Test Paths",
+  "folder": "Trenches ",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0
