@@ -63,14 +63,11 @@ public class Robot extends LoggedRobot {
 
     public Command climberTeleopCommand = new ClimberTeleopCommand(robot, driverJoystick);
 
-    public Command climberAutoCommand = new ClimberAutoCommand(robot, true, 1.0,true);
+    public Command climberAutoCommand = new ClimberAutoCommand(robot, true, 1.0,false);
 
-    public Command collectorAutoCommand = new FuelCollectorAutoCommand(robot, false, false, "out");
+    public Command collectorAutoCommand = new FuelCollectorAutoCommand(robot, true, false, "out");
 
-    //AutosChooser autoCommand = new AutosChooser();
-    private AutosChooser.CommandAndPose auto;
-
-
+    AutosChooser autoCommand = new AutosChooser();
 
     @Override
     public void robotInit() {
@@ -151,6 +148,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopInit() {
+       // scheduler.schedule(collectorTeleopCommand);
         scheduler.schedule(shooterTeleopCommand);
         scheduler.schedule(collectorTeleopCommand);
         scheduler.schedule(climberTeleopCommand);
@@ -160,6 +158,7 @@ public class Robot extends LoggedRobot {
     public void teleopPeriodic() {
 /*
         ChassisSpeeds robotSpeed = new ChassisSpeeds(
+       /* ChassisSpeeds robotSpeed = new ChassisSpeeds(
                 MathUtil.applyDeadband(driverJoystick.getRawAxis(1) * -1, deadband),
                 MathUtil.applyDeadband(driverJoystick.getRawAxis(0) * -1, deadband),
                 MathUtil.applyDeadband(driverJoystick.getRawAxis(2) * -1, deadband));
@@ -224,8 +223,8 @@ public class Robot extends LoggedRobot {
     @Override
     public void testPeriodic() {
         scheduler.schedule(climberTestCommand);
-        scheduler.schedule(shooterTestCommand);
-        scheduler.schedule(collectorTestCommand);
+        //scheduler.schedule(shooterTestCommand);
+        scheduler.schedule(collectorTeleopCommand);
     }
 
     @Override
