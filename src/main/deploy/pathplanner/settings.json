@@ -3,14 +3,15 @@
   "robotLength": 0.863,
   "holonomicMode": true,
   "pathFolders": [
-    "Snowblowers",
-    "Hub",
-    "Outpost",
-    "Depot",
     "Bumps",
-    "Trenches ",
     "Climbs",
-    "Test Paths"
+    "Depot",
+    "Hub",
+    "Neutral",
+    "Outpost",
+    "Snowblowers",
+    "Test Paths",
+    "Trenches "
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.0,

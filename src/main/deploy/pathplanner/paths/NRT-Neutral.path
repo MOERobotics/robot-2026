@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.71,
-        "y": 0.7249999999999996
+        "x": 6.083366619115549,
+        "y": 0.5739087018544944
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "NRT"
     },
     {
       "anchor": {
-        "x": 8.903994293865905,
-        "y": 5.076562054208274
+        "x": 7.7265763195435095,
+        "y": 1.2725962910128386
       },
       "prevControl": {
-        "x": 8.903994293865905,
-        "y": 4.826562054208274
+        "x": 7.2219686162624805,
+        "y": 0.5350927246790309
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "RN"
     }
   ],
   "rotationTargets": [],
@@ -42,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "reversed": false,
-  "folder": "Test Paths",
+  "folder": "Trenches ",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0
