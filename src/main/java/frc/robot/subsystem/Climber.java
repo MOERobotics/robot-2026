@@ -47,8 +47,8 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
     @Override
     public void readSensors(ClimberInputsAutoLogged sensors) {
         sensors.height = getHeight();
-        sensors.canGoUp = climberSparkMax.getForwardLimitSwitch().isPressed();
-        sensors.canGoDown = climberSparkMax.getReverseLimitSwitch().isPressed();
+        sensors.canGoUp = true;//climberSparkMax.getForwardLimitSwitch().isPressed();
+        sensors.canGoDown = true;//climberSparkMax.getReverseLimitSwitch().isPressed();
         sensors.velocity = getVelocity();
 
         // will update later when needed
@@ -57,21 +57,21 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
 
     @Override
     public void stop() {
-        setVelocity(InchesPerSecond.zero());
+        setPower(0);
     }
 
     @Override
-    public void setVelocity(LinearVelocity newVelocity) {
+    public void setPower(double newPower) {
         // lastVelocity is used to keep a velocity for our periodic fallback
         // also it will tell us the current applied velocity
-        getSensors().lastVelocity = newVelocity;
+        getSensors().appliedPower = newPower;
 
-        velocityLimits(newVelocity);
+        limits(newPower);
     }
 
     @Override
     public LinearVelocity getVelocity() {
-        return InchesPerSecond.of(climberSparkMax.getEncoder().getVelocity());
+        return InchesPerSecond.of(climberSparkMax.getEncoder().getVelocity() * 1 * Math.PI / 125);
     }
 
     @Override
@@ -79,11 +79,11 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
         return Inches.of((climberEncoder.getPosition() * 1 * Math.PI / 125) + minHeight.magnitude());
         //(circumference of spool / gear ratio) + offset
     }
-    public void velocityLimits(LinearVelocity velocity){
-        if (getSensors().canGoUp && velocity.gt(InchesPerSecond.zero())) {
-            climberSparkMax.set(velocity.in(InchesPerSecond));
-        } else if (getSensors().canGoDown && getSensors().lastVelocity.lt(InchesPerSecond.zero())) {
-            climberSparkMax.set(velocity.in(InchesPerSecond));
+    public void limits(double power){
+        if (getSensors().canGoUp && power > 0) {
+            climberSparkMax.set(power);
+        } else if (getSensors().canGoDown && power < 0) {
+            climberSparkMax.set(power);
         } else {
             climberSparkMax.set(0);
         }
@@ -99,7 +99,7 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
         super.periodic();
         // this is our fallback system in case setVelocity() stops getting called before we need it to;
         // it just makes sure that the motors can get to their set points and then stop.
-        velocityLimits(getSensors().lastVelocity);
+        limits(getSensors().appliedPower);
         Logger.recordOutput("climberPower", climberSparkMax.get());
     }
 }

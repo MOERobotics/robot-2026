@@ -11,13 +11,13 @@ import static edu.wpi.first.units.Units.InchesPerSecond;
 public class ClimberAutoCommand extends Command {
     public ClimberSubsystem climber;
     public boolean direction;
-    public double velocity;
+    public double power;
     public boolean hold;
 
-    public ClimberAutoCommand(RobotContainer robot, boolean direction, double velocity, boolean hold){
+    public ClimberAutoCommand(RobotContainer robot, boolean direction, double power, boolean hold){
         this.climber = robot.getClimber();
         this.direction = direction;
-        this.velocity = velocity;
+        this.power = power;
         this.hold = hold;
         addRequirements(climber);
 
@@ -32,9 +32,9 @@ public class ClimberAutoCommand extends Command {
     public void execute() {
         super.execute();
         if (direction) {
-            climber.setVelocity(InchesPerSecond.of(velocity));
+            climber.setPower(power);
         } else {
-            climber.setVelocity(InchesPerSecond.of(-velocity));
+            climber.setPower(-power);
         }
     }
 

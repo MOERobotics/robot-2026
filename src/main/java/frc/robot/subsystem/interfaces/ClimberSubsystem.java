@@ -15,12 +15,11 @@ public interface ClimberSubsystem extends Subsystem, LoggableInputs {
 
     @AutoLog
     public class ClimberInputs {
-        public LinearVelocity newVelocity = InchesPerSecond.zero();
         public LinearVelocity velocity = InchesPerSecond.zero();
-        public LinearVelocity lastVelocity = InchesPerSecond.zero();
         public Distance height = Inches.zero();
         public boolean canGoUp, canGoDown;
         public boolean hooksLatched = true;
+        public double appliedPower = 0;
 
     }
 
@@ -29,7 +28,7 @@ public interface ClimberSubsystem extends Subsystem, LoggableInputs {
     default void stop() {
     }
 
-    default void setVelocity(LinearVelocity newVelocity) {
+    default void setPower(double power) {
     }
 
     default LinearVelocity getVelocity() {

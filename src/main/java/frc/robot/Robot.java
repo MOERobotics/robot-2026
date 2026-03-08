@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.*;
 import frc.robot.commands.autos.DepotRunTest;
+import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
 import frc.robot.container.SubMOErine;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -28,7 +29,7 @@ import static edu.wpi.first.units.Units.RPM;
 
 public class Robot extends LoggedRobot {
 
-    public RobotContainer robot = new SubMOErine();
+    public RobotContainer robot = new ProMOEtheus();
     public Joystick driverJoystick = new Joystick(0);
     public Joystick functionJoystick = new Joystick(1);
 

@@ -27,8 +27,8 @@ public class ClimberFake extends MOESubsystem<ClimberInputsAutoLogged> implement
     }
 
     @Override
-    public void setVelocity(LinearVelocity newVelocity) {
-        ClimberSubsystem.super.setVelocity(newVelocity);
+    public void setPower(double power) {
+        ClimberSubsystem.super.setPower(power);
     }
 
     @Override
