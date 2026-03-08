@@ -108,6 +108,7 @@ public class ShooterTeleopCommand extends Command {
             shooterSubsystem.setTransitionPower(0);
             shooterSubsystem.setFlywheelPower(0);
         }
+        shooterSubsystem.getSensors().atShooterSpeed = shooterPIDController.atSetpoint();
 
         // Shoot Button
         if (joystick.getRawAxis(3) > 0.3) {

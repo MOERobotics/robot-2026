@@ -47,8 +47,7 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
     @Override
     public void readSensors(ClimberInputsAutoLogged sensors) {
         sensors.height = getHeight();
-        sensors.canGoUp = true;//climberSparkMax.getForwardLimitSwitch().isPressed();
-        sensors.canGoDown = true;//climberSparkMax.getReverseLimitSwitch().isPressed();
+        sensors.beamBreakTriggered = climberSparkMax.getForwardLimitSwitch().isPressed();
         sensors.velocity = getVelocity();
 
         // will update later when needed
@@ -62,8 +61,8 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
 
     @Override
     public void setPower(double newPower) {
-        // lastVelocity is used to keep a velocity for our periodic fallback
-        // also it will tell us the current applied velocity
+        // appliedPower is used to keep a power for our periodic fallback
+        // also it will tell us the current applied power
         getSensors().appliedPower = newPower;
 
         limits(newPower);
@@ -80,6 +79,7 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
         //(circumference of spool / gear ratio) + offset
     }
     public void limits(double power){
+        /*
         if (getSensors().canGoUp && power > 0) {
             climberSparkMax.set(power);
         } else if (getSensors().canGoDown && power < 0) {
@@ -87,6 +87,13 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
         } else {
             climberSparkMax.set(0);
         }
+         */
+        if (getSensors().beamBreakTriggered == getSensors().prevBeamBreakTriggered || getSensors().beamBreakTriggered && !getSensors().prevBeamBreakTriggered){
+            climberSparkMax.set(power);
+        } else {
+            stop();
+        }
+        getSensors().prevBeamBreakTriggered = getSensors().beamBreakTriggered;
     }
     @Override
     public void unlatchHooks(){

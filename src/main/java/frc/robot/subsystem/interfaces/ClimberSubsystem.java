@@ -17,7 +17,7 @@ public interface ClimberSubsystem extends Subsystem, LoggableInputs {
     public class ClimberInputs {
         public LinearVelocity velocity = InchesPerSecond.zero();
         public Distance height = Inches.zero();
-        public boolean canGoUp, canGoDown;
+        public boolean beamBreakTriggered, prevBeamBreakTriggered;
         public boolean hooksLatched = true;
         public double appliedPower = 0;
 

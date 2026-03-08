@@ -49,6 +49,7 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
         public boolean reachedMinTurret = false;
         public boolean reachedMaxHood = false;
         public boolean reachedMinHood = false;
+        public boolean atShooterSpeed = false;
     }
 
     public ShooterInputs getSensors();

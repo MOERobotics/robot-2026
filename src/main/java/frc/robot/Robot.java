@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import com.fasterxml.jackson.databind.util.Converter;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.*;
+import frc.robot.commands.autos.DepotRun;
 import frc.robot.commands.autos.DepotRunTest;
 import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
@@ -80,14 +82,14 @@ public class Robot extends LoggedRobot {
 //        scheduler.schedule(FollowPathCommand.warmupCommand());
         scheduler.schedule(hubLoggingCommand);
 
-        auto = DepotRunTest.getAuto(robot);
+        auto = DepotRun.getAuto(robot);
 
     }
 
 
     @Override
     public void driverStationConnected() {
-      //  AutosChooser.setupAutos(robot);
+        //  AutosChooser.setupAutos(robot);
     }
 
     @Override
@@ -111,6 +113,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void disabledPeriodic() {
+        setUpFieldPose();
     }
 
     @Override
@@ -136,9 +139,7 @@ public class Robot extends LoggedRobot {
         scheduler.schedule(autoCommand);
 
          */
-
-        robot.getRobotSwerveDrive().setPose(auto.pose());
-        scheduler.schedule(auto.command());
+        setUpFieldPose();
     }
 
     @Override
@@ -158,7 +159,6 @@ public class Robot extends LoggedRobot {
     public void teleopInit() {
         scheduler.schedule(shooterTeleopCommand);
         scheduler.schedule(collectorTeleopCommand);
-
         scheduler.schedule(climberTeleopCommand);
     }
 
@@ -166,14 +166,11 @@ public class Robot extends LoggedRobot {
     public void teleopPeriodic() {
 /*
         ChassisSpeeds robotSpeed = new ChassisSpeeds(
-       /* ChassisSpeeds robotSpeed = new ChassisSpeeds(
+        ChassisSpeeds robotSpeed = new ChassisSpeeds(
                 MathUtil.applyDeadband(driverJoystick.getRawAxis(1) * -1, deadband),
                 MathUtil.applyDeadband(driverJoystick.getRawAxis(0) * -1, deadband),
                 MathUtil.applyDeadband(driverJoystick.getRawAxis(2) * -1, deadband));
-
         robot.getRobotSwerveDrive().robotDrive(robotSpeed, false);
-
-
  */
 
         if(driverJoystick.getRawButton(1)){
@@ -245,5 +242,17 @@ public class Robot extends LoggedRobot {
     public void simulationPeriodic() {
     }
 
+    public void setUpFieldPose(){        //  AutosChooser.setupAutos(robot);
+        assert auto != null;
+        Pose2d startingPoseBlue = auto.pose();
+        final Pose2d startingPose;
+        if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
+            startingPose = FlippingUtil.flipFieldPose(startingPoseBlue);
+        } else {
+            startingPose = startingPoseBlue;
+        }
+        robot.getRobotSwerveDrive().setPose(startingPose);
+
+        scheduler.schedule(auto.command());}
 
 }

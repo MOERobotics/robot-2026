@@ -49,12 +49,16 @@ public class ClimberAutoCommand extends Command {
         if (hold){
             return false;
         }
+        return false;
+        /*
         if (direction){
             return !climber.getSensors().canGoUp;
         }
         else {
             return !climber.getSensors().canGoDown;
         }
+
+         */
 
     }
 }

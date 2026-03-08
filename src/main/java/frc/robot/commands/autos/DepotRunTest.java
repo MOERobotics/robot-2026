@@ -33,19 +33,12 @@ public class DepotRunTest {
                        ALT_DEPOT,
                         new FuelCollectorAutoCommand(robot,true, true,"in")
                 ),
-
                 Commands.runOnce(
                         () -> robot.getRobotSwerveDrive().stop()
-
                 ),
-
-
                 Commands.runOnce(
                         () -> System.err.println("\n\n\n\n\n\n\n\nDone!\n\n\n\n\n\n\n\n\n\n\n")
                 ));
-
-
-
         return new Autos.CommandAndPose(autoCommand, startingPose);
     }
 }
