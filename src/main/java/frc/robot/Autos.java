@@ -14,9 +14,9 @@ public class Autos {
     public static void setupAutos (RobotContainer robot){
 
         autoChooser.setDefaultOption("Auto1: H_RC ", HubandBumpAutos.H_RC(robot));
-        autoChooser.setDefaultOption("Auto1: H_LC ", HubandBumpAutos.H_LC(robot));
-        autoChooser.setDefaultOption("Auto1: RB_RC ", HubandBumpAutos.RB_RC(robot));
-        autoChooser.setDefaultOption("Auto1: LB_LC ", HubandBumpAutos.LB_LC(robot));
+        autoChooser.setDefaultOption("Auto2: H_LC ", HubandBumpAutos.H_LC(robot));
+        autoChooser.setDefaultOption("Auto3: RB_RC ", HubandBumpAutos.RB_RC(robot));
+        autoChooser.setDefaultOption("Auto4: LB_LC ", HubandBumpAutos.LB_LC(robot));
 
 
         Consumer<CommandAndPose> onAutoUpdate = (commandandPose) -> robot.getRobotSwerveDrive().setPose(autoChooser.getSelected().pose());

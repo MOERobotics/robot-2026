@@ -44,9 +44,9 @@ public class FuelCollectorTeleopCommand extends Command {
         int collectorINButton = 5;
         int collectorOUTButton = 6;
         if (joystick.getRawButton(collectorINButton)) {
-            rollerVelocity = RPM.of(1);
+            rollerVelocity = RPM.of(0.6);
         } else if (joystick.getRawButton(collectorOUTButton)) {
-            rollerVelocity = RPM.of(-1);
+            rollerVelocity = RPM.of(-0.6);
         } else {
             rollerVelocity = RPM.of(0);
 
@@ -66,12 +66,13 @@ public class FuelCollectorTeleopCommand extends Command {
             shouldGoToStartPosition = false;
         }
 
+
         if (shouldGoToStartPosition) {
-            targetArmPosition = Degrees.of(225);
+            targetArmPosition = Degrees.of(90);
 
 
         } else if (shouldGoToCollectPosition) {
-            targetArmPosition = Degrees.of(135);
+            targetArmPosition = Degrees.of(3);
         } else {
             targetArmPosition = currentArmPosition;
         }

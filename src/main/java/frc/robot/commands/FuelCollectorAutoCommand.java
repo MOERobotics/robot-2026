@@ -36,6 +36,7 @@ public class FuelCollectorAutoCommand extends Command {
     @Override
     public void initialize() {
         fuelCollectorArmPID.setTolerance(1);
+        fuelCollectorArmPID.setSetpoint(collectorSubsystem.getArmAngle().in(Degrees));
     }
 
 
@@ -70,6 +71,8 @@ public class FuelCollectorAutoCommand extends Command {
         Logger.recordOutput("at setpoint", fuelCollectorArmPID.atSetpoint());
       //  Logger.recordOutput("actual collecotr velocity", collectorSubsystem.getArmVelocity());
         Logger.recordOutput("TargetArmPos", targetArmPosition);
+
+
     }
 
     @Override

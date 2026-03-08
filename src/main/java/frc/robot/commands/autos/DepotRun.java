@@ -18,7 +18,7 @@ public class DepotRun{
         Command autoCommand =  Commands.sequence(
                 Commands.deadline(
                         new PathsFollower("ALT-Depot"),
-                        new FuelCollectorAutoCommand(robot,true, true,"in")
+                        new FuelCollectorAutoCommand(robot,true, true,"stop")
                 ).withTimeout(3),
 
                 Commands.runOnce(
@@ -26,18 +26,37 @@ public class DepotRun{
 
                 ),
 
-                new PathsFollower("Depot Collect"),
+               Commands.deadline(new PathsFollower("Depot Collect"),
+                                 new FuelCollectorAutoCommand(robot,true, true,"in")),
+
+                Commands.runOnce(
+                        () -> robot.getRobotSwerveDrive().stop()
+
+                ),
+
                 Commands.deadline(new PathsFollower("Depot Shoot"),
-                        new FuelCollectorAutoCommand(robot,true, false,"stop")),
+                                    new FuelCollectorAutoCommand(robot,true, false,"stop")),
+
+                Commands.runOnce(
+                        () -> robot.getRobotSwerveDrive().stop()
+
+                ),
 
                 new ShooterAutoCommand(robot, ShooterAutoCommand.Target.HUB),
                 new PathsFollower("Depot Climb"),
+                Commands.runOnce(
+                        () -> robot.getRobotSwerveDrive().stop()
+
+                ),
                 new PathsFollower("LC Adjust"),
+
+                Commands.runOnce(
+                        () -> robot.getRobotSwerveDrive().stop()
+
+                ),
                 new ClimberAutoCommand(robot, true, 1.0, true)
-
-
-
         );
+
 
         Pose2d startPose = new PathsFollower("ALT-Depot").path.getStartingHolonomicPose().get();
 

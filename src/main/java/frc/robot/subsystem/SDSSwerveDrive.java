@@ -53,7 +53,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
                 (speeds, feedforwards) -> robotDrive(speeds, true), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
                 new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
                         new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+                        new PIDConstants(2.0, 0.0, 0.0) // Rotation PID constants
                 ),
                 config, // The robot configuration
                 () -> {
@@ -112,6 +112,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
     }
     @Override
     public void setModuleStates(SwerveModuleState... robotModuleStates) {
+        this.getSensors().requestedModuleStates = robotModuleStates;
         for (int i = 0; i < swerveModules.length; i++) {
             SwerveModuleState moduleState = robotModuleStates[i];
             moduleState.optimize(swerveModules[i].getTravelDistanceNRobotAngle().angle);

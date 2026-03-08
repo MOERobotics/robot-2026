@@ -36,6 +36,7 @@ public interface SwerveDriveSubsystem extends Subsystem, LoggableInputs {
         public SwerveModuleSubsystem moduleBR;
         public Pose2d robotPose2D;
         public SwerveModuleState[] moduleStates;
+        public SwerveModuleState[] requestedModuleStates;
         public SwerveModulePosition[] modulePositions;
 
     }

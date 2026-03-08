@@ -30,9 +30,7 @@ public class DepotRunTest {
 
         Command autoCommand = Commands.sequence(
                 Commands.deadline(
-                       ALT_DEPOT,
-                        new FuelCollectorAutoCommand(robot,true, true,"in")
-                ),
+                       ALT_DEPOT),
 
                 Commands.runOnce(
                         () -> robot.getRobotSwerveDrive().stop()

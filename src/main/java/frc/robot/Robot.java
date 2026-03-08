@@ -17,7 +17,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.*;
+import frc.robot.commands.autos.DepotRun;
 import frc.robot.commands.autos.DepotRunTest;
+import frc.robot.commands.autos.HubandBumpAutos;
+import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
 import frc.robot.container.SubMOErine;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -28,7 +31,7 @@ import static edu.wpi.first.units.Units.RPM;
 
 public class Robot extends LoggedRobot {
 
-    public RobotContainer robot = new SubMOErine();
+    public RobotContainer robot = new ProMOEtheus();
     public Joystick driverJoystick = new Joystick(0);
     public Joystick functionJoystick = new Joystick(1);
 
@@ -79,7 +82,9 @@ public class Robot extends LoggedRobot {
 //        scheduler.schedule(FollowPathCommand.warmupCommand());
         scheduler.schedule(hubLoggingCommand);
 
-        auto = DepotRunTest.getAuto(robot);
+   // auto = DepotRunTest.getAuto(robot);
+
+    auto = HubandBumpAutos.H_LC(robot);
 
     }
 
@@ -136,6 +141,8 @@ public class Robot extends LoggedRobot {
 
          */
 
+
+
         robot.getRobotSwerveDrive().setPose(auto.pose());
         scheduler.schedule(auto.command());
     }
@@ -157,8 +164,8 @@ public class Robot extends LoggedRobot {
     public void teleopInit() {
         scheduler.schedule(shooterTeleopCommand);
         scheduler.schedule(collectorTeleopCommand);
-
         scheduler.schedule(climberTeleopCommand);
+
     }
 
     @Override
@@ -183,9 +190,9 @@ public class Robot extends LoggedRobot {
         AngularVelocity rollerVelocity;
 
         if (functionJoystick.getRawButton(6)) {
-            rollerVelocity = RPM.of(1);
+            rollerVelocity = RPM.of(0.75);
         } else if (functionJoystick.getRawButton(5)) {
-            rollerVelocity = RPM.of(-1);
+            rollerVelocity = RPM.of(-0.75);
         } else {
             rollerVelocity = RPM.of(0);
         }
@@ -208,6 +215,7 @@ public class Robot extends LoggedRobot {
 
         */
 
+
         if (driverJoystick.getPOV() != -1) {
             scheduler.cancel(driveTeleopCommand);
             scheduler.schedule(rotateCommand);
@@ -218,6 +226,7 @@ public class Robot extends LoggedRobot {
                 scheduler.schedule(driveTeleopCommand);
             }
         }
+
 
 
 

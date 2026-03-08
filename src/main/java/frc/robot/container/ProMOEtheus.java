@@ -22,7 +22,7 @@ public class ProMOEtheus extends RobotContainer {
     public ProMOEtheus() {
 
 
-        double pivotkP = 0.0050;
+        double pivotkP = 0.010;
         double pivotkI = 0;
         double pivotkD = 0;
         double pivotkIMax = 1;
@@ -121,8 +121,8 @@ public class ProMOEtheus extends RobotContainer {
         collectorRollerMotor.setInverted(true);
         collectorArmMotor.setInverted(true);
 
-        Angle collectorArmBottom = Degrees.of(137);
-        Angle collectorArmTop = Degrees.of(223);
+        Angle collectorArmBottom = Degrees.of(3);
+        Angle collectorArmTop = Degrees.of(87);
 
         this.setCollector(new Collector(collectorRollerMotor, collectorArmMotor, collectorArmBottom, collectorArmTop));
 

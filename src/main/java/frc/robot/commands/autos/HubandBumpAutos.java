@@ -16,16 +16,16 @@ import frc.robot.container.RobotContainer;
 public class HubandBumpAutos {
 
     public static Autos.CommandAndPose H_RC(RobotContainer robot) {
-        return buildHubandBumpAutos(robot, "H-RC", "RC-Adjust");
+        return buildHubandBumpAutos(robot, "H-RC", "RC Adjust");
     }
     public static Autos.CommandAndPose H_LC(RobotContainer robot) {
-        return buildHubandBumpAutos(robot, "H-LC", "LC-Adjust");
+        return buildHubandBumpAutos(robot, "H-LC", "LC Adjust");
     }
     public static Autos.CommandAndPose RB_RC(RobotContainer robot) {
-        return buildHubandBumpAutos(robot, "RB-RC", "RC-Adjust");
+        return buildHubandBumpAutos(robot, "RB-RC", "RC Adjust");
     }
     public static Autos.CommandAndPose LB_LC(RobotContainer robot) {
-        return buildHubandBumpAutos(robot, "LB-LC", "LC-Adjust");
+        return buildHubandBumpAutos(robot, "LB-LC", "LC Adjust");
     }
 
 
@@ -40,19 +40,30 @@ public class HubandBumpAutos {
 
         Pose2d startingPose = plannerPath1.path.getStartingHolonomicPose().get();
 
+
         Command auto = Commands.sequence(
-                new ShooterAutoCommand(robot, ShooterAutoCommand.Target.HUB)
-                        .withTimeout(5),
-                        plannerPath1,
+               // new ShooterAutoCommand(robot, ShooterAutoCommand.Target.HUB).withTimeout(5),
 
-                Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
 
+                plannerPath1,
+
+                Commands.runOnce(() -> robot.getRobotSwerveDrive().stop())
+
+                /*
+
+                ,
                 plannerPath2,
 
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
 
                 new ClimberAutoCommand(robot, true, 1.0, true)
+
+                 */
+
         );
+
+
+
 
         return new Autos.CommandAndPose(auto, startingPose);    }
 

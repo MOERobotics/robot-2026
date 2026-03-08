@@ -80,6 +80,7 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
         //(circumference of spool / gear ratio) + offset
     }
     public void velocityLimits(LinearVelocity velocity){
+       /*
         if (getSensors().canGoUp && velocity.gt(InchesPerSecond.zero())) {
             climberSparkMax.set(velocity.in(InchesPerSecond));
         } else if (getSensors().canGoDown && getSensors().lastVelocity.lt(InchesPerSecond.zero())) {
@@ -87,6 +88,12 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
         } else {
             climberSparkMax.set(0);
         }
+
+        */
+
+
+        climberSparkMax.set(velocity.in(InchesPerSecond));
+
     }
     @Override
     public void unlatchHooks(){

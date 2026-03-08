@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 1.0674886877828056,
-        "y": 4.8088235294117645
+        "x": 1.017,
+        "y": 4.809
       },
       "prevControl": {
-        "x": 1.5936519258202564,
-        "y": 5.011868758915835
+        "x": 1.5431632380374505,
+        "y": 5.0120452295040705
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 87.87890360333856
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": "Bumps",
