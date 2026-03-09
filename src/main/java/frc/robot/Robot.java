@@ -37,18 +37,17 @@ public class Robot extends LoggedRobot {
 
     public ClimberTestCommand climberTestCommand = new ClimberTestCommand(robot, driverJoystick);
 
-    private Command shooterTestCommand = new ShooterTestCommand(robot,driverJoystick, functionJoystick);
+    private Command shooterTestCommand = new ShooterTestCommand(robot, driverJoystick, functionJoystick);
 
     private Command shooterTeleopCommand = new ShooterTeleopCommand(robot, functionJoystick);
 
-    public Command rotateCommand = new AutoRotateCommand(robot,driverJoystick);
+    public Command rotateCommand = new AutoRotateCommand(robot, driverJoystick);
 
-    public Command driveTeleopCommand = new DriveTeleopCommand(robot,driverJoystick);
+    public Command driveTeleopCommand = new DriveTeleopCommand(robot, driverJoystick);
 
 
     public Command hubLoggingCommand = new HubLoggingCommand(driverJoystick);
     public Command autoRotate = new AutoRotateCommand(robot, driverJoystick);
-
 
 
     public Command autoShootercommand = new ShooterAutoCommand(robot, ShooterAutoCommand.Target.HUB);
@@ -57,14 +56,14 @@ public class Robot extends LoggedRobot {
 
     public Command climberTeleopCommand = new ClimberTeleopCommand(robot, driverJoystick);
 
-    public Command climberAutoCommand = new ClimberAutoCommand(robot, true, 1.0,false);
+    public Command climberAutoCommand = new ClimberAutoCommand(robot, true, 1.0, false);
 
     public Command collectorAutoCommand = new FuelCollectorAutoCommand(robot, true, false, "out");
 
     //AutosChooser autoCommand = new AutosChooser();
     private Autos.CommandAndPose auto;
 
-    Autos.CommandAndPose autoCommand = new Autos.CommandAndPose(Commands.none(),new Pose2d());
+    Autos.CommandAndPose autoCommand = new Autos.CommandAndPose(Commands.none(), new Pose2d());
 
 
     @Override
@@ -79,14 +78,14 @@ public class Robot extends LoggedRobot {
 
         // auto = DepotRunTest.getAuto(robot);
 
-      //  auto = OutpostAutos.outpost(robot);
+        //  auto = OutpostAutos.outpost(robot);
 
     }
 
 
     @Override
     public void driverStationConnected() {
-          Autos.setupAutos(robot);
+        Autos.setupAutos(robot);
 
     }
 
@@ -94,10 +93,9 @@ public class Robot extends LoggedRobot {
     public void robotPeriodic() {
         MOELogger.log();
         scheduler.run();
-        // Logger.recordOutput("command", autoCommand.getAuto().getName());
 
-        if (auto != null) {
-            Logger.recordOutput("command", auto.command().getName());
+        if (autoCommand != null) {
+            Logger.recordOutput("command", autoCommand.command().getName());
 
         }
 
@@ -133,11 +131,12 @@ public class Robot extends LoggedRobot {
 
  */
 
-        setFieldPose();
 
         autoCommand = Autos.getSelectedAuto();
-        scheduler.schedule(autoCommand.command());
 
+        setFieldPose();
+
+        scheduler.schedule(autoCommand.command());
 
 
 
@@ -191,39 +190,9 @@ public class Robot extends LoggedRobot {
 
  */
 
-        if(driverJoystick.getRawButton(1)){
+        if (driverJoystick.getRawButton(1)) {
             robot.getRobotSwerveDrive().setPose(new Pose2d(robot.getRobotSwerveDrive().getPose().getTranslation(), DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue ? Rotation2d.kZero : Rotation2d.kPi));
         }
-        /*
-
-        AngularVelocity rollerVelocity;
-
-        if (functionJoystick.getRawButton(6)) {
-            rollerVelocity = RPM.of(0.75);
-        } else if (functionJoystick.getRawButton(5)) {
-            rollerVelocity = RPM.of(-0.75);
-        } else {
-            rollerVelocity = RPM.of(0);
-        }
-
-        AngularVelocity armVelocity;
-
-        if (functionJoystick.getRawButton(7)) {
-            armVelocity = RPM.of(0.5);
-        } else if (functionJoystick.getRawButton(8)) {
-            armVelocity = RPM.of(-0.25);
-        } else {
-            armVelocity = RPM.of(0);
-        }
-
-        robot.getCollector().setRollerVelocity(rollerVelocity);
-
-        robot.getCollector().setArmVelocity(armVelocity);
-
-
-
-        */
-
 
         if (driverJoystick.getPOV() != -1) {
             scheduler.cancel(driveTeleopCommand);
@@ -235,10 +204,6 @@ public class Robot extends LoggedRobot {
                 scheduler.schedule(driveTeleopCommand);
             }
         }
-
-
-
-
 
 
     }
@@ -263,7 +228,7 @@ public class Robot extends LoggedRobot {
     }
 
 
-    public void setFieldPose(){
+    public void setFieldPose() {
         assert autoCommand != null;
         Pose2d startingPoseBlue = autoCommand.pose();
         final Pose2d startingPose;
@@ -274,9 +239,8 @@ public class Robot extends LoggedRobot {
         }
         robot.getRobotSwerveDrive().setPose(startingPose);
 
-        scheduler.schedule(autoCommand.command());}
 
-
+    }
 
 
 

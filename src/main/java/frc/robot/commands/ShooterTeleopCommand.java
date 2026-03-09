@@ -42,6 +42,19 @@ public class ShooterTeleopCommand extends Command {
 
     public double turretSetpoint, hoodSetpoint, shooterSetpoint;
 
+    public static final double HUB_HOOD = 175;
+    public static final double HUB_RPM = 4300;
+
+    public static final double CORNER_HOOD = 194;
+    public static final double CORNER_RPM = 5300;
+
+    public static final double TRENCH_HOOD = 191;
+    public static final double TRENCH_RPM = 4880;
+
+    public static final double TOWER_HOOD = 187;
+    public static final double TOWER_RPM = 4300;
+    public static final double TOWER_TURRET = 273;
+
 
     public ShooterTeleopCommand(RobotContainer robot, Joystick joystick) {
         this.joystick = joystick;
@@ -69,6 +82,39 @@ public class ShooterTeleopCommand extends Command {
 
     @Override
     public void execute() {
+       /*
+        //hub
+
+        if (joystick.getRawButtonPressed(10)) {
+            shooterSetpoint = 4300;
+            hoodSetpoint = 175;
+            isFlywheelOn = true;
+        }
+        //corner
+        if (joystick.getRawButtonPressed(12)) {
+            shooterSetpoint = 5300;
+            hoodSetpoint = 194;
+            isFlywheelOn = true;
+        }
+        //trench
+        if (joystick.getRawButtonPressed(13)) {
+            shooterSetpoint = 4880;
+            hoodSetpoint = 191;
+            isFlywheelOn = true;
+        }
+        //tower
+        if (joystick.getRawButtonPressed(14)) {
+            shooterSetpoint = 4300;
+            hoodSetpoint = 187;
+            turretSetpoint = 273;
+            isFlywheelOn = true;
+        }
+
+
+
+        */
+
+
         // Flywheel Toggle
         if (joystick.getRawButtonPressed(2)) {
             isFlywheelOn = !isFlywheelOn;

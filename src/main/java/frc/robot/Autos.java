@@ -22,8 +22,7 @@ public class Autos {
         autoChooser.setDefaultOption("Auto4: LB_LC ", HubandBumpAutos.LB_LC(robot));
         autoChooser.setDefaultOption("Auto5: DepotRun ", DepotRun.getAuto(robot));
         autoChooser.setDefaultOption("Auto6: DepotRunTest ", DepotRunTest.getAuto(robot));
-        autoChooser.setDefaultOption("Auto7: DepotRunTest ", DepotRunTest.getAuto(robot));
-        autoChooser.setDefaultOption("Auto8: Outpost ", OutpostAutos.outpost(robot));
+        autoChooser.setDefaultOption("Auto7: Outpost ", OutpostAutos.outpost(robot));
 
 
 
