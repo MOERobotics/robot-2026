@@ -13,9 +13,15 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.*;
 import frc.robot.container.ProMOEtheus;
+import frc.robot.commands.autos.DepotRun;
+import frc.robot.commands.autos.DepotRunTest;
+import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
+import frc.robot.container.SubMOErine;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
+
+import static edu.wpi.first.units.Units.RPM;
 
 
 public class Robot extends LoggedRobot {
@@ -258,14 +264,20 @@ public class Robot extends LoggedRobot {
 
 
     public void setFieldPose(){
-        Pose2d startingPose;
-
+        assert autoCommand != null;
+        Pose2d startingPoseBlue = autoCommand.pose();
+        final Pose2d startingPose;
         if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
-            startingPose = FlippingUtil.flipFieldPose(autoCommand.pose());
+            startingPose = FlippingUtil.flipFieldPose(startingPoseBlue);
         } else {
-            startingPose = autoCommand.pose();
+            startingPose = startingPoseBlue;
         }
         robot.getRobotSwerveDrive().setPose(startingPose);
 
-    }
+        scheduler.schedule(autoCommand.command());}
+
+
+
+
+
 }

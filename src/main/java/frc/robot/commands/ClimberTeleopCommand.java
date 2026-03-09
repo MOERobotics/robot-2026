@@ -33,9 +33,9 @@ public class ClimberTeleopCommand extends Command {
     public void execute() {
         super.execute();
         if (joyStick.getRawButton(6)) {
-            climber.setVelocity(InchesPerSecond.of(.1));
+            climber.setPower(.1);
         } else if (joyStick.getRawButton(5)) {
-            climber.setVelocity(InchesPerSecond.of(-.1));
+            climber.setPower(-.1);
         } else {
             climber.stop();
         }

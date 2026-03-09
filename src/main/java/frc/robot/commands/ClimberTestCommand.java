@@ -33,9 +33,9 @@ public class ClimberTestCommand extends Command {
     public void execute() {
         super.execute();
         if (joyStick.getRawButton(1)) {
-            climber.setVelocity(InchesPerSecond.of(.8));
+            climber.setPower(.2);
         } else if (joyStick.getRawButton(2)) {
-            climber.setVelocity(InchesPerSecond.of(-.8));
+            climber.setPower(-.2);
         } else {
             climber.stop();
         }

@@ -18,21 +18,22 @@ public class DepotRunTest {
 
         PathsFollower ALT_DEPOT = new PathsFollower("ALT-Depot");
 
-
+        //Flip Pose if needed
         Pose2d startingPoseBlue = ALT_DEPOT.path.getStartingHolonomicPose().get();
-
+        final Pose2d startingPose;
+        if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
+            startingPose = FlippingUtil.flipFieldPose(startingPoseBlue);
+        } else {
+            startingPose = startingPoseBlue;
+        }
 
 
         Command autoCommand = Commands.sequence(
                 Commands.deadline(
                        ALT_DEPOT),
-
                 Commands.runOnce(
                         () -> robot.getRobotSwerveDrive().stop()
-
                 ),
-
-
                 Commands.runOnce(
                         () -> System.err.println("\n\n\n\n\n\n\n\nDone!\n\n\n\n\n\n\n\n\n\n\n")
                 ));

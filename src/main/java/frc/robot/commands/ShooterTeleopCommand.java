@@ -106,6 +106,7 @@ public class ShooterTeleopCommand extends Command {
             shooterSubsystem.setTransitionPower(0);
             shooterSubsystem.setFlywheelPower(0);
         }
+        shooterSubsystem.getSensors().atShooterSpeed = shooterPIDController.atSetpoint();
 
 
 
