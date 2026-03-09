@@ -16,7 +16,7 @@ public class FuelCollectorTeleopCommand extends Command {
     boolean shouldGoToStartPosition;
     boolean shouldGoToCollectPosition;
     Joystick joystick;
-    double armkp = 0.05/180;
+    double armkp = 0.1/180;
     double armki = 0.02/180;
     double armkd = 0.0002/180;
     PIDController fuelCollectorArmPID = new PIDController(
@@ -41,8 +41,8 @@ public class FuelCollectorTeleopCommand extends Command {
         AngularVelocity rollerVelocity;
         Angle targetArmPosition;
         Angle currentArmPosition;
-        int collectorINButton = 5;
-        int collectorOUTButton = 6;
+        int collectorINButton = 6;
+        int collectorOUTButton = 5;
         if (joystick.getRawButton(collectorINButton)) {
             rollerVelocity = RPM.of(0.6);
         } else if (joystick.getRawButton(collectorOUTButton)) {
@@ -68,11 +68,11 @@ public class FuelCollectorTeleopCommand extends Command {
 
 
         if (shouldGoToStartPosition) {
-            targetArmPosition = Degrees.of(90);
+            targetArmPosition = Degrees.of(215);
 
 
         } else if (shouldGoToCollectPosition) {
-            targetArmPosition = Degrees.of(3);
+            targetArmPosition = Degrees.of(135);
         } else {
             targetArmPosition = currentArmPosition;
         }

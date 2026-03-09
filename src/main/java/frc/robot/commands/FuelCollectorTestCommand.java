@@ -38,6 +38,7 @@ public class FuelCollectorTestCommand extends Command {
     public void execute() {
 
         AngularVelocity armVelocity = RPM.of(-0.5 * MathUtil.applyDeadband(joystick.getRawAxis(0), 0.05));
+
         AngularVelocity rollerVelocity;
         if (joystick.getRawButton(1)) {
             rollerVelocity = RPM.of(1);

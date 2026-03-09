@@ -121,8 +121,11 @@ public class ProMOEtheus extends RobotContainer {
         collectorRollerMotor.setInverted(true);
         collectorArmMotor.setInverted(true);
 
-        Angle collectorArmBottom = Degrees.of(3);
-        Angle collectorArmTop = Degrees.of(87);
+       // collectorArmMotor.configAccessor.
+
+
+        Angle collectorArmBottom = Degrees.of(135);
+        Angle collectorArmTop = Degrees.of(215);
 
         this.setCollector(new Collector(collectorRollerMotor, collectorArmMotor, collectorArmBottom, collectorArmTop));
 
@@ -192,8 +195,8 @@ public class ProMOEtheus extends RobotContainer {
                 hoodMotor.getAbsoluteEncoder(),
                 Degrees.of(30),
                 Degrees.of(330),
-                Degrees.of(10),
-                Degrees.of(35));
+                Degrees.of(175),
+                Degrees.of(210));
 
         this.setRobotSwerveDrive(ProMOEtheus);
         this.setClimber(climber);

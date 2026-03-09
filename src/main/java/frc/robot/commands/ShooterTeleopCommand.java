@@ -41,17 +41,12 @@ public class ShooterTeleopCommand extends Command {
     PIDController turretPIDController = new PIDController(turretKP, turretKI, turretKD);
 
     public double turretSetpoint, hoodSetpoint, shooterSetpoint;
-    public double turretTurnMagnitude = 5;
-    public double hoodTurnMagnitude = 5;
-    public boolean leftTurretShift, rightTurretShift;
-    public boolean leftHoodShift, rightHoodShift;
+
 
     public ShooterTeleopCommand(RobotContainer robot, Joystick joystick) {
         this.joystick = joystick;
         shooterSubsystem = robot.getShooterSubsystem();
 
-        rightTurretShift = true;
-        leftTurretShift = true;
 
         shooterPIDController.setSetpoint(targetRPM);
         shooterPIDController.setTolerance(300); // Dont know if this is needed but a fine safety net ig
@@ -161,8 +156,8 @@ public class ShooterTeleopCommand extends Command {
                 shooterSubsystem.getTurretAngleinDegrees().in(Degrees),
                 turretSetpoint);
 
-        if(output >0.3){
-            output=0.3;
+        if(output >0.4){
+            output=0.4;
         }
 
 
@@ -193,8 +188,8 @@ public class ShooterTeleopCommand extends Command {
         double outputHood = hoodPIDController.calculate(shooterSubsystem.getHoodAngleFromThroughbore().in(Degrees));
 
 
-        if(outputHood > 0.32){
-            outputHood =0.32;
+        if(outputHood > 0.4){
+            outputHood =0.4;
         }
 
         Logger.recordOutput("hoodOutput", outputHood);
@@ -205,50 +200,7 @@ public class ShooterTeleopCommand extends Command {
 
     }
 
-    // will need to make what we are doing for turret and hood but as its own function.
-    public void turnIncremental(double deadZone,
-                                boolean rightShift,
-                                boolean leftShift,
-                                PIDController pidController,
-                                double setpoint,
-                                double magnitude){
 
-        if (joystick.getRawAxis(0) > deadZone) { // && !shooterSubsystem.getSensors().reachedMaxHood
-            if (rightShift) {
-                rightShift = false;
-                setpoint -= magnitude;
-            }
-        }
-
-        if (joystick.getRawAxis(0) < -deadZone) { // && !shooterSubsystem.getSensors().reachedMinHood
-            if (leftShift) {
-                leftShift = false;
-                setpoint += magnitude;
-            }
-        }
-        Logger.recordOutput("preClampTurretSetpoint",turretSetpoint);
-        turretSetpoint = MathUtil.clamp(
-                turretSetpoint,
-                shooterSubsystem.getSensors().turretMinAngle,
-                shooterSubsystem.getSensors().turretMaxAngle
-        );
-        turretPIDController.setSetpoint(turretSetpoint);
-        Logger.recordOutput("turretSetpoint", turretPIDController.getSetpoint());
-        Logger.recordOutput("turretRotation", shooterSubsystem.getTurretAngleinDegrees().in(Degrees));
-
-        double output = turretPIDController.calculate(
-                shooterSubsystem.getTurretAngleinDegrees().in(Degrees),
-                turretSetpoint);
-        Logger.recordOutput("turretOutput", output);
-        shooterSubsystem.setTurretPower(output);
-
-        if (joystick.getRawAxis(0) >= -deadZone && joystick.getRawAxis(0) <= deadZone) {
-            turretSetpoint = shooterSubsystem.getTurretAngleinDegrees().in(Degrees);
-            shooterSubsystem.setTurretPower(0);
-            rightTurretShift = true;
-            leftTurretShift = true;
-        }
-    }
 
     public void end(boolean interrupted) {
         shooterSubsystem.setFlywheelPower(0);

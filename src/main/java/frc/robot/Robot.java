@@ -4,29 +4,18 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import com.fasterxml.jackson.databind.util.Converter;
-import com.pathplanner.lib.commands.FollowPathCommand;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.math.geometry.*;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.*;
-import frc.robot.commands.autos.DepotRun;
-import frc.robot.commands.autos.DepotRunTest;
-import frc.robot.commands.autos.HubandBumpAutos;
 import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
-import frc.robot.container.SubMOErine;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
-
-import static edu.wpi.first.units.Units.RPM;
 
 
 public class Robot extends LoggedRobot {
@@ -82,23 +71,24 @@ public class Robot extends LoggedRobot {
 //        scheduler.schedule(FollowPathCommand.warmupCommand());
         scheduler.schedule(hubLoggingCommand);
 
-   // auto = DepotRunTest.getAuto(robot);
+        // auto = DepotRunTest.getAuto(robot);
 
-    auto = HubandBumpAutos.H_LC(robot);
+      //  auto = OutpostAutos.outpost(robot);
 
     }
 
 
     @Override
     public void driverStationConnected() {
-      //  AutosChooser.setupAutos(robot);
+          Autos.setupAutos(robot);
+
     }
 
     @Override
     public void robotPeriodic() {
         MOELogger.log();
         scheduler.run();
-       // Logger.recordOutput("command", autoCommand.getAuto().getName());
+        // Logger.recordOutput("command", autoCommand.getAuto().getName());
 
         if (auto != null) {
             Logger.recordOutput("command", auto.command().getName());
@@ -115,16 +105,18 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void disabledPeriodic() {
+        setFieldPose();
+
     }
 
     @Override
     public void autonomousInit() {
-  //      scheduler.schedule(autoShootercommand);
+        //      scheduler.schedule(autoShootercommand);
 
-       // scheduler.schedule(collectorAutoCommand);
+        // scheduler.schedule(collectorAutoCommand);
         //scheduler.schedule(climberAutoCommand);
-       // testPath =  new PathsFollower("ALT-Depot");
-       // robot.getRobotSwerveDrive().setPose( testPath.path.getStartingHolonomicPose().get());
+        // testPath =  new PathsFollower("ALT-Depot");
+        // robot.getRobotSwerveDrive().setPose( testPath.path.getStartingHolonomicPose().get());
         //scheduler.schedule(autoCommand.getAuto());
 /*
         robot.getTankDrive().setPose(testPath.path.getStartingDifferentialPose());
@@ -135,16 +127,25 @@ public class Robot extends LoggedRobot {
 
  */
 
-        /*
+        setFieldPose();
+
         autoCommand = Autos.getSelectedAuto();
-        scheduler.schedule(autoCommand);
+        scheduler.schedule(autoCommand.command());
 
-         */
 
+
+
+
+/*
 
 
         robot.getRobotSwerveDrive().setPose(auto.pose());
         scheduler.schedule(auto.command());
+
+
+ */
+
+
     }
 
     @Override
@@ -162,6 +163,8 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopInit() {
+
+
         scheduler.schedule(shooterTeleopCommand);
         scheduler.schedule(collectorTeleopCommand);
         scheduler.schedule(climberTeleopCommand);
@@ -254,4 +257,15 @@ public class Robot extends LoggedRobot {
     }
 
 
+    public void setFieldPose(){
+        Pose2d startingPose;
+
+        if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
+            startingPose = FlippingUtil.flipFieldPose(autoCommand.pose());
+        } else {
+            startingPose = autoCommand.pose();
+        }
+        robot.getRobotSwerveDrive().setPose(startingPose);
+
+    }
 }

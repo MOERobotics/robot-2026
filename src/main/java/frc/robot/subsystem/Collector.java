@@ -56,7 +56,7 @@ public class Collector extends MOESubsystem<CollectorInputsAutoLogged> implement
 
     @Override
     public void setArmVelocity(AngularVelocity armVelocity) {
-        /*
+
         if (inStartPosition() && armVelocity.gt(RPM.zero())) { //can't go up
             armMotor.set(0);
         } else if (inCollectPosition() && armVelocity.lte(RPM.zero())) { //can't go down
@@ -66,7 +66,6 @@ public class Collector extends MOESubsystem<CollectorInputsAutoLogged> implement
             armMotor.set(armVelocity.in(RPM));
         }
 
-         */
 
         armMotor.set(armVelocity.in(RPM));
         Logger.recordOutput("Top Angle", topAngle);

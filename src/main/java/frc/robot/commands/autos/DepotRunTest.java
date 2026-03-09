@@ -18,14 +18,9 @@ public class DepotRunTest {
 
         PathsFollower ALT_DEPOT = new PathsFollower("ALT-Depot");
 
-        //Flip Pose if needed
+
         Pose2d startingPoseBlue = ALT_DEPOT.path.getStartingHolonomicPose().get();
-        final Pose2d startingPose;
-        if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
-            startingPose = FlippingUtil.flipFieldPose(startingPoseBlue);
-        } else {
-            startingPose = startingPoseBlue;
-        }
+
 
 
         Command autoCommand = Commands.sequence(
@@ -44,6 +39,6 @@ public class DepotRunTest {
 
 
 
-        return new Autos.CommandAndPose(autoCommand, startingPose);
+        return new Autos.CommandAndPose(autoCommand, startingPoseBlue);
     }
 }

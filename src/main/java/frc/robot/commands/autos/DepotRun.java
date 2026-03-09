@@ -1,6 +1,8 @@
 package frc.robot.commands.autos;
 
+import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -15,9 +17,16 @@ public class DepotRun{
 
     public static Autos.CommandAndPose getAuto(RobotContainer robot) {
 
+        PathsFollower ALT_DEPOT = new PathsFollower("ALT-Depot");
+
+        Pose2d startingPoseBlue = ALT_DEPOT.path.getStartingHolonomicPose().get();
+
+
+
+
         Command autoCommand =  Commands.sequence(
                 Commands.deadline(
-                        new PathsFollower("ALT-Depot"),
+                        ALT_DEPOT,
                         new FuelCollectorAutoCommand(robot,true, true,"stop")
                 ).withTimeout(3),
 
@@ -58,8 +67,7 @@ public class DepotRun{
         );
 
 
-        Pose2d startPose = new PathsFollower("ALT-Depot").path.getStartingHolonomicPose().get();
 
-        return new Autos.CommandAndPose(autoCommand, startPose);
+        return new Autos.CommandAndPose(autoCommand, startingPoseBlue);
     }
 }

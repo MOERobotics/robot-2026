@@ -33,7 +33,7 @@ public class ShooterAutoCommand extends Command {
     boolean feeding = false;
 
 
-    private double flywheelRPM = 5000;
+    private double flywheelRPM = 4300;
 
     public enum Target {
         HUB,
@@ -78,12 +78,12 @@ public class ShooterAutoCommand extends Command {
 
         double flywheelOutput = flywheelPID.calculate(shooter.getFlywheelSpeed().in(RPM), flywheelRPM);
 
-        flywheelOutput = MathUtil.clamp(flywheelOutput, 0, 0.5);
+        flywheelOutput = MathUtil.clamp(flywheelOutput, 0, 0.55);
 
 
         Logger.recordOutput("flywheelOutput", flywheelOutput);
 
-        shooter.setFlywheelPower(0.5 + flywheelOutput);
+        shooter.setFlywheelPower(0.45 + flywheelOutput);
 
 
 
@@ -104,19 +104,20 @@ public class ShooterAutoCommand extends Command {
 
         desiredAngle = MathUtil.inputModulus(desiredAngle, 0, 360);
 
+
         double desTurretAngle = MathUtil.clamp(desiredAngle, 30,330);
 
         double turretOutput = turretPID.calculate(currTurretAngle, desTurretAngle);
 
 
 
-        /*
+
        if( turretOutput >0.3) {
            turretOutput=0.3;
         }
 
 
-         */
+
 
         shooter.setTurretPower(turretOutput);
 
@@ -130,7 +131,7 @@ public class ShooterAutoCommand extends Command {
 
         double currHoodAngle = shooter.getHoodAngleFromThroughbore().in(Degrees);
 
-        double desHoodAngle = MathUtil.clamp(calculateHoodAngle(distance), 0,35);
+        double desHoodAngle = MathUtil.clamp(calculateHoodAngle(distance), 180,220);
 
 
         double hoodOutput = hoodPID.calculate(currHoodAngle,desHoodAngle);
@@ -234,7 +235,7 @@ public class ShooterAutoCommand extends Command {
     private double calculateHoodAngle(double distance) {
 
         //TODO implement this with linear regression????
-        return 10;
+        return 190;
     }
 
 
