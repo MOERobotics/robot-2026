@@ -38,6 +38,7 @@ public interface SwerveDriveSubsystem extends Subsystem, LoggableInputs {
         public SwerveModuleState[] moduleStates;
         public SwerveModuleState[] requestedModuleStates;
         public SwerveModulePosition[] modulePositions;
+        public ChassisSpeeds sensorsChassisSpeeds;
 
     }
 }

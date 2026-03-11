@@ -95,4 +95,6 @@ public class Collector extends MOESubsystem<CollectorInputsAutoLogged> implement
     public boolean inCollectPosition() {
         return getSensors().inCollectPosition;
     }
+
+
 }
