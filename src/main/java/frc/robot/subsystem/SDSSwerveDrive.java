@@ -52,8 +52,8 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
                 this::getChassisSpeed, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 (speeds, feedforwards) -> robotDrive(speeds, true), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
                 new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                        new PIDConstants(0.5, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(0.5, 0.0, 0.0) // Rotation PID constants
+                        new PIDConstants(2, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(1, 0.0, 0.0) // Rotation PID constants
                 ),
                 config, // The robot configuration
                 () -> {
@@ -98,18 +98,15 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
 
     @Override
     public void robotDrive(ChassisSpeeds robotChassisSpeed, boolean robotCentric) {
-
         if(!robotCentric){
             robotChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(robotChassisSpeed, this.getPose().getRotation());
         }
+        getSensors().sensorsChassisSpeeds = robotChassisSpeed;
 
         SwerveModuleState[] robotModuleStateToChassisSpeed = robotKinematics.toSwerveModuleStates(robotChassisSpeed);
         this.setModuleStates(robotModuleStateToChassisSpeed);
     }
 
-    public void simulate() {
-
-    }
     @Override
     public void setModuleStates(SwerveModuleState... robotModuleStates) {
         this.getSensors().requestedModuleStates = robotModuleStates;
@@ -132,7 +129,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
 
         robotGyro.setYaw(robotPose2D.getRotation().getDegrees());
 
-        robotOdometry.resetPosition(robotGyro.getRotation2d(),
+        robotOdometry.resetPosition(robotPose2D.getRotation(),
                 Arrays.stream(swerveModules).map(SwerveModuleSubsystem::getTravelDistanceNRobotAngle).toArray(SwerveModulePosition[]::new),
                 robotPose2D);
     }

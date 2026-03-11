@@ -56,7 +56,7 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
 
     @Override
     public void stop() {
-        setPower(0);
+        climberSparkMax.set(0);
     }
 
     @Override

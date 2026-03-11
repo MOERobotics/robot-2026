@@ -1,6 +1,7 @@
 package frc.robot.commands;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -33,18 +34,20 @@ public class PathsFollower extends Command {
     @Override
     public void initialize() {
         pathCommand.initialize();
+        Logger.recordOutput("PathPlannerStuff/scheduled", true);
+        Logger.recordOutput("PathPlannerStuff/current path", pathCommand.getName());
+        Logger.recordOutput("PathPlannerStuff/trajectory", path.getPathPoses().toArray(Pose2d[]::new));
     }
 
     @Override
     public void execute() {
-        Logger.recordOutput("PathPlannerStuff/scheduled", pathCommand.isScheduled());
-        Logger.recordOutput("PathPlannerStuff/current path", pathCommand.getName());
         pathCommand.execute();
     }
 
     @Override
     public void end(boolean interrupted) {
 
+        Logger.recordOutput("PathPlannerStuff/scheduled", false);
         pathCommand.end(interrupted);
     }
 

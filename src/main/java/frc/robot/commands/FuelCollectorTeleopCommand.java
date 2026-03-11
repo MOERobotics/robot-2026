@@ -19,6 +19,7 @@ public class FuelCollectorTeleopCommand extends Command {
     double armkp = (double) 5 /180;
     double armki = 0.02/180;
     double armkd = 0.0002/180;
+
     PIDController fuelCollectorArmPID = new PIDController(
             armkp, armki, armkd
     );
@@ -83,12 +84,14 @@ public class FuelCollectorTeleopCommand extends Command {
 
         if (!fuelCollectorArmPID.atSetpoint()) {
             double armCorrection = fuelCollectorArmPID.calculate(currentArmPosition.in(Degrees));
-            collectorSubsystem.setArmVelocity(DegreesPerSecond.of(armCorrection));
+
+           // collectorSubsystem.setArmVelocity(DegreesPerSecond.of(armCorrection + feedforward));
             Logger.recordOutput("FuelCollector/ArmCorrection", DegreesPerSecond.of(armCorrection));
+            //Logger.recordOutput("FuelCollector/Feedforward", feedforward);
         } else {
             shouldGoToCollectPosition = false;
             shouldGoToStartPosition = false;
-            collectorSubsystem.setArmVelocity(DegreesPerSecond.of(0));
+            collectorSubsystem.setArmVelocity(RPM.of(0));
         }
 
         Logger.recordOutput("TargetArmPos", targetArmPosition);

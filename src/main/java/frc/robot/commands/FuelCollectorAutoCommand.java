@@ -18,6 +18,7 @@ public class FuelCollectorAutoCommand extends Command {
     double armkp = 0.05/180;
     double armki = 0.02/180;
     double armkd = 0.0002/180;
+    double feedforward;
     PIDController fuelCollectorArmPID = new PIDController(
             armkp, armki, armkd
     );
@@ -64,10 +65,12 @@ public class FuelCollectorAutoCommand extends Command {
         }
         fuelCollectorArmPID.setSetpoint(targetArmPosition.in(Degrees));
 
-            double armCorrection = fuelCollectorArmPID.calculate(currentArmPosition.in(Degrees));
-            collectorSubsystem.setArmVelocity(RPM.of(armCorrection));
+        double armCorrection = fuelCollectorArmPID.calculate(currentArmPosition.in(Degrees));
+
+        collectorSubsystem.setArmVelocity(RPM.of(armCorrection));
             Logger.recordOutput("FuelCollector/ArmCorrection", armCorrection);
             Logger.recordOutput("FuelCollector/ArmCorrectionVel", DegreesPerSecond.of(armCorrection));
+
         Logger.recordOutput("at setpoint", fuelCollectorArmPID.atSetpoint());
       //  Logger.recordOutput("actual collecotr velocity", collectorSubsystem.getArmVelocity());
         Logger.recordOutput("TargetArmPos", targetArmPosition);

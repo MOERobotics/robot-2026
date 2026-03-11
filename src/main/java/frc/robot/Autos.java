@@ -4,10 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.autos.DepotRun;
-import frc.robot.commands.autos.DepotRunTest;
-import frc.robot.commands.autos.HubandBumpAutos;
-import frc.robot.commands.autos.OutpostAutos;
+import frc.robot.commands.autos.*;
 import frc.robot.container.RobotContainer;
 
 import java.util.function.Consumer;
@@ -23,6 +20,7 @@ public class Autos {
         autoChooser.setDefaultOption("Auto5: DepotRun ", DepotRun.getAuto(robot));
         autoChooser.setDefaultOption("Auto6: DepotRunTest ", DepotRunTest.getAuto(robot));
         autoChooser.setDefaultOption("Auto7: Outpost ", OutpostAutos.outpost(robot));
+        autoChooser.setDefaultOption("Auto8: SquareDance", SquareDance.squareDance(robot));
 
 
 
