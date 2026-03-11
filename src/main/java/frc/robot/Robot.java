@@ -134,6 +134,7 @@ public class Robot extends LoggedRobot {
 
         autoCommand = Autos.getSelectedAuto();
 
+
         setFieldPose();
 
         scheduler.schedule(autoCommand.command());
