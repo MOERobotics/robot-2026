@@ -175,6 +175,15 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
 
     }
 
+
+    public Angle getTurretOffset() {
+        Angle currAngle = getTurretAngle();
+        Angle relativeEncoder = Rotations.of(turretMotor.getEncoder().getPosition());
+
+
+
+    }
+
     @Override
     public AngularVelocity getFlywheelSpeed() {
         return RPM.of(flywheelMotor.getEncoder().getVelocity());
