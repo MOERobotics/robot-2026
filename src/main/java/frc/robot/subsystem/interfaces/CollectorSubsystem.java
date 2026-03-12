@@ -18,6 +18,7 @@ public interface CollectorSubsystem extends Subsystem, LoggableInputs {
         public boolean inStartPosition = false;
         public boolean inCollectPosition = false;
         public Angle collectorArmAngle = Degrees.zero();
+        public double collectorArmAngleDegrees = 0;
         public double armMotorPower;
         public double rollerMotorPower;
     }

@@ -48,6 +48,7 @@ public class Collector extends MOESubsystem<CollectorInputsAutoLogged> implement
         sensors.rollerVelocity = RPM.of(rollerEncoder.getVelocity());
         sensors.collectorArmVelocity = RPM.of(armEncoder.getVelocity());
         sensors.collectorArmAngle = Rotations.of(armEncoder.getPosition());
+        sensors.collectorArmAngleDegrees = (Rotations.of(armEncoder.getPosition())).in(Degrees);
         sensors.inStartPosition = Rotations.of(armEncoder.getPosition()).gte(topAngle);
         sensors.inCollectPosition = Rotations.of(armEncoder.getPosition()).lte(bottomAngle);
         sensors.armMotorPower = armMotor.get();

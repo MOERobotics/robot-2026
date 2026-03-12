@@ -19,6 +19,10 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
 
         public Angle hoodAngleMotor = Rotation.zero();
 
+        public double turretAngleDegrees = 0;
+
+        public double hoodAngleThroughboreDegrees = 0;
+
         public boolean shooting = false;
 
         public boolean spindexerOn = false;
@@ -92,7 +96,7 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
 
 
 
-    default Angle getTurretAngleinDegrees() {
+    default Angle getTurretAngle() {
         return getSensors().turretAngle;
     }
 

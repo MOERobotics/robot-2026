@@ -26,7 +26,7 @@ import static edu.wpi.first.units.Units.RPM;
 
 public class Robot extends LoggedRobot {
 
-    public RobotContainer robot = new SubMOErine();
+    public RobotContainer robot = new ProMOEtheus();
     public Joystick driverJoystick = new Joystick(0);
     public Joystick functionJoystick = new Joystick(1);
 

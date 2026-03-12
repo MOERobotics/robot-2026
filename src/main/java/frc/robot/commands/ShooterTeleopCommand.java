@@ -72,7 +72,7 @@ public class ShooterTeleopCommand extends Command {
     @Override
     public void initialize() {
         //shooterPIDController.reset(); isnt needed right now since kI and kD are zero
-        turretSetpoint = shooterSubsystem.getTurretAngleinDegrees().in(Degrees);
+        turretSetpoint = shooterSubsystem.getTurretAngle().in(Degrees);
         hoodSetpoint = shooterSubsystem.getHoodAngleFromThroughbore().in(Degrees);
         shooterSetpoint = 4300;
         hoodPIDController.setSetpoint(hoodSetpoint);
@@ -195,12 +195,12 @@ public class ShooterTeleopCommand extends Command {
 
         turretPIDController.setSetpoint(turretSetpoint);
         Logger.recordOutput("turretSetpoint", turretPIDController.getSetpoint());
-        Logger.recordOutput("turretRotation", shooterSubsystem.getTurretAngleinDegrees().in(Degrees));
+        Logger.recordOutput("turretRotation", shooterSubsystem.getTurretAngle().in(Degrees));
         Logger.recordOutput("shootetAtSetPoint", shooterPIDController.atSetpoint());
 
 
         double output = turretPIDController.calculate(
-                shooterSubsystem.getTurretAngleinDegrees().in(Degrees),
+                shooterSubsystem.getTurretAngle().in(Degrees),
                 turretSetpoint);
 
         if(output >0.4){

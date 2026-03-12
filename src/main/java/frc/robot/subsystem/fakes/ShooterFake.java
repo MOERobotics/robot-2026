@@ -69,8 +69,8 @@ public class ShooterFake extends MOESubsystem<ShooterInputsAutoLogged> implement
     }
 
     @Override
-    public Angle getTurretAngleinDegrees() {
-        return ShooterSubsystem.super.getTurretAngleinDegrees();
+    public Angle getTurretAngle() {
+        return ShooterSubsystem.super.getTurretAngle();
     }
     @Override
     public Angle getHoodAngleFromMotor() {

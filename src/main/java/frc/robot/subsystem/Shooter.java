@@ -88,7 +88,9 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
     public void readSensors(ShooterInputsAutoLogged sensors) {
         getSensors().hoodAngleThroughbore = getHoodAngleFromThroughbore();
         getSensors().hoodAngleMotor = getHoodAngleFromMotor();
-        getSensors().turretAngle = getTurretAngleinDegrees();
+        getSensors().hoodAngleThroughboreDegrees = getHoodAngleFromThroughbore().in(Degrees);
+        getSensors().turretAngleDegrees = getTurretAngle().in(Degrees);
+        getSensors().turretAngle = getTurretAngle();
         getSensors().flywheelSpeed = getFlywheelSpeed();
         getSensors().hoodSpeed = RPM.of(hoodMotor.getAbsoluteEncoder().getVelocity());
         getSensors().spindexerSpeed = RPM.of(spindexerMotor.getEncoder().getVelocity());
@@ -158,7 +160,7 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
 
 
     @Override
-    public Angle getTurretAngleinDegrees() {
+    public Angle getTurretAngle() {
         return Rotations.of(turretEncoder.getPosition());
     }
 
@@ -190,11 +192,11 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
     }
     @Override
     public boolean reachedTurretMax() {
-        return this.getTurretAngleinDegrees().gt(Degrees.of(turretMaxAngle.in(Degrees)).minus(Degrees.of(TURRET_TOLERANCE.in(Degrees))));
+        return this.getTurretAngle().gt(Degrees.of(turretMaxAngle.in(Degrees)).minus(Degrees.of(TURRET_TOLERANCE.in(Degrees))));
     }
     @Override
     public boolean reachedTurretMin() {
-        return this.getTurretAngleinDegrees().lt(Degrees.of(turretMinAngle.in(Degrees)).plus(Degrees.of(TURRET_TOLERANCE.in(Degrees))));
+        return this.getTurretAngle().lt(Degrees.of(turretMinAngle.in(Degrees)).plus(Degrees.of(TURRET_TOLERANCE.in(Degrees))));
     }
 
 

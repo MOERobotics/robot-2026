@@ -98,7 +98,7 @@ public class ShooterAutoCommand extends Command {
         Rotation2d desiredTurret = targetTurretAngle.minus(robotHeading);
 
 
-        double currTurretAngle = shooter.getTurretAngleinDegrees().in(Degrees);
+        double currTurretAngle = shooter.getTurretAngle().in(Degrees);
 
         double desiredAngle = desiredTurret.getDegrees();
 
