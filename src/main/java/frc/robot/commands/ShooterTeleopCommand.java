@@ -146,7 +146,7 @@ public class ShooterTeleopCommand extends Command {
             if (output < 0) output = 0;
 
             shooterSubsystem.setFlywheelPower(0.45+ output);
-            shooterSubsystem.setTransitionPower(0.7);
+            shooterSubsystem.setTransitionPower(0.8);
 
         } else {
             shooterSubsystem.setTransitionPower(0);
@@ -170,20 +170,20 @@ public class ShooterTeleopCommand extends Command {
             }
         } else if(joystick.getRawAxis(2)> 0.3){
             shooterSubsystem.setSpindexerPower(-1);
-            if(!isFlywheelOn){
-                shooterSubsystem.setTransitionPower(-0.7);
-            }
+            shooterSubsystem.setTransitionPower(-0.8);
+
+
         } else {
             shooterSubsystem.setSpindexerPower(0);
         }
 
         if (joystick.getRawAxis(0) > deadZone) { // && !shooterSubsystem.getSensors().reachedMaxHood
-            turretSetpoint -= 0.5;
+            turretSetpoint -= 2;
 
         }
 
         if (joystick.getRawAxis(0) < -deadZone) { // && !shooterSubsystem.getSensors().reachedMinHood
-            turretSetpoint += 0.5;
+            turretSetpoint += 2;
 
         }
         Logger.recordOutput("preClampTurretSetpoint",turretSetpoint);

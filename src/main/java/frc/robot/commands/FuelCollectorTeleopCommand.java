@@ -16,7 +16,7 @@ public class FuelCollectorTeleopCommand extends Command {
     boolean shouldGoToStartPosition;
     boolean shouldGoToCollectPosition;
     Joystick joystick;
-    double armkp = (double) 5 /300;
+    double armkp =  5.0 /300;
     double armki = 0.02/180;
     double armkd = 0.0002/180;
 
@@ -70,8 +70,6 @@ public class FuelCollectorTeleopCommand extends Command {
 
         if (shouldGoToStartPosition) {
             targetArmPosition = Degrees.of(215);
-
-
         } else if (shouldGoToCollectPosition) {
             targetArmPosition = Degrees.of(135);
         } else {
@@ -84,7 +82,7 @@ public class FuelCollectorTeleopCommand extends Command {
 
         if (!fuelCollectorArmPID.atSetpoint()) {
             double armCorrection = fuelCollectorArmPID.calculate(currentArmPosition.in(Degrees));
-            collectorSubsystem.setArmVelocity(DegreesPerSecond.of(armCorrection));
+
            // collectorSubsystem.setArmVelocity(DegreesPerSecond.of(armCorrection + feedforward));
             Logger.recordOutput("FuelCollector/ArmCorrection", DegreesPerSecond.of(armCorrection));
             //Logger.recordOutput("FuelCollector/Feedforward", feedforward);
