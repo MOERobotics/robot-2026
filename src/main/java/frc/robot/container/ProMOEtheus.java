@@ -174,7 +174,7 @@ public class ProMOEtheus extends RobotContainer {
         hoodMotor.configure(hoodConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
 
-        spindexerConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
+        spindexerConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
         spindexerConfig.inverted(true);
         spindexerMotor.configure(spindexerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
@@ -196,7 +196,7 @@ public class ProMOEtheus extends RobotContainer {
                 Degrees.of(30),
                 Degrees.of(330),
                 Degrees.of(175),
-                Degrees.of(210));
+                Degrees.of(205));
 
         this.setRobotSwerveDrive(ProMOEtheus);
         this.setClimber(climber);

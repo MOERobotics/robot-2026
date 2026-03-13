@@ -26,7 +26,7 @@ public class ShooterAutoCommand extends Command {
 
     // copied from teleop stuff
 
-    private PIDController flywheelPID = new PIDController(1 / 200.0, 0.0001, 0.1 / 17500);
+    private PIDController flywheelPID = new PIDController(1 / 2500.0, 0.002, 0.1 / 14000);
     private PIDController turretPID = new PIDController(0.0055, 0, 0);
     private PIDController hoodPID = new PIDController(0.056, 0, 0);
     private Timer shootTimer = new Timer();
@@ -52,9 +52,6 @@ public class ShooterAutoCommand extends Command {
         turretPID.setTolerance(1.0);
         hoodPID.setTolerance(1.0);
 
-
-
-
         addRequirements(shooter);
     }
 
@@ -64,8 +61,6 @@ public class ShooterAutoCommand extends Command {
 
         shootTimer.reset();
         shootTimer.stop();
-
-
         feeding = false;
     }
 
@@ -119,7 +114,7 @@ public class ShooterAutoCommand extends Command {
 
 
 
-        shooter.setTurretPower(turretOutput);
+     //   shooter.setTurretPower(turretOutput);
 
         Logger.recordOutput("turretOutput", turretOutput);
         Logger.recordOutput("turretDesiredAngle", desiredTurret.getDegrees());
@@ -134,10 +129,9 @@ public class ShooterAutoCommand extends Command {
         double desHoodAngle = MathUtil.clamp(calculateHoodAngle(distance), 180,220);
 
 
-        double hoodOutput = hoodPID.calculate(currHoodAngle,desHoodAngle);
+        double hoodOutput = hoodPID.calculate(currHoodAngle,191);
 
         hoodOutput = MathUtil.clamp(hoodOutput, -0.32, 0.32);
-
 
 
         shooter.setHoodPower(hoodOutput);
@@ -157,7 +151,7 @@ public class ShooterAutoCommand extends Command {
         Logger.recordOutput("hoodReady", hoodReady);
 
 
-        if (flywheelReady && turretReady && hoodReady) {
+        if (flywheelReady /*&& turretReady */ && hoodReady) {
 
             if (!feeding) {
                 shootTimer.start();
@@ -165,7 +159,7 @@ public class ShooterAutoCommand extends Command {
             }
 
             shooter.setSpindexerPower(1);
-            shooter.setTransitionPower(0.7);
+            shooter.setTransitionPower(0.5);
         }
 
 

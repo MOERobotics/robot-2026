@@ -39,6 +39,7 @@ public class ClimberTeleopCommand extends Command {
         } else {
             climber.stop();
         }
+
         if (joyStick.getRawButtonPressed(10)){
             clicksSequence += 1;
             decayTrigger = true;

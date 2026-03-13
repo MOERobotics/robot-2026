@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -16,7 +17,7 @@ public class FuelCollectorTeleopCommand extends Command {
     boolean shouldGoToStartPosition;
     boolean shouldGoToCollectPosition;
     Joystick joystick;
-    double armkp =  5.0 /300;
+    double armkp =  5.0 /600;
     double armki = 0.02/180;
     double armkd = 0.0002/180;
 
@@ -79,11 +80,11 @@ public class FuelCollectorTeleopCommand extends Command {
         Logger.recordOutput("ShouldGoToCollectPosition", shouldGoToCollectPosition);
         Logger.recordOutput("shouldGoToStartPosition", shouldGoToStartPosition);
         fuelCollectorArmPID.setSetpoint(targetArmPosition.in(Degrees));
-
+        // -0.5 ,0.7
         if (!fuelCollectorArmPID.atSetpoint()) {
-            double armCorrection = fuelCollectorArmPID.calculate(currentArmPosition.in(Degrees));
+            double armCorrection = MathUtil.clamp(fuelCollectorArmPID.calculate(currentArmPosition.in(Degrees)), -0.3, 0.6);
 
-           // collectorSubsystem.setArmVelocity(DegreesPerSecond.of(armCorrection + feedforward));
+            collectorSubsystem.setArmVelocity(RPM.of(armCorrection));
             Logger.recordOutput("FuelCollector/ArmCorrection", DegreesPerSecond.of(armCorrection));
             //Logger.recordOutput("FuelCollector/Feedforward", feedforward);
         } else {

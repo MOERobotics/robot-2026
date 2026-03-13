@@ -22,6 +22,7 @@ public class Autos {
         autoChooser.setDefaultOption("Auto7: Outpost ", OutpostAutos.outpost(robot));
         autoChooser.setDefaultOption("Auto8: SquareDance", SquareDance.squareDance(robot));
 
+        autoChooser.setDefaultOption("Auto9: Justshoot", Shoot.shoot(robot));
 
 
 

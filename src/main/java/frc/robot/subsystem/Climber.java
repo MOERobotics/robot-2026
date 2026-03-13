@@ -65,7 +65,10 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
         // also it will tell us the current applied power
         getSensors().appliedPower = newPower;
 
-        limits(newPower);
+
+        climberSparkMax.set(newPower);
+       // limits(newPower);
+
     }
 
     @Override
@@ -88,10 +91,10 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
             climberSparkMax.set(0);
         }
          */
-        if (getSensors().beamBreakTriggered == getSensors().prevBeamBreakTriggered || getSensors().beamBreakTriggered && !getSensors().prevBeamBreakTriggered){
-            climberSparkMax.set(power);
-        } else {
+        if (!getSensors().beamBreakTriggered && getSensors().prevBeamBreakTriggered){
             stop();
+        } else {
+            climberSparkMax.set(power);
         }
         getSensors().prevBeamBreakTriggered = getSensors().beamBreakTriggered;
     }
@@ -106,7 +109,7 @@ public class Climber extends MOESubsystem<ClimberInputsAutoLogged> implements Cl
         super.periodic();
         // this is our fallback system in case setVelocity() stops getting called before we need it to;
         // it just makes sure that the motors can get to their set points and then stop.
-        limits(getSensors().appliedPower);
+//        limits(getSensors().appliedPower);
         Logger.recordOutput("climberPower", climberSparkMax.get());
     }
 }

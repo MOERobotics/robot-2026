@@ -32,13 +32,16 @@ public class ClimberTestCommand extends Command {
     @Override
     public void execute() {
         super.execute();
-        if (joyStick.getRawButton(1)) {
-            climber.setPower(.2);
-        } else if (joyStick.getRawButton(2)) {
-            climber.setPower(-.2);
+        if (joyStick.getRawButton(6)) {
+            climber.setPower(.6);
+        } else if (joyStick.getRawButton(5)) {
+            climber.setPower(-.6);
         } else {
             climber.stop();
         }
+
+
+
         if (joyStick.getRawButtonPressed(3)){
             clicksSequence += 1;
             decayTrigger = true;

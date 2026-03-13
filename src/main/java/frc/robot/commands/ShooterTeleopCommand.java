@@ -130,6 +130,7 @@ public class ShooterTeleopCommand extends Command {
         }
 
         Logger.recordOutput("FlywheelSetpoint", shooterSetpoint);
+
         shooterPIDController.setSetpoint(shooterSetpoint);
 
 
@@ -146,7 +147,7 @@ public class ShooterTeleopCommand extends Command {
             if (output < 0) output = 0;
 
             shooterSubsystem.setFlywheelPower(0.45+ output);
-            shooterSubsystem.setTransitionPower(0.8);
+            shooterSubsystem.setTransitionPower(0.7);
 
         } else {
             shooterSubsystem.setTransitionPower(0);
@@ -160,8 +161,7 @@ public class ShooterTeleopCommand extends Command {
         if (joystick.getRawAxis(3) > 0.3) {
 
 
-            if (true
-                            && isFlywheelOn
+            if (true && isFlywheelOn
 //                    && shooterPIDController.atSetpoint()
             ) {
                 shooterSubsystem.setSpindexerPower(1);
@@ -170,7 +170,7 @@ public class ShooterTeleopCommand extends Command {
             }
         } else if(joystick.getRawAxis(2)> 0.3){
             shooterSubsystem.setSpindexerPower(-1);
-            shooterSubsystem.setTransitionPower(-0.8);
+            shooterSubsystem.setTransitionPower(-0.6);
 
 
         } else {

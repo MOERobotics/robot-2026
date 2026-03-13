@@ -170,10 +170,11 @@ public class Robot extends LoggedRobot {
     @Override
     public void teleopInit() {
 
+        scheduler.schedule(climberTestCommand);
 
         scheduler.schedule(shooterTeleopCommand);
         scheduler.schedule(collectorTeleopCommand);
-        scheduler.schedule(climberTeleopCommand);
+       // scheduler.schedule(climberTeleopCommand);
 
     }
 
