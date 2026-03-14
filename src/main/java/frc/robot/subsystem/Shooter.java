@@ -34,13 +34,11 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
     private static final Angle TURRET_TOLERANCE = Degree.of(1);
 
 
-    public static double TURRET_CONVERSION_FACTOR = (
-            Revolutions.of(1)
-                    .div(100) // corner gear ratio
-                    .div(8.266) // chain ratio
-                    .in(Degrees)
-    );
-    ;
+    public static double TURRET_CHAIN = 8.266;
+
+    public static double TURRET_CORNER = 100; // corner gear ratio
+
+
     public static double HOOD_CONVERSION_FACTOR = (
         Revolutions.of(1)
             .div(90) // VEX Planetaries
@@ -80,12 +78,21 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
         this.hoodMaxAngle = hoodMaxAngle;
         this.hoodMinAngle = hoodMinAngle;
 
+        Angle currAngle = getTurretAngle();
+        Angle turretAngle = currAngle.minus(Degrees.of(180)).times(100);
+
+        this.turretMotor.getEncoder().setPosition(turretAngle.in(Rotation));
+
         ShooterSimulator shooterSimulator = new ShooterSimulator(this);
         setSimulator(shooterSimulator);
     }
 
     @Override
     public void readSensors(ShooterInputsAutoLogged sensors) {
+
+        getSensors().turretRelativeAngle = Rotations.of(turretMotor.getEncoder().getPosition());
+        getSensors().turretAngleThroughbore =  getTurretAngle().minus(Degrees.of(180)).times(100);
+
         getSensors().hoodAngleThroughbore = getHoodAngleFromThroughbore();
         getSensors().hoodAngleMotor = getHoodAngleFromMotor();
         getSensors().hoodAngleThroughboreDegrees = getHoodAngleFromThroughbore().in(Degrees);
@@ -181,7 +188,7 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
         Angle relativeEncoder = Rotations.of(turretMotor.getEncoder().getPosition());
 
 
-
+        return null;
     }
 
     @Override

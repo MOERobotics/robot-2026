@@ -14,6 +14,8 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
     @AutoLog
     class ShooterInputs{
         public Angle turretAngle = Degrees.zero();
+        public Angle turretAngleThroughbore = Rotation.zero();
+        public Angle turretRelativeAngle = Rotation.zero();
 
         public Angle hoodAngleThroughbore = Rotation.zero();
 
