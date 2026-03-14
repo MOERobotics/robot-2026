@@ -23,7 +23,10 @@ public class Autos {
         autoChooser.setDefaultOption("Auto8: SquareDance", SquareDance.squareDance(robot));
 
         autoChooser.setDefaultOption("Auto9: Justshoot", Shoot.shoot(robot));
+        autoChooser.setDefaultOption("Auto10: Outpostw/Shooting", Outpost2.outpost(robot));
+        autoChooser.setDefaultOption("Auto11: Neutral Zone NLT", NeutralZone.NLT(robot));
 
+        autoChooser.setDefaultOption("Auto12: Neutral Zone NRT", NeutralZone.NRT(robot));
 
 
         Consumer<CommandAndPose> onAutoUpdate = (commandandPose) -> robot.getRobotSwerveDrive().setPose(autoChooser.getSelected().pose());

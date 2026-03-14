@@ -179,10 +179,9 @@ public class ProMOEtheus extends RobotContainer {
         spindexerMotor.configure(spindexerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
 
-        transitionConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
-        transitionConfig.inverted(false);
+        transitionConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
+        transitionConfig.inverted(false)/*.smartCurrentLimit(20)*/;
         transitionMotor.configure(transitionConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-
 
 
         Shooter shooter = new Shooter(
@@ -194,12 +193,14 @@ public class ProMOEtheus extends RobotContainer {
                 turretMotor.getAbsoluteEncoder(),
                 hoodMotor.getAbsoluteEncoder(),
                 Degrees.of(30),
-                Degrees.of(330),
+                Degrees.of(279),
                 Degrees.of(175),
                 Degrees.of(205));
 
         this.setRobotSwerveDrive(ProMOEtheus);
         this.setClimber(climber);
+
+
 
 
 

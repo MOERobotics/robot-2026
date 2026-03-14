@@ -13,7 +13,7 @@ import frc.robot.commands.ShooterAutoCommand;
 import frc.robot.container.RobotContainer;
 
 
-public class OutpostAutos {
+public class Outpost2 {
 
     public static Autos.CommandAndPose outpost(RobotContainer robot) {
         return buildOutpostAuto(robot, "ART-Outpost", "Outpost Collect", "Outpost Shoot", "Outpost Climb");
@@ -37,15 +37,22 @@ public class OutpostAutos {
 
 
         Command auto = Commands.sequence(
-                plannerPath1,
+                Commands.parallel(
+                        plannerPath1,
+                        new FuelCollectorAutoCommand(robot, true, true, "stop").withTimeout(5)),
+
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
-                Commands.deadline(
-                        plannerPath2),
-                      //  new FuelCollectorAutoCommand(robot, true, true, "in"),
+                        plannerPath2,
+
+                        //,new FuelCollectorAutoCommand(robot, true, true, "in").withTimeout(5)
+
+
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
+
                 plannerPath3,
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
-                // new ShooterAutoCommand(robot, ShooterAutoCommand.Target.HUB),
+
+                new ShooterAutoCommand(robot, ShooterAutoCommand.Target.HUB),
                 plannerPath4,
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop())
 

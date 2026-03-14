@@ -44,18 +44,26 @@ public class ShooterTeleopCommand extends Command {
 
     public static final double HUB_HOOD = 175;
     public static final double HUB_RPM = 4300;
+    public static final double HUB_TURRET = 273;
+
 
     public static final double CORNER_HOOD = 194;
     public static final double CORNER_RPM = 5300;
+    public static final double CORNER_TURRET = 273;
+
 
     public static final double TRENCH_HOOD = 191;
     public static final double TRENCH_RPM = 4880;
+    public static final double TRENCH_TURRET = 273;
+
 
     public static final double TOWER_HOOD = 187;
     public static final double TOWER_RPM = 4300;
     public static final double TOWER_TURRET = 273;
 
 
+
+    int noPOV =-1;
     public ShooterTeleopCommand(RobotContainer robot, Joystick joystick) {
         this.joystick = joystick;
         shooterSubsystem = robot.getShooterSubsystem();
@@ -82,37 +90,43 @@ public class ShooterTeleopCommand extends Command {
 
     @Override
     public void execute() {
-       /*
-        //hub
 
-        if (joystick.getRawButtonPressed(10)) {
-            shooterSetpoint = 4300;
-            hoodSetpoint = 175;
-            isFlywheelOn = true;
-        }
-        //corner
-        if (joystick.getRawButtonPressed(12)) {
-            shooterSetpoint = 5300;
-            hoodSetpoint = 194;
-            isFlywheelOn = true;
-        }
-        //trench
-        if (joystick.getRawButtonPressed(13)) {
-            shooterSetpoint = 4880;
-            hoodSetpoint = 191;
-            isFlywheelOn = true;
-        }
-        //tower
-        if (joystick.getRawButtonPressed(14)) {
-            shooterSetpoint = 4300;
-            hoodSetpoint = 187;
-            turretSetpoint = 273;
-            isFlywheelOn = true;
+        int currentPOV = joystick.getPOV();
+
+        if(currentPOV!=-1){
+            switch(currentPOV){
+                case 0:
+                    shooterSetpoint = HUB_RPM;
+                    hoodSetpoint = HUB_HOOD;
+                    turretSetpoint = HUB_TURRET;
+                    isFlywheelOn = true;
+                    break;
+                case 90:
+                    shooterSetpoint = CORNER_RPM;
+                    hoodSetpoint = CORNER_HOOD;
+                    turretSetpoint = CORNER_TURRET;
+                    isFlywheelOn = true;
+                    break;
+                case 180:
+                    shooterSetpoint = TOWER_RPM;
+                    hoodSetpoint = TOWER_HOOD;
+                    turretSetpoint = TOWER_TURRET;
+
+                    isFlywheelOn = true;
+                    break;
+
+                case 270:
+                    shooterSetpoint = TRENCH_RPM;
+                    hoodSetpoint = TRENCH_HOOD;
+                    turretSetpoint = TRENCH_TURRET;
+                    isFlywheelOn = true;
+                    break;
+
+
+            }
         }
 
 
-
-        */
 
 
         // Flywheel Toggle
@@ -178,12 +192,12 @@ public class ShooterTeleopCommand extends Command {
         }
 
         if (joystick.getRawAxis(0) > deadZone) { // && !shooterSubsystem.getSensors().reachedMaxHood
-            turretSetpoint -= 2;
+            turretSetpoint -= 5;
 
         }
 
         if (joystick.getRawAxis(0) < -deadZone) { // && !shooterSubsystem.getSensors().reachedMinHood
-            turretSetpoint += 2;
+            turretSetpoint += 5;
 
         }
         Logger.recordOutput("preClampTurretSetpoint",turretSetpoint);

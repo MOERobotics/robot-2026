@@ -168,7 +168,7 @@ public class ShooterAutoCommand extends Command {
     @Override
     public boolean isFinished() {
       //  return false;
-        return feeding && shootTimer.hasElapsed(5 /*TODO PICK A TIME*/);
+        return feeding && shootTimer.hasElapsed(10 /*TODO PICK A TIME*/);
     }
 
     @Override
@@ -229,7 +229,7 @@ public class ShooterAutoCommand extends Command {
     private double calculateHoodAngle(double distance) {
 
         //TODO implement this with linear regression????
-        return 190;
+        return 191;
     }
 
 
