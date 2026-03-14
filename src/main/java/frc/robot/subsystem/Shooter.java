@@ -79,9 +79,11 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
         this.hoodMinAngle = hoodMinAngle;
 
         Angle currAngle = getTurretAngle();
-        Angle turretAngle = currAngle.minus(Degrees.of(180)).times(100);
+        Angle turretAngle = currAngle.minus(Degrees.of(180));
 
-        this.turretMotor.getEncoder().setPosition(turretAngle.in(Rotation));
+        double adjustedAngle = turretAngle.in(Rotation)*TURRET_CORNER;
+
+        this.turretMotor.getEncoder().setPosition(adjustedAngle);
 
         ShooterSimulator shooterSimulator = new ShooterSimulator(this);
         setSimulator(shooterSimulator);
@@ -91,8 +93,7 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
     public void readSensors(ShooterInputsAutoLogged sensors) {
 
         getSensors().turretRelativeAngle = Rotations.of(turretMotor.getEncoder().getPosition());
-        getSensors().turretAngleThroughbore =  getTurretAngle().minus(Degrees.of(180)).times(100);
-
+        getSensors().turretAngleThroughbore =  Rotation.of(turretEncoder.getPosition());
         getSensors().hoodAngleThroughbore = getHoodAngleFromThroughbore();
         getSensors().hoodAngleMotor = getHoodAngleFromMotor();
         getSensors().hoodAngleThroughboreDegrees = getHoodAngleFromThroughbore().in(Degrees);
