@@ -99,7 +99,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
     @Override
     public void robotDrive(ChassisSpeeds robotChassisSpeed, boolean robotCentric) {
         if(!robotCentric){
-            robotChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(robotChassisSpeed, this.getPose().getRotation());
+            robotChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(robotChassisSpeed,robotGyro.getRotation2d());
         }
         getSensors().sensorsChassisSpeeds = robotChassisSpeed;
 
@@ -126,6 +126,14 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
 
     @Override
     public void setPose(Pose2d robotPose2D) {
+
+        if (DriverStation.isEnabled() && DriverStation.isTeleop()) {
+            try {
+                throw new RuntimeException("??????");
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+            }
+        }
 
         robotGyro.setYaw(robotPose2D.getRotation().getDegrees());
 

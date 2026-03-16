@@ -22,8 +22,8 @@ public class ShooterTeleopCommand extends Command {
     double flywheelPower;
     AngularVelocity targetFlywheelPower;
     boolean isFlywheelOn = false;
-    public double kP = 1 / 2500.0;
-    public double kI = 0.0002;
+    public double kP = 1 / 1500.0;
+    public double kI = 0.0006;
     public double kD = 0.1 / 14000;
 
     public double hoodKP = 0.056;
@@ -42,24 +42,24 @@ public class ShooterTeleopCommand extends Command {
 
     public double turretSetpoint, hoodSetpoint, shooterSetpoint;
 
-    public static final double HUB_HOOD = 175;
-    public static final double HUB_RPM = 4300;
+    public static final double HUB_HOOD = 179;
+    public static final double HUB_RPM = 3800;
     public static final double HUB_TURRET = 273;
 
 
-    public static final double CORNER_HOOD = 194;
-    public static final double CORNER_RPM = 5300;
+    public static final double CORNER_HOOD = 193.11;
+    public static final double CORNER_RPM = 4990;
     public static final double CORNER_TURRET = 273;
 
 
-    public static final double TRENCH_HOOD = 191;
-    public static final double TRENCH_RPM = 4880;
-    public static final double TRENCH_TURRET = 273;
+    public static final double TRENCH_HOOD = 193.11;
+    public static final double TRENCH_RPM = 3910;
+    public static final double TRENCH_TURRET = 74;
 
 
-    public static final double TOWER_HOOD = 187;
-    public static final double TOWER_RPM = 4300;
-    public static final double TOWER_TURRET = 273;
+    public static final double TOWER_HOOD = 194.14;
+    public static final double TOWER_RPM = 3810;
+    public static final double TOWER_TURRET = 327.18;
 
 
 
@@ -70,7 +70,7 @@ public class ShooterTeleopCommand extends Command {
 
 
         shooterPIDController.setSetpoint(targetRPM);
-        shooterPIDController.setTolerance(300); // Dont know if this is needed but a fine safety net ig
+        shooterPIDController.setTolerance(100); // Dont know if this is needed but a fine safety net ig
        // shooterPIDController.setIntegratorRange(0,0.6);
         addRequirements(shooterSubsystem);
 
@@ -98,30 +98,29 @@ public class ShooterTeleopCommand extends Command {
                 case 0:
                     shooterSetpoint = HUB_RPM;
                     hoodSetpoint = HUB_HOOD;
-                    turretSetpoint = HUB_TURRET;
+                   // turretSetpoint = HUB_TURRET;
                     isFlywheelOn = true;
                     break;
                 case 90:
-                    shooterSetpoint = CORNER_RPM;
-                    hoodSetpoint = CORNER_HOOD;
-                    turretSetpoint = CORNER_TURRET;
+                    shooterSetpoint = TRENCH_RPM;
+                    hoodSetpoint = TRENCH_HOOD;
+                   // turretSetpoint = TRENCH_TURRET;
                     isFlywheelOn = true;
                     break;
+
                 case 180:
                     shooterSetpoint = TOWER_RPM;
                     hoodSetpoint = TOWER_HOOD;
-                    turretSetpoint = TOWER_TURRET;
-
+                    // turretSetpoint = TOWER_TURRET;
                     isFlywheelOn = true;
                     break;
 
                 case 270:
-                    shooterSetpoint = TRENCH_RPM;
-                    hoodSetpoint = TRENCH_HOOD;
-                    turretSetpoint = TRENCH_TURRET;
+                    shooterSetpoint = CORNER_RPM;
+                    hoodSetpoint = CORNER_HOOD;
+                   // turretSetpoint = CORNER_TURRET;
                     isFlywheelOn = true;
                     break;
-
 
             }
         }
@@ -132,6 +131,7 @@ public class ShooterTeleopCommand extends Command {
         // Flywheel Toggle
         if (joystick.getRawButtonPressed(2)) {
             isFlywheelOn = !isFlywheelOn;
+            shooterPIDController.reset();
 
         }
 
@@ -229,11 +229,11 @@ public class ShooterTeleopCommand extends Command {
 
 
         if (joystick.getRawAxis(5) > deadZone) { // && !shooterSubsystem.getSensors().reachedMa5xHood
-            hoodSetpoint -= 2/10.0;
+            hoodSetpoint -= 2/8.0;
         }
 
         if (joystick.getRawAxis(5) < -deadZone) { // && !shooterSubsystem.getSensors().reachedMinHood
-            hoodSetpoint += 2/10.0;
+            hoodSetpoint += 2/8.0;
         }
 
         hoodSetpoint = MathUtil.clamp(

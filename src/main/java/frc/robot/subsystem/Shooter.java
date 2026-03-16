@@ -115,6 +115,11 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
 
         getSensors().spindexerOn = spindexerMotor.get()>0;
         getSensors().transitionOn = transitionMotor.get()>0;
+        getSensors().transitionCurrent = transitionMotor.getOutputCurrent();
+        getSensors().transitionCurrentLimit = transitionMotor.getOutputCurrent() > 60;
+
+
+
 
     }
 

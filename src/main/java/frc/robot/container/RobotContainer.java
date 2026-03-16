@@ -1,9 +1,12 @@
 package frc.robot.container;
 
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystem.interfaces.*;
 import lombok.Data;
 import org.littletonrobotics.junction.LogTable;
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 import com.pathplanner.lib.config.RobotConfig;
 import org.photonvision.simulation.VisionSystemSim;
@@ -27,6 +30,7 @@ public abstract @Data class RobotContainer implements LoggableInputs {
         table.put("SwerveDrive", robotSwerveDrive);
         table.put("Climber", climber);
         table.put("Collector", collector);
+        SmartDashboard.putData("MPDH", pdh);
     }
 
     @Override

@@ -26,14 +26,14 @@ public class ShooterAutoCommand extends Command {
 
     // copied from teleop stuff
 
-    private PIDController flywheelPID = new PIDController(1 / 2500.0, 0.002, 0.1 / 14000);
+    private PIDController flywheelPID = new PIDController(1 / 1500.0, 0.0006, 0.1 / 14000);
     private PIDController turretPID = new PIDController(0.0055, 0, 0);
     private PIDController hoodPID = new PIDController(0.056, 0, 0);
     private Timer shootTimer = new Timer();
     boolean feeding = false;
 
 
-    private double flywheelRPM = 4300;
+    private double flywheelRPM = 3510;
 
     public enum Target {
         HUB,
@@ -41,8 +41,9 @@ public class ShooterAutoCommand extends Command {
         OUTPOST
     }
 
+    boolean justShoot;
 
-    public ShooterAutoCommand(RobotContainer robot, Target target) {
+    public ShooterAutoCommand(RobotContainer robot, Target target, boolean justShoot) {
 
         this.shooter = robot.getShooterSubsystem();
         this.drive = robot.getRobotSwerveDrive();
@@ -52,6 +53,7 @@ public class ShooterAutoCommand extends Command {
         turretPID.setTolerance(1.0);
         hoodPID.setTolerance(1.0);
 
+        this.justShoot = justShoot;
         addRequirements(shooter);
     }
 
@@ -102,7 +104,7 @@ public class ShooterAutoCommand extends Command {
 
         double desTurretAngle = MathUtil.clamp(desiredAngle, 30,330);
 
-        double turretOutput = turretPID.calculate(currTurretAngle, desTurretAngle);
+        double turretOutput = turretPID.calculate(currTurretAngle, 100);
 
 
 
@@ -113,8 +115,9 @@ public class ShooterAutoCommand extends Command {
 
 
 
-
-     //   shooter.setTurretPower(turretOutput);
+        if(!justShoot){
+            shooter.setTurretPower(turretOutput);
+        }
 
         Logger.recordOutput("turretOutput", turretOutput);
         Logger.recordOutput("turretDesiredAngle", desiredTurret.getDegrees());
@@ -128,8 +131,10 @@ public class ShooterAutoCommand extends Command {
 
         double desHoodAngle = MathUtil.clamp(calculateHoodAngle(distance), 180,220);
 
+        double setpoint1 = 194.14;
 
-        double hoodOutput = hoodPID.calculate(currHoodAngle,191);
+
+        double hoodOutput = hoodPID.calculate(currHoodAngle,setpoint1);
 
         hoodOutput = MathUtil.clamp(hoodOutput, -0.32, 0.32);
 

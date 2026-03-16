@@ -37,7 +37,7 @@ public class MOELogger {
         _robot = robot;
         org.littletonrobotics.junction.Logger.recordMetadata("ProjectName", "robot-2026");
         SmartDashboard.putData("Scheduler", CommandScheduler.getInstance());
-
+        SmartDashboard.putBoolean("HasPDH", robot.robot.getPdh() != null);
         if (robot.robot.getPdh() != null) LoggedPowerDistribution.getInstance(
                 robot.robot.getPdh().getModule(),
                 robot.robot.getPdh().getType()

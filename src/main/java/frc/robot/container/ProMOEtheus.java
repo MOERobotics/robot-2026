@@ -11,6 +11,7 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import frc.robot.subsystem.*;
 import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
 import frc.robot.subsystem.interfaces.SwerveModuleSubsystem;
@@ -42,21 +43,50 @@ public class ProMOEtheus extends RobotContainer {
         Pigeon2 robotGyro = new Pigeon2(35);
         SparkMax driveMotorFL = new SparkMax(9, SparkLowLevel.MotorType.kBrushless);
         SparkMax pivotMotorFL = new SparkMax(8, SparkLowLevel.MotorType.kBrushless);
+
+        SparkMaxConfig FLConfig = new SparkMaxConfig();
+        FLConfig.openLoopRampRate(0.04).inverted(true).smartCurrentLimit(30).idleMode(SparkBaseConfig.IdleMode.kCoast).secondaryCurrentLimit(70);
+        pivotMotorFL.configure(FLConfig,ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         pivotMotorFL.setInverted(true);
+
         CANcoder swerveModuleEncoderFL = new CANcoder(34);
 
         SparkMax driveMotorFR = new SparkMax(10, SparkLowLevel.MotorType.kBrushless);
         SparkMax pivotMotorFR = new SparkMax(11, SparkLowLevel.MotorType.kBrushless);
+
+        SparkMaxConfig FRConfig = new SparkMaxConfig();
+        FRConfig.openLoopRampRate(0.04).inverted(true).smartCurrentLimit(30).idleMode(SparkBaseConfig.IdleMode.kCoast).secondaryCurrentLimit(70);;
+        pivotMotorFR.configure(FRConfig,ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
         pivotMotorFR.setInverted(true);
+
         CANcoder swerveModuleEncoderFR = new CANcoder(31);
 
         SparkMax driveMotorBL = new SparkMax(20, SparkLowLevel.MotorType.kBrushless);
         SparkMax pivotMotorBL = new SparkMax(1, SparkLowLevel.MotorType.kBrushless);
         pivotMotorBL.setInverted(true);
+
+        SparkMaxConfig BLConfig = new SparkMaxConfig();
+        BLConfig.openLoopRampRate(0.04).inverted(true).smartCurrentLimit(30).idleMode(SparkBaseConfig.IdleMode.kCoast).secondaryCurrentLimit(70);;
+        pivotMotorBL.configure(BLConfig,ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+
+
         CANcoder swerveModuleEncoderBL = new CANcoder(33);
 
         SparkMax driveMotorBR = new SparkMax(19, SparkLowLevel.MotorType.kBrushless);
         SparkMax pivotMotorBR = new SparkMax(18, SparkLowLevel.MotorType.kBrushless);
+
+        SparkMaxConfig BRConfig = new SparkMaxConfig();
+        BRConfig
+                .openLoopRampRate(0.04)
+                .inverted(true)
+                .smartCurrentLimit(30)
+                .secondaryCurrentLimit(70)
+                .idleMode(SparkBaseConfig.IdleMode.kCoast);
+        pivotMotorBR.configure(BRConfig,ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+
         pivotMotorBR.setInverted(true);
         CANcoder swerveModuleEncoderBR = new CANcoder(32);
 
@@ -124,6 +154,12 @@ public class ProMOEtheus extends RobotContainer {
        // collectorArmMotor.configAccessor.
 
 
+        SparkMaxConfig collectorArmConfig = new SparkMaxConfig();
+
+        collectorArmConfig.smartCurrentLimit(40);
+        collectorArmConfig.inverted(true);
+        collectorArmMotor.configure(collectorArmConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
         Angle collectorArmBottom = Degrees.of(135);
         Angle collectorArmTop = Degrees.of(215);
 
@@ -181,6 +217,7 @@ public class ProMOEtheus extends RobotContainer {
 
         transitionConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
         transitionConfig.inverted(false)/*.smartCurrentLimit(20)*/;
+
         transitionMotor.configure(transitionConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
 
@@ -193,7 +230,7 @@ public class ProMOEtheus extends RobotContainer {
                 turretMotor.getAbsoluteEncoder(),
                 hoodMotor.getAbsoluteEncoder(),
                 Degrees.of(30),
-                Degrees.of(279),
+                Degrees.of(330),
                 Degrees.of(175),
                 Degrees.of(205));
 
@@ -204,15 +241,17 @@ public class ProMOEtheus extends RobotContainer {
 
 
 
-        SparkMaxConfig collectorArmConfig = new SparkMaxConfig();
-        collectorArmConfig.inverted(true);
-        collectorArmMotor.configure(collectorArmConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
 
         this.setCollector(new Collector(collectorRollerMotor, collectorArmMotor, collectorArmBottom, collectorArmTop));
         this.setShooterSubsystem(shooter);
         this.setRobotSwerveDrive(ProMOEtheus);
         this.setClimber(climber);
+
+        var pdh = new PowerDistribution(21, PowerDistribution.ModuleType.kRev);
+
+
+        this.setPdh(pdh);
 
     }
 }

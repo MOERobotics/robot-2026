@@ -12,6 +12,8 @@ import frc.robot.commands.PathsFollower;
 import frc.robot.commands.ShooterAutoCommand;
 import frc.robot.container.RobotContainer;
 
+import static edu.wpi.first.units.Units.Seconds;
+
 
 public class Outpost2 {
 
@@ -39,20 +41,21 @@ public class Outpost2 {
         Command auto = Commands.sequence(
                 Commands.parallel(
                         plannerPath1,
-                        new FuelCollectorAutoCommand(robot, true, true, "stop").withTimeout(5)),
+                        new FuelCollectorAutoCommand(robot, true, true, "stop").withTimeout(2)
+                ),
+                plannerPath2,
+                Commands.deadline(
+                        Commands.run(() -> robot.getRobotSwerveDrive().stop()).withTimeout(Seconds.of(5))
+                        // new FuelCollectorAutoCommand(robot, true, true, "in")
+                        ),
 
+                // new FuelCollectorAutoCommand(robot, true, true, "in").withTimeout(5),
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
-                        plannerPath2,
-
-                        //,new FuelCollectorAutoCommand(robot, true, true, "in").withTimeout(5)
-
-
-                Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
-
                 plannerPath3,
-                Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
-
-                new ShooterAutoCommand(robot, ShooterAutoCommand.Target.HUB),
+                Commands.deadline(
+                    new ShooterAutoCommand(robot, ShooterAutoCommand.Target.HUB, false),
+                    Commands.runOnce(() -> robot.getRobotSwerveDrive().stop())
+                ).withTimeout(Seconds.of(5)),
                 plannerPath4,
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop())
 

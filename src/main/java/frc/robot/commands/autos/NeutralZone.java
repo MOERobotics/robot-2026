@@ -24,6 +24,9 @@ public class NeutralZone {
         return buildNeutral(robot, "NRT-Neutral", "RN Collect", "LN Return");
     }
 
+    public static Autos.CommandAndPose NRT_Back(RobotContainer robot) {
+        return buildNeutral(robot, "NRT-Neutral", "RN Collect", "RN Return");
+    }
     public static Autos.CommandAndPose buildNeutral(
             RobotContainer robot,
             String path1,
@@ -46,7 +49,6 @@ public class NeutralZone {
                 Commands.deadline(
                         plannerPath2,
                         new FuelCollectorAutoCommand(robot ,true, true, "in")),
-
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
                 plannerPath3,
 

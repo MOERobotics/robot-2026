@@ -5,9 +5,14 @@
 package frc.robot;
 
 import com.pathplanner.lib.util.FlippingUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -18,10 +23,25 @@ import frc.robot.commands.autos.DepotRunTest;
 import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
 import frc.robot.container.SubMOErine;
+import org.littletonrobotics.junction.LoggedPowerDistribution;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 
+/*
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonUtils;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
+ */
+
+import java.util.List;
+import java.util.Optional;
+
 import static edu.wpi.first.units.Units.RPM;
+
+
 
 
 public class Robot extends LoggedRobot {
@@ -50,7 +70,7 @@ public class Robot extends LoggedRobot {
     public Command autoRotate = new AutoRotateCommand(robot, driverJoystick);
 
 
-    public Command autoShootercommand = new ShooterAutoCommand(robot, ShooterAutoCommand.Target.HUB);
+    public Command autoShootercommand = new ShooterAutoCommand(robot, ShooterAutoCommand.Target.HUB, false);
 
     public PathsFollower testPath = new PathsFollower("Curved Path");
 
@@ -65,6 +85,12 @@ public class Robot extends LoggedRobot {
 
     Autos.CommandAndPose autoCommand = new Autos.CommandAndPose(Commands.none(), new Pose2d());
 
+   // PhotonCamera _camera = new PhotonCamera("It'sreallydumb");
+
+   // public AprilTagFieldLayout fieldLayout = new AprilTagFieldLayout();
+
+  //  public Transform3d robotToCam = new Transform3d(0,0,0 ,new Rotation3d(0,0,0));
+   //  public PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(fieldLayout,robotToCam );
 
     @Override
     public void robotInit() {
@@ -89,6 +115,7 @@ public class Robot extends LoggedRobot {
 
     }
 
+    long _heartbeat = 0;
     @Override
     public void robotPeriodic() {
         MOELogger.log();
@@ -98,6 +125,31 @@ public class Robot extends LoggedRobot {
             Logger.recordOutput("command", autoCommand.command().getName());
 
         }
+
+        /*
+       List<PhotonPipelineResult> results = _camera.getAllUnreadResults();
+
+        if(!results.isEmpty()){
+           PhotonPipelineResult latest =  results.get(results.size()-1);
+
+           if(latest.hasTargets()) {
+               PhotonTrackedTarget bestTarget = latest.getBestTarget();
+               SmartDashboard.putBoolean("Vision/hasTargets", latest.hasTargets());
+               SmartDashboard.putNumber("Vision/BestTargetID", bestTarget.getFiducialId());
+               SmartDashboard.putNumber("Vision/Pitch", bestTarget.pitch);
+               SmartDashboard.putNumber("Vision/Yaw", bestTarget.yaw);
+               SmartDashboard.putNumber("Vision/skew", bestTarget.skew);
+               Pose3d averageBestTargetPose = photonPoseEstimator.estimateAverageBestTargetsPose(latest).get().estimatedPose;
+                Pose3d tagPose = fieldLayout.getTagPose(bestTarget.fiducialId).get();
+               Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(bestTarget.getBestCameraToTarget(), tagPose, robotToCam);
+               SmartDashboard.putData("Vision/averageBestTargetPose", (Sendable) averageBestTargetPose);
+               SmartDashboard.putData("Vision/RobotPose", (Sendable) robotPose);
+
+           }
+
+         */
+
+
 
 
     }
@@ -110,7 +162,6 @@ public class Robot extends LoggedRobot {
     @Override
     public void disabledPeriodic() {
         setFieldPose();
-
     }
 
     @Override

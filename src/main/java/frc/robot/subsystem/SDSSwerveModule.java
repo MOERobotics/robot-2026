@@ -5,6 +5,7 @@ import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.pathplanner.lib.config.PIDConstants;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -100,6 +101,9 @@ public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> 
                 )
         );
         sensors.coordOfModule = new Translation2d(this.xCordinate, this.yCordinate);
+        sensors.pivotPower = pivotMotor.get();
+        sensors.drivePower = driveMotor.get();
+        sensors.pivotAmperage = Amps.of(pivotMotor.getOutputCurrent());
     }
 
     @Override
@@ -126,6 +130,8 @@ public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> 
         this.getSensors().moduleTargetAngle = wheelTargetDirection;
         Angle wheelError = currentWheelDirection.minus(wheelTargetDirection);
         double robotError = pidPivotController.calculate(wheelError.in(Degree));
+        robotError =  MathUtil.applyDeadband(robotError, 0.04);
+
         pivotMotor.set(robotError);
         this.getSensors().robotError = robotError;
     }

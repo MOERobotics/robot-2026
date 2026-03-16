@@ -17,13 +17,12 @@ import java.nio.file.Path;
 
 
 public class Shoot {
-
     public static Autos.CommandAndPose shoot(RobotContainer robot) {
-        return squareDanceAuto(robot, "H-LC");
+        return shootAuto(robot, "Shoot");
     }
 
 
-    public static Autos.CommandAndPose squareDanceAuto(
+    public static Autos.CommandAndPose shootAuto(
             RobotContainer robot,
             String path1){
 
@@ -33,8 +32,8 @@ public class Shoot {
 
 
         Command auto = Commands.sequence(
-                //new FuelCollectorAutoCommand(robot, true, false, "stop").withTimeout(2),
-                new ShooterAutoCommand(robot, ShooterAutoCommand.Target.HUB)
+                plannerPath1,
+                new ShooterAutoCommand(robot, ShooterAutoCommand.Target.HUB, true)
 
 
         );
