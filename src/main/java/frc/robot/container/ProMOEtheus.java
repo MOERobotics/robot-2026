@@ -36,6 +36,13 @@ public class ProMOEtheus extends RobotContainer {
         double drivekV = 0.1233;
         double drivekA = 0.019658;
 
+
+        // due to browning out issue with the pivot motors
+        // they got a ramp rate of 2 frames
+        // smart current limit of 40-> 30 amps
+        // secondary limit of 70 amps (per suggestion)
+
+
         PIDConstants pivotFeedback = new PIDConstants(pivotkP, pivotkI, pivotkD, pivotkIMax);
         PIDConstants driveFeedback = new PIDConstants(drivekP, drivekI, drivekD);
         //  FeedforwardConstants driveFeedForward = new FeedforwardConstants(drivekS, drivekV, drivekA);
@@ -156,6 +163,7 @@ public class ProMOEtheus extends RobotContainer {
 
         SparkMaxConfig collectorArmConfig = new SparkMaxConfig();
 
+        // also put current limit on collector (forget why though)
         collectorArmConfig.smartCurrentLimit(40);
         collectorArmConfig.inverted(true);
         collectorArmMotor.configure(collectorArmConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
@@ -248,6 +256,7 @@ public class ProMOEtheus extends RobotContainer {
         this.setRobotSwerveDrive(ProMOEtheus);
         this.setClimber(climber);
 
+        // started logging PDH info tbd
         var pdh = new PowerDistribution(21, PowerDistribution.ModuleType.kRev);
 
 

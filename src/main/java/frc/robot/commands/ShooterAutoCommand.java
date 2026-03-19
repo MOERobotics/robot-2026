@@ -26,12 +26,13 @@ public class ShooterAutoCommand extends Command {
 
     // copied from teleop stuff
 
+
+    // TODO tune PID for flywheel/shooter thingy
     private PIDController flywheelPID = new PIDController(1 / 1500.0, 0.0006, 0.1 / 14000);
     private PIDController turretPID = new PIDController(0.0055, 0, 0);
     private PIDController hoodPID = new PIDController(0.056, 0, 0);
     private Timer shootTimer = new Timer();
     boolean feeding = false;
-
 
     private double flywheelRPM = 3510;
 
@@ -69,7 +70,8 @@ public class ShooterAutoCommand extends Command {
     @Override
     public void execute() {
 
-
+        // TODO fix all this up  because rn it's all messy and hardcoded with angle values
+        // TODO make an agitate function in auto?? for jamming?
         Pose2d pose = drive.getPose();
 
 

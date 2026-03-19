@@ -26,6 +26,8 @@ import frc.robot.container.SubMOErine;
 import org.littletonrobotics.junction.LoggedPowerDistribution;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonPipelineResult;
 
 /*
 import org.photonvision.EstimatedRobotPose;
@@ -85,7 +87,9 @@ public class Robot extends LoggedRobot {
 
     Autos.CommandAndPose autoCommand = new Autos.CommandAndPose(Commands.none(), new Pose2d());
 
-   // PhotonCamera _camera = new PhotonCamera("It'sreallydumb");
+    PhotonCamera _camera1 = new PhotonCamera("Arducam_OV9281_USB_Camera (1)");
+
+    PhotonCamera _camera2 = new PhotonCamera("Arducam_OV9281_USB_Camera (2)");
 
    // public AprilTagFieldLayout fieldLayout = new AprilTagFieldLayout();
 
@@ -150,6 +154,23 @@ public class Robot extends LoggedRobot {
          */
 
 
+        List<PhotonPipelineResult> results1 = _camera1.getAllUnreadResults();
+        if (!results1.isEmpty()) {
+            Logger.recordOutput(
+                    "photon1",
+                    PhotonPipelineResult.proto,
+                    results1.get(results1.size()-1)
+            );
+        }
+        List<PhotonPipelineResult> results2 = _camera2.getAllUnreadResults();
+
+        if (!results2.isEmpty()) {
+            Logger.recordOutput(
+                    "photon2",
+                    PhotonPipelineResult.proto,
+                    results2.get(results2.size()-1)
+            );
+        }
 
 
     }

@@ -42,6 +42,7 @@ public class ShooterTeleopCommand extends Command {
 
     public double turretSetpoint, hoodSetpoint, shooterSetpoint;
 
+    // setpoints were changed many times (not sure how accurate)
     public static final double HUB_HOOD = 179;
     public static final double HUB_RPM = 3800;
     public static final double HUB_TURRET = 273;
@@ -92,7 +93,7 @@ public class ShooterTeleopCommand extends Command {
     public void execute() {
 
         int currentPOV = joystick.getPOV();
-
+        // removed turret movement from presets as of Roshik's request
         if(currentPOV!=-1){
             switch(currentPOV){
                 case 0:
@@ -175,7 +176,8 @@ public class ShooterTeleopCommand extends Command {
         if (joystick.getRawAxis(3) > 0.3) {
 
 
-            if (true && isFlywheelOn
+            if (true
+                    // && isFlywheelOn
 //                    && shooterPIDController.atSetpoint()
             ) {
                 shooterSubsystem.setSpindexerPower(1);
@@ -224,8 +226,11 @@ public class ShooterTeleopCommand extends Command {
 
 
 
+
+
         Logger.recordOutput("turretOutput", output);
         shooterSubsystem.setTurretPower(output);
+
 
 
         if (joystick.getRawAxis(5) > deadZone) { // && !shooterSubsystem.getSensors().reachedMa5xHood
@@ -235,7 +240,6 @@ public class ShooterTeleopCommand extends Command {
         if (joystick.getRawAxis(5) < -deadZone) { // && !shooterSubsystem.getSensors().reachedMinHood
             hoodSetpoint += 2/8.0;
         }
-
         hoodSetpoint = MathUtil.clamp(
                 hoodSetpoint,
                 shooterSubsystem.getSensors().hoodMinAngle,
@@ -247,8 +251,6 @@ public class ShooterTeleopCommand extends Command {
         Logger.recordOutput("hoodRotation", shooterSubsystem.getHoodAngleFromThroughbore().in(Degrees));
 
         double outputHood = hoodPIDController.calculate(shooterSubsystem.getHoodAngleFromThroughbore().in(Degrees));
-
-
         if(outputHood > 0.4){
             outputHood =0.4;
         }

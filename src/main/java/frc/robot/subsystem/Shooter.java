@@ -33,7 +33,7 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
     private static final Angle HOOD_TOLERANCE = Degree.of(1);
     private static final Angle TURRET_TOLERANCE = Degree.of(1);
 
-
+    // TODO all all turret relative encoder stuff
     public static double TURRET_CONVERSION_FACTOR = (
             Revolutions.of(1)
                     .div(100) // corner gear ratio

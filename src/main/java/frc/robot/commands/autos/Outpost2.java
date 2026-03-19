@@ -28,7 +28,7 @@ public class Outpost2 {
             String path2,
             String path3,
             String path4) {
-
+        // somehow this became the main auto for Seneca -> clean this up???
 
         PathsFollower plannerPath1 = new PathsFollower(path1);
         PathsFollower plannerPath2 = new PathsFollower(path2);
