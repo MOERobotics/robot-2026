@@ -132,7 +132,9 @@ public class ShooterSimulator implements MOESimulator {
         turretEncoderSim.setVelocity(turretMotorSystem.getAngularVelocity().in(RPM));
         hoodEncoderSim.setVelocity(hoodMotorSystem.getAngularVelocity().in(RPM));
 
-
+        flywheelMotorSim.getAbsoluteEncoderSim().setVelocity(0);
+       // flywheelMotorSim.getAbsoluteEncoderSim().setVelocity(4000);
+       // flywheelMotorSim.getAbsoluteEncoderSim().setVelocity(4300);
 
     }
 

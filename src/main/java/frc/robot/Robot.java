@@ -23,6 +23,7 @@ import frc.robot.commands.autos.DepotRunTest;
 import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
 import frc.robot.container.SubMOErine;
+import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.LoggedPowerDistribution;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -89,8 +90,9 @@ public class Robot extends LoggedRobot {
 
     PhotonCamera _camera1 = new PhotonCamera("Arducam_OV9281_USB_Camera (1)");
 
-    PhotonCamera _camera2 = new PhotonCamera("Arducam_OV9281_USB_Camera (2)");
+    PhotonCamera _camera2 = new PhotonCamera("Arducam_OV9281_USB_Camera");
 
+    CameraInputsAutoLogged cameraInputsAutoLogged = new CameraInputsAutoLogged();
    // public AprilTagFieldLayout fieldLayout = new AprilTagFieldLayout();
 
   //  public Transform3d robotToCam = new Transform3d(0,0,0 ,new Rotation3d(0,0,0));
@@ -154,6 +156,7 @@ public class Robot extends LoggedRobot {
          */
 
 
+
         List<PhotonPipelineResult> results1 = _camera1.getAllUnreadResults();
         if (!results1.isEmpty()) {
             Logger.recordOutput(
@@ -161,6 +164,7 @@ public class Robot extends LoggedRobot {
                     PhotonPipelineResult.proto,
                     results1.get(results1.size()-1)
             );
+            cameraInputsAutoLogged.photon1 = results1.get(results1.size()-1);
         }
         List<PhotonPipelineResult> results2 = _camera2.getAllUnreadResults();
 
@@ -170,8 +174,9 @@ public class Robot extends LoggedRobot {
                     PhotonPipelineResult.proto,
                     results2.get(results2.size()-1)
             );
+            cameraInputsAutoLogged.photon2 = results2.get(results2.size()-1);
         }
-
+        Logger.processInputs("photonStuff", cameraInputsAutoLogged);
 
     }
 
@@ -315,6 +320,7 @@ public class Robot extends LoggedRobot {
 
 
     }
+
 
 
 

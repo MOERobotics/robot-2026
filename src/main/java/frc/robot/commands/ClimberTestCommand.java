@@ -14,6 +14,8 @@ public class ClimberTestCommand extends Command {
     public int clicksSequence;
     public int ticks;
     public boolean decayTrigger;
+    public boolean climbing;
+
 
     public ClimberTestCommand(RobotContainer robot, Joystick joystick){
         this.climber = robot.getClimber();
@@ -21,6 +23,7 @@ public class ClimberTestCommand extends Command {
         this.clicksSequence = 0;
         this.ticks = 0;
         this.decayTrigger = false;
+        this.climbing = true;
         addRequirements(climber);
     }
 
@@ -38,6 +41,7 @@ public class ClimberTestCommand extends Command {
             climber.setPower(-.8);
         } else {
             climber.stop();
+           // climber.getSensors().climbing = true;
         }
 
 
@@ -65,6 +69,19 @@ public class ClimberTestCommand extends Command {
             ticks = 0;
             decayTrigger = false;
         }
+    }
+    public void limits(double power){
+        if(climbing) {
+            if (climber.getSensors().beamBreakTriggered == climber.getSensors().prevBeamBreakTriggered ||
+                    climber.getSensors().beamBreakTriggered &&
+                            !climber.getSensors().prevBeamBreakTriggered) {
+                climber.setPower(power);
+            } else {
+                climber.stop();
+                climbing = false;
+            }
+        }
+        climber.getSensors().prevBeamBreakTriggered = climber.getSensors().beamBreakTriggered;
     }
 
     @Override

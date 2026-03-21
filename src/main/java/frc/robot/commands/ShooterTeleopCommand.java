@@ -23,8 +23,9 @@ public class ShooterTeleopCommand extends Command {
     AngularVelocity targetFlywheelPower;
     boolean isFlywheelOn = false;
     public double kP = 1 / 1500.0;
-    public double kI = 0.0006;
+    public double kI = 0.00006;
     public double kD = 0.1 / 14000;
+    public double IZone = 1000;
 
     public double hoodKP = 0.056;
     public double hoodKI = 0;
@@ -86,6 +87,9 @@ public class ShooterTeleopCommand extends Command {
         shooterSetpoint = 4300;
         hoodPIDController.setSetpoint(hoodSetpoint);
         turretPIDController.setSetpoint(turretSetpoint);
+        shooterPIDController.reset();
+        shooterPIDController.setIZone(IZone);
+        shooterPIDController.setIntegratorRange(-.1, .1);
 
     }
 
@@ -145,7 +149,7 @@ public class ShooterTeleopCommand extends Command {
         }
 
         Logger.recordOutput("FlywheelSetpoint", shooterSetpoint);
-
+        Logger.recordOutput("FlywheelSpeed", shooterSubsystem.getFlywheelSpeed().in(RPM));
         shooterPIDController.setSetpoint(shooterSetpoint);
 
 

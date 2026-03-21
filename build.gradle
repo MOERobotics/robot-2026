@@ -70,7 +70,7 @@ dependencies {
 
     annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.38'
     implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.38'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.13.1'
+//    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.13.1'
     implementation wpi.java.deps.wpilib()
     implementation wpi.java.vendor.java()
 
