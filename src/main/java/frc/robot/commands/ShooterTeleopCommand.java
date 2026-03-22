@@ -22,8 +22,8 @@ public class ShooterTeleopCommand extends Command {
     double flywheelPower;
     AngularVelocity targetFlywheelPower;
     boolean isFlywheelOn = false;
-    public double kP = 1 / 1500.0;
-    public double kI = 0.00006;
+    public double kP = 2 / 1500.0;
+    public double kI = 0.00015;
     public double kD = 0.1 / 14000;
     public double IZone = 1000;
 
@@ -89,8 +89,7 @@ public class ShooterTeleopCommand extends Command {
         turretPIDController.setSetpoint(turretSetpoint);
         shooterPIDController.reset();
         shooterPIDController.setIZone(IZone);
-        shooterPIDController.setIntegratorRange(-.1, .1);
-
+        shooterPIDController.setIntegratorRange(-.15, .15);
     }
 
     @Override
@@ -141,11 +140,11 @@ public class ShooterTeleopCommand extends Command {
         }
 
         if (joystick.getRawButton(3)) {
-            shooterSetpoint -= 10;
+            shooterSetpoint -= 2;
         }
 
         if (joystick.getRawButton(4)) {
-            shooterSetpoint += 10;
+            shooterSetpoint += 2;
         }
 
         Logger.recordOutput("FlywheelSetpoint", shooterSetpoint);
@@ -161,11 +160,11 @@ public class ShooterTeleopCommand extends Command {
 
             Logger.recordOutput("FlywheelOutput", output);
             Logger.recordOutput("FlywheelI", shooterPIDController.getAccumulatedError() * kI);
+//
+           if (output > 0.25) output = 0.25;
+           if (output < 0) output = 0;
 
-            if (output > 0.55) output = 0.55;
-            if (output < 0) output = 0;
-
-            shooterSubsystem.setFlywheelPower(0.45+ output);
+            shooterSubsystem.setFlywheelPower(0.75+ output);
             shooterSubsystem.setTransitionPower(0.7);
 
         } else {
