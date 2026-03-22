@@ -50,9 +50,9 @@ public class MOELogger {
             org.littletonrobotics.junction.Logger.setReplaySource(wpilogReader);
             org.littletonrobotics.junction.Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
         } else {
-            org.littletonrobotics.junction.Logger.addDataReceiver(new NT4Publisher());
             org.littletonrobotics.junction.Logger.addDataReceiver(new WPILOGWriter());
         }
+        org.littletonrobotics.junction.Logger.addDataReceiver(new NT4Publisher());
 
 
         org.littletonrobotics.junction.Logger.start();

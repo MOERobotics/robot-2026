@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -23,11 +24,14 @@ import frc.robot.commands.autos.DepotRunTest;
 import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
 import frc.robot.container.SubMOErine;
+import lombok.SneakyThrows;
 import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.LoggedPowerDistribution;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 /*
@@ -39,13 +43,11 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
  */
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static edu.wpi.first.units.Units.RPM;
-
-
-
+import static edu.wpi.first.units.Units.*;
 
 public class Robot extends LoggedRobot {
 
@@ -92,8 +94,36 @@ public class Robot extends LoggedRobot {
 
     PhotonCamera _camera2 = new PhotonCamera("Arducam_OV9281_USB_Camera");
 
+    Transform3d camera1Location = new Transform3d(
+            Inches.of(-11.042),
+            Inches.of(13.201),
+            Inches.of(7.790),
+            new Rotation3d(
+                    Degrees.of(0),
+                    Degrees.of(-15),
+                    Degrees.of(180)
+            )
+    );
+    Transform3d camera2Location = new Transform3d(
+            Inches.of(-11.042),
+            Inches.of(-13.201),
+            Inches.of(7.790),
+            new Rotation3d(
+                    Degrees.of(0),
+                    Degrees.of(-25),
+                    Degrees.of(225)
+            )
+    );
+
+    AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
+
+    PhotonPoseEstimator estimator1 = new PhotonPoseEstimator(fieldLayout, camera1Location);
+    PhotonPoseEstimator estimator2 = new PhotonPoseEstimator(fieldLayout, camera2Location);
+
     CameraInputsAutoLogged cameraInputsAutoLogged = new CameraInputsAutoLogged();
-   // public AprilTagFieldLayout fieldLayout = new AprilTagFieldLayout();
+
+
+    // public AprilTagFieldLayout fieldLayout = new AprilTagFieldLayout();
 
   //  public Transform3d robotToCam = new Transform3d(0,0,0 ,new Rotation3d(0,0,0));
    //  public PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(fieldLayout,robotToCam );
@@ -177,6 +207,18 @@ public class Robot extends LoggedRobot {
             cameraInputsAutoLogged.photon2 = results2.get(results2.size()-1);
         }
         Logger.processInputs("photonStuff", cameraInputsAutoLogged);
+        Pose3d photonPose1 = (
+                estimator1.estimateClosestToCameraHeightPose(cameraInputsAutoLogged.photon1).
+                        map((erp) -> erp.estimatedPose).orElse(null)
+                );
+        Logger.recordOutput("photonTurretCamPose", photonPose1);
+        Pose3d photonPose2 = (
+                estimator2.estimateClosestToCameraHeightPose(cameraInputsAutoLogged.photon2).
+                        map((erp) -> erp.estimatedPose).orElse(null)
+        );
+        Logger.recordOutput("photonCornerSwerveCamPose", photonPose2);
+
+
 
     }
 
