@@ -5,8 +5,11 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.MOESubsystem;
@@ -15,13 +18,52 @@ import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
 import frc.robot.subsystem.interfaces.SwerveModuleSubsystem;
 
 import frc.robot.subsystem.simulations.SwerveDriveSim;
+import org.littletonrobotics.junction.Logger;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.targeting.PhotonPipelineResult;
+
 import java.util.Arrays;
+import java.util.List;
+
+import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.Degrees;
 
 public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> implements SwerveDriveSubsystem {
     public SwerveDriveKinematics robotKinematics;
     SwerveModuleSubsystem[] swerveModules;
-    SwerveDriveOdometry robotOdometry;
+    SwerveDrivePoseEstimator robotOdometry;
     public Pigeon2 robotGyro;
+    PhotonCamera turretCam = new PhotonCamera("Arducam_OV9281_USB_Camera (1)");
+
+    PhotonCamera swerveCam = new PhotonCamera("Arducam_OV9281_USB_Camera");
+
+    Transform3d turretCamLocation = new Transform3d(
+            Millimeters.of(-272.98),
+            Millimeters.of(317.26),
+            Millimeters.of(228.52),
+            new Rotation3d(
+                    Degrees.of(0),
+                    Degrees.of(-15),
+                    Degrees.of(180)
+            )
+    );
+    Transform3d swerveCamLocation = new Transform3d(
+            Millimeters.of(-310.015),
+            Millimeters.of(-308.6365),
+            Millimeters.of(205.983),
+            new Rotation3d(
+                    Degrees.of(0),
+                    Degrees.of(-27),
+                    Degrees.of(225)
+            )
+    );
+
+    AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
+
+    PhotonPoseEstimator estimator1 = new PhotonPoseEstimator(fieldLayout, turretCamLocation);
+    PhotonPoseEstimator estimator2 = new PhotonPoseEstimator(fieldLayout, swerveCamLocation);
+
     // Pigeon2SimState simGyro;
 
 
@@ -33,9 +75,10 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
         robotKinematics = new SwerveDriveKinematics(
                 Arrays.stream(swerveModules).map(SwerveModuleSubsystem::getCoordsOfModule).toArray(Translation2d[]::new)
         );
-        robotOdometry = new SwerveDriveOdometry(robotKinematics,
+        robotOdometry = new SwerveDrivePoseEstimator(robotKinematics,
                 robotGyro.getRotation2d(),
-                Arrays.stream(swerveModules).map(SwerveModuleSubsystem::getTravelDistanceNRobotAngle).toArray(SwerveModulePosition[]::new)
+                Arrays.stream(swerveModules).map(SwerveModuleSubsystem::getTravelDistanceNRobotAngle).toArray(SwerveModulePosition[]::new),
+                new Pose2d()
         );
         RobotConfig config = null;
         try{
@@ -88,6 +131,24 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
         sensors.moduleBR = swerveModules[3];
         sensors.modulePositions = Arrays.stream(swerveModules).map(SwerveModuleSubsystem::getTravelDistanceNRobotAngle).toArray(SwerveModulePosition[]::new);
         sensors.moduleStates = Arrays.stream(swerveModules).map(SwerveModuleSubsystem::getSpeedNDirectionOfMod).toArray(SwerveModuleState[]::new);
+        boolean rejectUpdate = false;
+        if(getSensors().photon1 == null || getSensors().photon2 == null){
+            rejectUpdate = true;
+        }
+        if(robotGyro.getAngularVelocityZWorld().getValue().abs(DegreesPerSecond)>=360){
+            rejectUpdate = true;
+        }
+        //if(getSensors().photon1.){}
+
+        if(!rejectUpdate){
+            this.robotOdometry.setVisionMeasurementStdDevs(VecBuilder.fill(0.7,0.7,999999));
+            if(getSensors().turretCamPose != null) {
+                this.robotOdometry.addVisionMeasurement(getSensors().turretCamPose.toPose2d(), getSensors().photon1.getTimestampSeconds());
+            }
+            if(getSensors().swerveCamPose != null) {
+                this.robotOdometry.addVisionMeasurement(getSensors().swerveCamPose.toPose2d(), getSensors().photon2.getTimestampSeconds());
+            }
+        }
     }
 
 
@@ -121,7 +182,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
 
     @Override
     public Pose2d getPose() {
-        return robotOdometry.getPoseMeters();
+        return robotOdometry.getEstimatedPosition();
     }
 
     @Override
@@ -156,4 +217,34 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
         return robotKinematics.toChassisSpeeds(Arrays.stream(swerveModules).map(SwerveModuleSubsystem::getSpeedNDirectionOfMod).toArray(SwerveModuleState[]::new));
     }
 
+    @Override
+    public void photonPoses(){
+        List<PhotonPipelineResult> results1 = turretCam.getAllUnreadResults();
+        if (!results1.isEmpty()) {
+            Logger.recordOutput(
+                    "photon1",
+                    PhotonPipelineResult.proto,
+                    results1.get(results1.size()-1)
+            );
+            getSensors().photon1 = results1.get(results1.size()-1);
+        }
+        List<PhotonPipelineResult> results2 = swerveCam.getAllUnreadResults();
+
+        if (!results2.isEmpty()) {
+            Logger.recordOutput(
+                    "photon2",
+                    PhotonPipelineResult.proto,
+                    results2.get(results2.size()-1)
+            );
+            getSensors().photon2 = results2.get(results2.size()-1);
+        }
+        getSensors().turretCamPose = (
+                estimator1.estimateAverageBestTargetsPose(getSensors().photon1).
+                        map((erp) -> erp.estimatedPose).orElse(null)
+        );
+        getSensors().swerveCamPose = (
+                estimator2.estimateAverageBestTargetsPose(getSensors().photon2).
+                        map((erp) -> erp.estimatedPose).orElse(null)
+        );
+    }
 }

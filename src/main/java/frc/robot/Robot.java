@@ -110,7 +110,7 @@ public class Robot extends LoggedRobot {
             Inches.of(7.790),
             new Rotation3d(
                     Degrees.of(0),
-                    Degrees.of(-25),
+                    Degrees.of(-27),
                     Degrees.of(225)
             )
     );
@@ -137,7 +137,7 @@ public class Robot extends LoggedRobot {
         scheduler = CommandScheduler.getInstance();
 //        scheduler.schedule(FollowPathCommand.warmupCommand());
         scheduler.schedule(hubLoggingCommand);
-
+        _camera1.setFPSLimit(12);
         // auto = DepotRunTest.getAuto(robot);
 
         //  auto = OutpostAutos.outpost(robot);
@@ -184,42 +184,7 @@ public class Robot extends LoggedRobot {
            }
 
          */
-
-
-
-        List<PhotonPipelineResult> results1 = _camera1.getAllUnreadResults();
-        if (!results1.isEmpty()) {
-            Logger.recordOutput(
-                    "photon1",
-                    PhotonPipelineResult.proto,
-                    results1.get(results1.size()-1)
-            );
-            cameraInputsAutoLogged.photon1 = results1.get(results1.size()-1);
-        }
-        List<PhotonPipelineResult> results2 = _camera2.getAllUnreadResults();
-
-        if (!results2.isEmpty()) {
-            Logger.recordOutput(
-                    "photon2",
-                    PhotonPipelineResult.proto,
-                    results2.get(results2.size()-1)
-            );
-            cameraInputsAutoLogged.photon2 = results2.get(results2.size()-1);
-        }
-        Logger.processInputs("photonStuff", cameraInputsAutoLogged);
-        Pose3d photonPose1 = (
-                estimator1.estimateClosestToCameraHeightPose(cameraInputsAutoLogged.photon1).
-                        map((erp) -> erp.estimatedPose).orElse(null)
-                );
-        Logger.recordOutput("photonTurretCamPose", photonPose1);
-        Pose3d photonPose2 = (
-                estimator2.estimateClosestToCameraHeightPose(cameraInputsAutoLogged.photon2).
-                        map((erp) -> erp.estimatedPose).orElse(null)
-        );
-        Logger.recordOutput("photonCornerSwerveCamPose", photonPose2);
-
-
-
+        robot.getRobotSwerveDrive().photonPoses();
     }
 
     @Override
