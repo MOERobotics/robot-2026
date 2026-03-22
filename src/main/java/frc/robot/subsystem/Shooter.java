@@ -106,6 +106,7 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
         getSensors().turretMinAngle = this.turretMinAngle.in(Degrees);
         getSensors().hoodMaxAngle = this.hoodMaxAngle.in(Degrees);
         getSensors().hoodMinAngle = this.hoodMinAngle.in(Degrees);
+        getSensors().flywheelSpeedInRPM = getFlywheelSpeed().in(RPM);
 
         getSensors().flywheelPower = flywheelMotor.get();
         getSensors().transitionPower = transitionMotor.get();
