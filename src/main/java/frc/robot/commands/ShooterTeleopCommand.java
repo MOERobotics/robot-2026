@@ -160,11 +160,13 @@ public class ShooterTeleopCommand extends Command {
 
             Logger.recordOutput("FlywheelOutput", output);
             Logger.recordOutput("FlywheelI", shooterPIDController.getAccumulatedError() * kI);
-//
-           if (output > 0.25) output = 0.25;
+
+            double feedforward = shooterSubsystem.feedForwardCalc(shooterSetpoint);
+            double outputMax = 1- feedforward;
+           if (output > outputMax) output = outputMax;
            if (output < 0) output = 0;
 
-            shooterSubsystem.setFlywheelPower(0.75+ output);
+            shooterSubsystem.setFlywheelPower(feedforward + output);
             shooterSubsystem.setTransitionPower(0.7);
 
         } else {
@@ -275,6 +277,7 @@ public class ShooterTeleopCommand extends Command {
         shooterSubsystem.stopFeeding();
 
     }
+
 
 
     @Override

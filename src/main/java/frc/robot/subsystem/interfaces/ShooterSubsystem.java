@@ -129,6 +129,12 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
         return getSensors().transitionOn;
     }
 
+    default double feedForwardCalc(double rpm){
+        // magic numbers obtained from linear regression model of optimal flywheel rpms & power
+        // returns percentage power needed for obtaining inputted rpm
+        return ((0.000193104*rpm)-0.0171404);
+    }
+
 
 
 }
