@@ -8,28 +8,15 @@ import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.*;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.*;
 import frc.robot.container.ProMOEtheus;
-import frc.robot.commands.autos.DepotRun;
-import frc.robot.commands.autos.DepotRunTest;
-import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
-import frc.robot.container.SubMOErine;
-import lombok.SneakyThrows;
-import org.littletonrobotics.junction.AutoLog;
-import org.littletonrobotics.junction.LoggedPowerDistribution;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
-import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -43,9 +30,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
  */
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -69,7 +54,8 @@ public class Robot extends LoggedRobot {
     public Command rotateCommand = new AutoRotateCommand(robot, driverJoystick);
 
     public Command driveTeleopCommand = new DriveTeleopCommand(robot, driverJoystick);
-
+    public Command controllerVibrateCommandOn = new ControllerVibrateCommandOn(driverJoystick, functionJoystick);
+    public Command controllerVibrateCommandOff = new ControllerVibrateCommandOff(driverJoystick, functionJoystick);
 
     public Command hubLoggingCommand = new HubLoggingCommand(driverJoystick);
     public Command autoRotate = new AutoRotateCommand(robot, driverJoystick);
@@ -125,8 +111,8 @@ public class Robot extends LoggedRobot {
 
     // public AprilTagFieldLayout fieldLayout = new AprilTagFieldLayout();
 
-  //  public Transform3d robotToCam = new Transform3d(0,0,0 ,new Rotation3d(0,0,0));
-   //  public PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(fieldLayout,robotToCam );
+    //  public Transform3d robotToCam = new Transform3d(0,0,0 ,new Rotation3d(0,0,0));
+    //  public PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(fieldLayout,robotToCam );
 
     @Override
     public void robotInit() {
@@ -152,6 +138,7 @@ public class Robot extends LoggedRobot {
     }
 
     long _heartbeat = 0;
+
     @Override
     public void robotPeriodic() {
         MOELogger.log();
@@ -186,15 +173,14 @@ public class Robot extends LoggedRobot {
          */
 
 
-
         List<PhotonPipelineResult> results1 = _camera1.getAllUnreadResults();
         if (!results1.isEmpty()) {
             Logger.recordOutput(
                     "photon1",
                     PhotonPipelineResult.proto,
-                    results1.get(results1.size()-1)
+                    results1.get(results1.size() - 1)
             );
-            cameraInputsAutoLogged.photon1 = results1.get(results1.size()-1);
+            cameraInputsAutoLogged.photon1 = results1.get(results1.size() - 1);
         }
         List<PhotonPipelineResult> results2 = _camera2.getAllUnreadResults();
 
@@ -202,22 +188,21 @@ public class Robot extends LoggedRobot {
             Logger.recordOutput(
                     "photon2",
                     PhotonPipelineResult.proto,
-                    results2.get(results2.size()-1)
+                    results2.get(results2.size() - 1)
             );
-            cameraInputsAutoLogged.photon2 = results2.get(results2.size()-1);
+            cameraInputsAutoLogged.photon2 = results2.get(results2.size() - 1);
         }
         Logger.processInputs("photonStuff", cameraInputsAutoLogged);
         Pose3d photonPose1 = (
                 estimator1.estimateClosestToCameraHeightPose(cameraInputsAutoLogged.photon1).
                         map((erp) -> erp.estimatedPose).orElse(null)
-                );
+        );
         Logger.recordOutput("photonTurretCamPose", photonPose1);
         Pose3d photonPose2 = (
                 estimator2.estimateClosestToCameraHeightPose(cameraInputsAutoLogged.photon2).
                         map((erp) -> erp.estimatedPose).orElse(null)
         );
         Logger.recordOutput("photonCornerSwerveCamPose", photonPose2);
-
 
 
     }
@@ -293,12 +278,50 @@ public class Robot extends LoggedRobot {
 
         scheduler.schedule(shooterTeleopCommand);
         scheduler.schedule(collectorTeleopCommand);
-       // scheduler.schedule(climberTeleopCommand);
+        // scheduler.schedule(climberTeleopCommand);
 
     }
 
     @Override
     public void teleopPeriodic() {
+        boolean teamAllianceWonR = DriverStation.getGameSpecificMessage().equals("R") && DriverStation.getAlliance().equals((DriverStation.Alliance.Red));
+        boolean teamAllianceWonB = DriverStation.getGameSpecificMessage().equals("B") && DriverStation.getAlliance().equals((DriverStation.Alliance.Blue));
+        boolean teamAllianceWon = teamAllianceWonR || teamAllianceWonB;
+
+
+        if (!teamAllianceWon) {
+            if (DriverStation.getMatchTime() <= 110 && DriverStation.getMatchTime() >= 105) {
+                scheduler.schedule(controllerVibrateCommandOff);
+            } else if (DriverStation.getMatchTime() <= 85 && DriverStation.getMatchTime() >= 80) {
+                scheduler.schedule(controllerVibrateCommandOn);
+            } else if (DriverStation.getMatchTime() <= 50 && DriverStation.getMatchTime() >= 45) {
+                scheduler.schedule(controllerVibrateCommandOff);
+            } else if (DriverStation.getMatchTime() <= 25 && DriverStation.getMatchTime() >= 20) {
+                scheduler.schedule(controllerVibrateCommandOn);
+            } else {
+                scheduler.cancel(controllerVibrateCommandOn);
+                scheduler.cancel(controllerVibrateCommandOff);
+            }
+        }
+
+        if (teamAllianceWon) {
+            if (DriverStation.getMatchTime() <= 135 && DriverStation.getMatchTime() >= 130) {
+                scheduler.schedule(controllerVibrateCommandOff);
+            } else if (DriverStation.getMatchTime() <= 110 && DriverStation.getMatchTime() >= 105) {
+                scheduler.schedule(controllerVibrateCommandOn);
+            } else if (DriverStation.getMatchTime() <= 85 && DriverStation.getMatchTime() >= 80) {
+                scheduler.schedule(controllerVibrateCommandOff);
+            } else if (DriverStation.getMatchTime() <= 50 && DriverStation.getMatchTime() >= 45) {
+                scheduler.schedule(controllerVibrateCommandOn);
+            } else {
+                scheduler.cancel(controllerVibrateCommandOn);
+                scheduler.cancel(controllerVibrateCommandOff);
+            }
+
+
+
+
+
 /*
         ChassisSpeeds robotSpeed = new ChassisSpeeds(
        /* ChassisSpeeds robotSpeed = new ChassisSpeeds(
@@ -311,59 +334,58 @@ public class Robot extends LoggedRobot {
 
  */
 
-        if (driverJoystick.getRawButton(1)) {
-            robot.getRobotSwerveDrive().setPose(new Pose2d(robot.getRobotSwerveDrive().getPose().getTranslation(), DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue ? Rotation2d.kZero : Rotation2d.kPi));
-        }
-
-        if (driverJoystick.getPOV() != -1) {
-            scheduler.cancel(driveTeleopCommand);
-            scheduler.schedule(rotateCommand);
-
-        } else {
-            {
-                scheduler.cancel(autoRotate);
-                scheduler.schedule(driveTeleopCommand);
+            if (driverJoystick.getRawButton(1)) {
+                robot.getRobotSwerveDrive().setPose(new Pose2d(robot.getRobotSwerveDrive().getPose().getTranslation(), DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue ? Rotation2d.kZero : Rotation2d.kPi));
             }
+
+            if (driverJoystick.getPOV() != -1) {
+                scheduler.cancel(driveTeleopCommand);
+                scheduler.schedule(rotateCommand);
+
+            } else {
+                {
+                    scheduler.cancel(autoRotate);
+                    scheduler.schedule(driveTeleopCommand);
+                }
+            }
+
+
+        }}
+
+        @Override
+        public void testInit () {
+        }
+
+        @Override
+        public void testPeriodic () {
+            scheduler.schedule(climberTestCommand);
+            scheduler.schedule(shooterTestCommand);
+            scheduler.schedule(collectorTestCommand);
+            scheduler.schedule(controllerVibrateCommandOff);
+        }
+
+        @Override
+        public void simulationInit () {
+        }
+
+        @Override
+        public void simulationPeriodic () {
+        }
+
+
+        public void setFieldPose () {
+            assert autoCommand != null;
+            Pose2d startingPoseBlue = autoCommand.pose();
+            final Pose2d startingPose;
+            if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
+                startingPose = FlippingUtil.flipFieldPose(startingPoseBlue);
+            } else {
+                startingPose = startingPoseBlue;
+            }
+            robot.getRobotSwerveDrive().setPose(startingPose);
+
+
         }
 
 
     }
-
-    @Override
-    public void testInit() {
-    }
-
-    @Override
-    public void testPeriodic() {
-        scheduler.schedule(climberTestCommand);
-        scheduler.schedule(shooterTestCommand);
-        scheduler.schedule(collectorTestCommand);
-    }
-
-    @Override
-    public void simulationInit() {
-    }
-
-    @Override
-    public void simulationPeriodic() {
-    }
-
-
-    public void setFieldPose() {
-        assert autoCommand != null;
-        Pose2d startingPoseBlue = autoCommand.pose();
-        final Pose2d startingPose;
-        if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
-            startingPose = FlippingUtil.flipFieldPose(startingPoseBlue);
-        } else {
-            startingPose = startingPoseBlue;
-        }
-        robot.getRobotSwerveDrive().setPose(startingPose);
-
-
-    }
-
-
-
-
-}

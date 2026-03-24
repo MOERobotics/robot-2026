@@ -70,7 +70,6 @@ public class HubLoggingCommand extends Command {
         }else if (matchTime <= 55 && matchTime > 30) {
             shift = 4;
         }
-
         /*
         driverJoystick.setRumble(GenericHID.RumbleType.kBothRumble, 0);
 
@@ -87,6 +86,41 @@ public class HubLoggingCommand extends Command {
 
 
          */
+        driverJoystick.setRumble(GenericHID.RumbleType.kBothRumble, 0);
+
+
+        if (matchTime <= 135 && matchTime > 134.75) {
+            driverJoystick.setRumble(GenericHID.RumbleType.kBothRumble, 0.5);
+        } else if(matchTime <= 134.625 && matchTime > 134.375){
+            driverJoystick.setRumble(GenericHID.RumbleType.kBothRumble, 0.5);
+        } else if(matchTime <=134.25 &&matchTime >134.125){
+            driverJoystick.setRumble(GenericHID.RumbleType.kBothRumble, 0.5);
+        }else if (matchTime <= 134 && matchTime > 133.75) {
+            driverJoystick.setRumble(GenericHID.RumbleType.kBothRumble, 0.5);
+        }   else if(matchTime <= 133.625 && matchTime > 133.375){
+        driverJoystick.setRumble(GenericHID.RumbleType.kBothRumble, 0.5);
+    } else if(matchTime <=133.25 &&matchTime >133.125){
+        driverJoystick.setRumble(GenericHID.RumbleType.kBothRumble, 0.5);
+    }else if (matchTime <= 133 && matchTime > 132.75) {
+        driverJoystick.setRumble(GenericHID.RumbleType.kBothRumble, 0.5);
+    } else if(matchTime <= 132.625 && matchTime > 132.375){
+        driverJoystick.setRumble(GenericHID.RumbleType.kBothRumble, 0.5);
+    } else if(matchTime <=132.25 &&matchTime >132.125){
+        driverJoystick.setRumble(GenericHID.RumbleType.kBothRumble, 0.5);
+    }else if (matchTime <= 132 && matchTime > 131.75) {
+        driverJoystick.setRumble(GenericHID.RumbleType.kBothRumble, 0.5);
+    }  else if(matchTime <= 131.625 && matchTime > 131.375){
+        driverJoystick.setRumble(GenericHID.RumbleType.kBothRumble, 0.5);
+    } else if(matchTime <=131.25 &&matchTime >131.125){
+        driverJoystick.setRumble(GenericHID.RumbleType.kBothRumble, 0.5);
+    }else if (matchTime <= 131 && matchTime > 130.75) {
+        driverJoystick.setRumble(GenericHID.RumbleType.kBothRumble, 0.5);
+    }   else if(matchTime <= 130.625 && matchTime > 130.375){
+        driverJoystick.setRumble(GenericHID.RumbleType.kBothRumble, 0.5);
+    } else if(matchTime <=130.25 &&matchTime >130.125){
+        driverJoystick.setRumble(GenericHID.RumbleType.kBothRumble, 0.5);
+    }
+
 
 
         SmartDashboard.putNumber("Current Shift", shift);
