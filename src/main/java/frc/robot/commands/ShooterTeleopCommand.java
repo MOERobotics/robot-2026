@@ -22,9 +22,9 @@ public class ShooterTeleopCommand extends Command {
     double flywheelPower;
     AngularVelocity targetFlywheelPower;
     boolean isFlywheelOn = false;
-    public double kP = 4 / 1500.0;
+    public double kP = 2.0 / 1500.0;
     public double kI = 0.00015;
-    public double kD = 0.1 / 14000;
+    public double kD = 0.4 / 14000;
     public double IZone = 1000;
 
     public double hoodKP = 0.056;
@@ -64,8 +64,8 @@ public class ShooterTeleopCommand extends Command {
     public static final double TOWER_TURRET = 327.18;
 
 
+    int noPOV = -1;
 
-    int noPOV =-1;
     public ShooterTeleopCommand(RobotContainer robot, Joystick joystick) {
         this.joystick = joystick;
         shooterSubsystem = robot.getShooterSubsystem();
@@ -73,7 +73,7 @@ public class ShooterTeleopCommand extends Command {
 
         shooterPIDController.setSetpoint(targetRPM);
         shooterPIDController.setTolerance(100); // Dont know if this is needed but a fine safety net ig
-       // shooterPIDController.setIntegratorRange(0,0.6);
+        // shooterPIDController.setIntegratorRange(0,0.6);
         addRequirements(shooterSubsystem);
 
     }
@@ -89,7 +89,7 @@ public class ShooterTeleopCommand extends Command {
         turretPIDController.setSetpoint(turretSetpoint);
         shooterPIDController.reset();
         shooterPIDController.setIZone(IZone);
-        shooterPIDController.setIntegratorRange(-.15, .15);
+        shooterPIDController.setIntegratorRange(-.05, .05);
     }
 
     @Override
@@ -97,18 +97,18 @@ public class ShooterTeleopCommand extends Command {
 
         int currentPOV = joystick.getPOV();
         // removed turret movement from presets as of Roshik's request
-        if(currentPOV!=-1){
-            switch(currentPOV){
+        if (currentPOV != -1) {
+            switch (currentPOV) {
                 case 0:
                     shooterSetpoint = HUB_RPM;
                     hoodSetpoint = HUB_HOOD;
-                   // turretSetpoint = HUB_TURRET;
+                    // turretSetpoint = HUB_TURRET;
                     isFlywheelOn = true;
                     break;
                 case 90:
                     shooterSetpoint = TRENCH_RPM;
                     hoodSetpoint = TRENCH_HOOD;
-                   // turretSetpoint = TRENCH_TURRET;
+                    // turretSetpoint = TRENCH_TURRET;
                     isFlywheelOn = true;
                     break;
 
@@ -122,14 +122,12 @@ public class ShooterTeleopCommand extends Command {
                 case 270:
                     shooterSetpoint = CORNER_RPM;
                     hoodSetpoint = CORNER_HOOD;
-                   // turretSetpoint = CORNER_TURRET;
+                    // turretSetpoint = CORNER_TURRET;
                     isFlywheelOn = true;
                     break;
 
             }
         }
-
-
 
 
         // Flywheel Toggle
@@ -162,9 +160,13 @@ public class ShooterTeleopCommand extends Command {
             Logger.recordOutput("FlywheelI", shooterPIDController.getAccumulatedError() * kI);
 
             double feedforward = shooterSubsystem.feedForwardCalc(shooterSetpoint);
-            double outputMax = 1- feedforward;
-           if (output > outputMax) output = outputMax;
-           if (output < 0) output = 0;
+            double outputMax = 1 - feedforward;
+            if (output > outputMax) output = outputMax;
+            if (output < 0) output = 0;
+
+
+            shooterSubsystem.setFlywheelPower(feedforward + output);
+            Logger.recordOutput("Flywheelff", feedforward);
 
             shooterSubsystem.setFlywheelPower(feedforward + output);
             shooterSubsystem.setTransitionPower(0.7);
@@ -176,20 +178,19 @@ public class ShooterTeleopCommand extends Command {
         shooterSubsystem.getSensors().atShooterSpeed = shooterPIDController.atSetpoint();
 
 
-
         // Shoot Button
         if (joystick.getRawAxis(3) > 0.3) {
 
 
             if (true
-                    // && isFlywheelOn
+                // && isFlywheelOn
 //                    && shooterPIDController.atSetpoint()
             ) {
                 shooterSubsystem.setSpindexerPower(1);
             } else {
                 shooterSubsystem.setSpindexerPower(0);
             }
-        } else if(joystick.getRawAxis(2)> 0.3){
+        } else if (joystick.getRawAxis(2) > 0.3) {
             shooterSubsystem.setSpindexerPower(-1);
             shooterSubsystem.setTransitionPower(-0.6);
 
@@ -207,7 +208,7 @@ public class ShooterTeleopCommand extends Command {
             turretSetpoint += 5;
 
         }
-        Logger.recordOutput("preClampTurretSetpoint",turretSetpoint);
+        Logger.recordOutput("preClampTurretSetpoint", turretSetpoint);
         turretSetpoint = MathUtil.clamp(
                 turretSetpoint,
                 shooterSubsystem.getSensors().turretMinAngle,
@@ -224,26 +225,21 @@ public class ShooterTeleopCommand extends Command {
                 shooterSubsystem.getTurretAngle().in(Degrees),
                 turretSetpoint);
 
-        if(output >0.4){
-            output=0.4;
+        if (output > 0.4) {
+            output = 0.4;
         }
-
-
-
-
 
 
         Logger.recordOutput("turretOutput", output);
         shooterSubsystem.setTurretPower(output);
 
 
-
         if (joystick.getRawAxis(5) > deadZone) { // && !shooterSubsystem.getSensors().reachedMa5xHood
-            hoodSetpoint -= 2/8.0;
+            hoodSetpoint -= 2 / 8.0;
         }
 
         if (joystick.getRawAxis(5) < -deadZone) { // && !shooterSubsystem.getSensors().reachedMinHood
-            hoodSetpoint += 2/8.0;
+            hoodSetpoint += 2 / 8.0;
         }
         hoodSetpoint = MathUtil.clamp(
                 hoodSetpoint,
@@ -256,18 +252,15 @@ public class ShooterTeleopCommand extends Command {
         Logger.recordOutput("hoodRotation", shooterSubsystem.getHoodAngleFromThroughbore().in(Degrees));
 
         double outputHood = hoodPIDController.calculate(shooterSubsystem.getHoodAngleFromThroughbore().in(Degrees));
-        if(outputHood > 0.4){
-            outputHood =0.4;
+        if (outputHood > 0.4) {
+            outputHood = 0.4;
         }
 
         Logger.recordOutput("hoodOutput", outputHood);
         shooterSubsystem.setHoodPower(outputHood);
 
 
-
-
     }
-
 
 
     public void end(boolean interrupted) {
@@ -277,7 +270,6 @@ public class ShooterTeleopCommand extends Command {
         shooterSubsystem.stopFeeding();
 
     }
-
 
 
     @Override

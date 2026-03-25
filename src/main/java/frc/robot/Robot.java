@@ -66,6 +66,9 @@ public class Robot extends LoggedRobot {
 
     private Command shooterTeleopCommand = new ShooterTeleopCommand(robot, functionJoystick);
 
+    private Command shooterTeleopAutoAimCommand = new ShooterTeleopAutoAimCommand(robot, functionJoystick);
+
+
     public Command rotateCommand = new AutoRotateCommand(robot, driverJoystick);
 
     public Command driveTeleopCommand = new DriveTeleopCommand(robot, driverJoystick);
@@ -90,43 +93,11 @@ public class Robot extends LoggedRobot {
 
     Autos.CommandAndPose autoCommand = new Autos.CommandAndPose(Commands.none(), new Pose2d());
 
-    PhotonCamera _camera1 = new PhotonCamera("Arducam_OV9281_USB_Camera (1)");
-
-    PhotonCamera _camera2 = new PhotonCamera("Arducam_OV9281_USB_Camera");
-
-    Transform3d camera1Location = new Transform3d(
-            Inches.of(-11.042),
-            Inches.of(13.201),
-            Inches.of(7.790),
-            new Rotation3d(
-                    Degrees.of(0),
-                    Degrees.of(-15),
-                    Degrees.of(180)
-            )
-    );
-    Transform3d camera2Location = new Transform3d(
-            Inches.of(-11.042),
-            Inches.of(-13.201),
-            Inches.of(7.790),
-            new Rotation3d(
-                    Degrees.of(0),
-                    Degrees.of(-27),
-                    Degrees.of(225)
-            )
-    );
-
-    AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
-
-    PhotonPoseEstimator estimator1 = new PhotonPoseEstimator(fieldLayout, camera1Location);
-    PhotonPoseEstimator estimator2 = new PhotonPoseEstimator(fieldLayout, camera2Location);
-
-    CameraInputsAutoLogged cameraInputsAutoLogged = new CameraInputsAutoLogged();
-
 
     // public AprilTagFieldLayout fieldLayout = new AprilTagFieldLayout();
 
-  //  public Transform3d robotToCam = new Transform3d(0,0,0 ,new Rotation3d(0,0,0));
-   //  public PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(fieldLayout,robotToCam );
+    //  public Transform3d robotToCam = new Transform3d(0,0,0 ,new Rotation3d(0,0,0));
+    //  public PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(fieldLayout,robotToCam );
 
     @Override
     public void robotInit() {
@@ -137,7 +108,6 @@ public class Robot extends LoggedRobot {
         scheduler = CommandScheduler.getInstance();
 //        scheduler.schedule(FollowPathCommand.warmupCommand());
         scheduler.schedule(hubLoggingCommand);
-        _camera1.setFPSLimit(12);
         // auto = DepotRunTest.getAuto(robot);
 
         //  auto = OutpostAutos.outpost(robot);
@@ -152,6 +122,7 @@ public class Robot extends LoggedRobot {
     }
 
     long _heartbeat = 0;
+
     @Override
     public void robotPeriodic() {
         MOELogger.log();
@@ -194,7 +165,11 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void disabledPeriodic() {
-        setFieldPose();
+
+        if (driverJoystick.getRawButton(3)) {
+            setFieldPose();
+        }
+
     }
 
     @Override
@@ -256,9 +231,11 @@ public class Robot extends LoggedRobot {
 
         scheduler.schedule(climberTestCommand);
 
-        scheduler.schedule(shooterTeleopCommand);
+       // scheduler.schedule(shooterTeleopCommand);
+        scheduler.schedule(shooterTeleopAutoAimCommand);
+
         scheduler.schedule(collectorTeleopCommand);
-       // scheduler.schedule(climberTeleopCommand);
+        // scheduler.schedule(climberTeleopCommand);
 
     }
 
@@ -327,8 +304,6 @@ public class Robot extends LoggedRobot {
 
 
     }
-
-
 
 
 }

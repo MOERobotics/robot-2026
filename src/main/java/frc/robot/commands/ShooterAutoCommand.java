@@ -28,7 +28,10 @@ public class ShooterAutoCommand extends Command {
 
 
     // TODO tune PID for flywheel/shooter thingy
-    private PIDController flywheelPID = new PIDController(1 / 1500.0, 0.0006, 0.1 / 14000);
+    public double kP = 1.8 / 1500.0;
+    public double kI = 0.00015;
+    public double kD = 0.4 / 14000;
+    private PIDController flywheelPID = new PIDController(kP, kI, kD);
     private PIDController turretPID = new PIDController(0.0055, 0, 0);
     private PIDController hoodPID = new PIDController(0.056, 0, 0);
     private Timer shootTimer = new Timer();
@@ -74,23 +77,28 @@ public class ShooterAutoCommand extends Command {
         // TODO make an agitate function in auto?? for jamming?
         Pose2d pose = drive.getPose();
 
+        double distance = pose.getTranslation().getDistance(targetPosition);
 
-        double flywheelOutput = flywheelPID.calculate(shooter.getFlywheelSpeed().in(RPM), flywheelRPM);
 
-        flywheelOutput = MathUtil.clamp(flywheelOutput, 0, 0.55);
+        double flywheelSetpoint = calculateShooterSpeed(distance);
 
+
+        double flywheelOutput = flywheelPID.calculate(shooter.getFlywheelSpeed().in(RPM), flywheelSetpoint);
+
+        double feedforward = shooter.feedForwardCalc(flywheelRPM);
+        double outputMax = 1- feedforward;
+
+        if (flywheelOutput > outputMax) flywheelOutput = outputMax;
+        if (flywheelOutput < 0) flywheelOutput = 0;
 
         Logger.recordOutput("flywheelOutput", flywheelOutput);
 
-        shooter.setFlywheelPower(0.45 + flywheelOutput);
+        shooter.setFlywheelPower(feedforward + flywheelOutput);
 
 
 
 
         Rotation2d targetTurretAngle = targetPosition.minus(pose.getTranslation()).getAngle();
-
-
-
 
         Rotation2d robotHeading = pose.getRotation();
 
@@ -118,7 +126,7 @@ public class ShooterAutoCommand extends Command {
 
 
         if(!justShoot){
-            shooter.setTurretPower(turretOutput);
+           // shooter.setTurretPower(turretOutput);
         }
 
         Logger.recordOutput("turretOutput", turretOutput);
@@ -126,17 +134,17 @@ public class ShooterAutoCommand extends Command {
         Logger.recordOutput("turretCurrentAngle", targetTurretAngle.getDegrees());
 
 
-        double distance = pose.getTranslation().getDistance(targetPosition);
 
 
         double currHoodAngle = shooter.getHoodAngleFromThroughbore().in(Degrees);
 
         double desHoodAngle = MathUtil.clamp(calculateHoodAngle(distance), 180,220);
 
+
         double setpoint1 = 194.14;
 
 
-        double hoodOutput = hoodPID.calculate(currHoodAngle,setpoint1);
+        double hoodOutput = hoodPID.calculate(currHoodAngle,desHoodAngle);
 
         hoodOutput = MathUtil.clamp(hoodOutput, -0.32, 0.32);
 
@@ -239,5 +247,11 @@ public class ShooterAutoCommand extends Command {
         return 191;
     }
 
+
+    private double calculateShooterSpeed(double distance) {
+
+        //TODO implement this with linear regression????
+        return 191;
+    }
 
 }

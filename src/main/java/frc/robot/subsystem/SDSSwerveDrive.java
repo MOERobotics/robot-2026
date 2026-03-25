@@ -36,7 +36,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
     public Pigeon2 robotGyro;
     PhotonCamera turretCam = new PhotonCamera("Arducam_OV9281_USB_Camera (1)");
 
-    PhotonCamera swerveCam = new PhotonCamera("Arducam_OV9281_USB_Camera");
+    PhotonCamera swerveCam = new PhotonCamera("Arducam_OV9281_USB_Camera (3)");
 
     Transform3d turretCamLocation = new Transform3d(
             Millimeters.of(-272.98),
@@ -112,7 +112,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
                 },
                 this // Reference to this subsystem to set requirements
         );
-
+        turretCam.setFPSLimit(12);
         SwerveDriveSim swerveSim = new SwerveDriveSim(this);
         setSimulator(swerveSim);
 
@@ -139,6 +139,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
             rejectUpdate = true;
         }
         //if(getSensors().photon1.){}
+        Logger.recordOutput("rejectUpdate", rejectUpdate);
 
         if(!rejectUpdate){
             this.robotOdometry.setVisionMeasurementStdDevs(VecBuilder.fill(0.7,0.7,999999));
@@ -247,4 +248,6 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
                         map((erp) -> erp.estimatedPose).orElse(null)
         );
     }
+
+
 }
