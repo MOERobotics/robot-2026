@@ -78,10 +78,15 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
         this.hoodMaxAngle = hoodMaxAngle;
         this.hoodMinAngle = hoodMinAngle;
 
-        Angle currAngle = getTurretAngle();
-        Angle turretAngle = currAngle.minus(Degrees.of(180));
 
-        double adjustedAngle = turretAngle.in(Rotation)*TURRET_CORNER;
+        this.turretMotor.getEncoder().setPosition(0);
+
+        Angle absoluteAngle = getTurretAngle();
+
+
+        Angle offset = absoluteAngle.minus(Degrees.of(180));
+
+        double adjustedAngle = offset.in(Rotation)*TURRET_CORNER;
 
         this.turretMotor.getEncoder().setPosition(adjustedAngle);
 
@@ -183,14 +188,6 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
 
     }
 
-
-    public Angle getTurretOffset() {
-        Angle currAngle = getTurretAngle();
-        Angle relativeEncoder = Rotations.of(turretMotor.getEncoder().getPosition());
-
-
-        return null;
-    }
 
     @Override
     public AngularVelocity getFlywheelSpeed() {
