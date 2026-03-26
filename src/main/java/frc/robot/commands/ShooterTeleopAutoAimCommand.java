@@ -62,7 +62,7 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
         addRequirements(shooterSubsystem);
 
-        
+
     }
 
     @Override
@@ -130,10 +130,15 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
             shooterSubsystem.setFlywheelPower(feedforward + output);
             shooterSubsystem.setTransitionPower(0.7);
+            shooterSubsystem.setRampPower(0.7);
+
+
 
         } else {
             shooterSubsystem.setFlywheelPower(0);
             shooterSubsystem.setTransitionPower(0);
+            shooterSubsystem.setRampPower(0);
+
         }
 
         shooterSubsystem.getSensors().atShooterSpeed = shooterPIDController.atSetpoint();
@@ -143,6 +148,8 @@ public class ShooterTeleopAutoAimCommand extends Command {
         } else if (joystick.getRawAxis(2) > 0.3) {
             shooterSubsystem.setSpindexerPower(-1);
             shooterSubsystem.setTransitionPower(-0.6);
+            shooterSubsystem.setRampPower(-0.6);
+
         } else {
             shooterSubsystem.setSpindexerPower(0);
         }
@@ -196,6 +203,7 @@ public class ShooterTeleopAutoAimCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         shooterSubsystem.setFlywheelPower(0);
+        shooterSubsystem.setRampPower(0);
         shooterSubsystem.setTurretPower(0);
         shooterSubsystem.setHoodPower(0);
         shooterSubsystem.stopFeeding();

@@ -166,6 +166,11 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
     public void setTransitionPower(double transitionPower) {
         transitionMotor.set(transitionPower);
     }
+    @Override
+    public void setRampPower(double rampPower) {
+        rampMotor.set(rampPower);
+    }
+
 
     @Override
     public void setSpindexerPower(double spindexerPower) {

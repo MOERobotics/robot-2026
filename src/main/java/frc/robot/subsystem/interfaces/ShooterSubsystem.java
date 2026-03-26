@@ -86,6 +86,10 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
 
     void setTransitionPower(double transitionPower);
 
+    void setRampPower(double rampPower);
+
+
+
     void setSpindexerPower(double spindexerPower);
 
 

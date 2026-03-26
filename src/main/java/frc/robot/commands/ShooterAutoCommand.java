@@ -174,7 +174,9 @@ public class ShooterAutoCommand extends Command {
             }
 
             shooter.setSpindexerPower(1);
-            shooter.setTransitionPower(0.5);
+            shooter.setTransitionPower(0.6);
+            shooter.setRampPower(0.7);
+
         }
 
 
