@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.*;
 import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
+import frc.robot.container.SubMOErine;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
@@ -31,6 +32,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
  */
 
 import java.util.List;
+import java.util.Optional;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -59,7 +61,7 @@ public class Robot extends LoggedRobot {
     public Command driveTeleopCommand = new DriveTeleopCommand(robot, driverJoystick);
     public Command controllerVibrateCommandOn = new ControllerVibrateCommandOn(driverJoystick, functionJoystick);
     public Command controllerVibrateCommandOff = new ControllerVibrateCommandOff(driverJoystick, functionJoystick);
-
+    public Command controllerVibrateTestCommand = new ControllerVIbrateTestCommand(driverJoystick, functionJoystick);
     public Command hubLoggingCommand = new HubLoggingCommand(driverJoystick);
     public Command autoRotate = new AutoRotateCommand(robot, driverJoystick);
 
@@ -156,19 +158,15 @@ public class Robot extends LoggedRobot {
             setFieldPose();
         }
 
-    }
+        @Override
+        public void autonomousInit () {
+            //      scheduler.schedule(autoShootercommand);
 
-
-
-    @Override
-    public void autonomousInit() {
-        //      scheduler.schedule(autoShootercommand);
-
-        // scheduler.schedule(collectorAutoCommand);
-        //scheduler.schedule(climberAutoCommand);
-        // testPath =  new PathsFollower("ALT-Depot");
-        // robot.getRobotSwerveDrive().setPose( testPath.path.getStartingHolonomicPose().get());
-        //scheduler.schedule(autoCommand.getAuto());
+            // scheduler.schedule(collectorAutoCommand);
+            //scheduler.schedule(climberAutoCommand);
+            // testPath =  new PathsFollower("ALT-Depot");
+            // robot.getRobotSwerveDrive().setPose( testPath.path.getStartingHolonomicPose().get());
+            //scheduler.schedule(autoCommand.getAuto());
 /*
         robot.getTankDrive().setPose(testPath.path.getStartingDifferentialPose());
         scheduler.schedule(testPath);
@@ -179,12 +177,12 @@ public class Robot extends LoggedRobot {
  */
 
 
-        autoCommand = Autos.getSelectedAuto();
+            autoCommand = Autos.getSelectedAuto();
 
 
-        setFieldPose();
+            setFieldPose();
 
-        scheduler.schedule(autoCommand.command());
+            scheduler.schedule(autoCommand.command());
 
 
 
@@ -199,10 +197,10 @@ public class Robot extends LoggedRobot {
  */
 
 
-    }
+        }
 
-    @Override
-    public void autonomousPeriodic() {
+        @Override
+        public void autonomousPeriodic () {
 
         /*
         Logger.recordOutput("Auto Start Pose", testPath.path.getStartingHolonomicPose().get());
@@ -212,57 +210,57 @@ public class Robot extends LoggedRobot {
 
          */
 
-    }
-
-    @Override
-    public void teleopInit() {
-
-        scheduler.schedule(climberTestCommand);
-
-       //scheduler.schedule(shooterTeleopCommand);
-
-        scheduler.schedule(shooterTeleopAutoAimCommand);
-
-        scheduler.schedule(collectorTeleopCommand);
-        // scheduler.schedule(climberTeleopCommand);
-
-    }
-
-    @Override
-    public void teleopPeriodic() {
-        boolean teamAllianceWonR = DriverStation.getGameSpecificMessage().equals("R") && DriverStation.getAlliance().equals((DriverStation.Alliance.Red));
-        boolean teamAllianceWonB = DriverStation.getGameSpecificMessage().equals("B") && DriverStation.getAlliance().equals((DriverStation.Alliance.Blue));
-        boolean teamAllianceWon = teamAllianceWonR || teamAllianceWonB;
-
-
-        if (!teamAllianceWon) {
-            if (DriverStation.getMatchTime() <= 110 && DriverStation.getMatchTime() >= 105) {
-                scheduler.schedule(controllerVibrateCommandOff);
-            } else if (DriverStation.getMatchTime() <= 85 && DriverStation.getMatchTime() >= 80) {
-                scheduler.schedule(controllerVibrateCommandOn);
-            } else if (DriverStation.getMatchTime() <= 50 && DriverStation.getMatchTime() >= 45) {
-                scheduler.schedule(controllerVibrateCommandOff);
-            } else if (DriverStation.getMatchTime() <= 25 && DriverStation.getMatchTime() >= 20) {
-                scheduler.schedule(controllerVibrateCommandOn);
-            } else {
-                scheduler.cancel(controllerVibrateCommandOn);
-                scheduler.cancel(controllerVibrateCommandOff);
-            }
         }
 
-        if (teamAllianceWon) {
-            if (DriverStation.getMatchTime() <= 135 && DriverStation.getMatchTime() >= 130) {
-                scheduler.schedule(controllerVibrateCommandOff);
-            } else if (DriverStation.getMatchTime() <= 110 && DriverStation.getMatchTime() >= 105) {
-                scheduler.schedule(controllerVibrateCommandOn);
-            } else if (DriverStation.getMatchTime() <= 85 && DriverStation.getMatchTime() >= 80) {
-                scheduler.schedule(controllerVibrateCommandOff);
-            } else if (DriverStation.getMatchTime() <= 50 && DriverStation.getMatchTime() >= 45) {
-                scheduler.schedule(controllerVibrateCommandOn);
-            } else {
-                scheduler.cancel(controllerVibrateCommandOn);
-                scheduler.cancel(controllerVibrateCommandOff);
+        @Override
+        public void teleopInit () {
+
+            scheduler.schedule(climberTestCommand);
+
+            //scheduler.schedule(shooterTeleopCommand);
+
+            scheduler.schedule(shooterTeleopAutoAimCommand);
+
+            scheduler.schedule(collectorTeleopCommand);
+            // scheduler.schedule(climberTeleopCommand);
+
+        }
+
+        @Override
+        public void teleopPeriodic () {
+            boolean teamAllianceWonR = DriverStation.getGameSpecificMessage().equals("R") && DriverStation.getAlliance().equals(Optional.of(DriverStation.Alliance.Red));
+            boolean teamAllianceWonB = DriverStation.getGameSpecificMessage().equals("B") && DriverStation.getAlliance().equals(Optional.of(DriverStation.Alliance.Blue));
+            boolean teamAllianceWon = teamAllianceWonR || teamAllianceWonB;
+            Logger.recordOutput("teamAllianceWOn", teamAllianceWon);
+
+            if (!teamAllianceWon) {
+                if (DriverStation.getMatchTime() <= 110 && DriverStation.getMatchTime() >= 105) {
+                    scheduler.schedule(controllerVibrateCommandOff);
+                } else if (DriverStation.getMatchTime() <= 85 && DriverStation.getMatchTime() >= 80) {
+                    scheduler.schedule(controllerVibrateCommandOn);
+                } else if (DriverStation.getMatchTime() <= 50 && DriverStation.getMatchTime() >= 45) {
+                    scheduler.schedule(controllerVibrateCommandOff);
+                } else if (DriverStation.getMatchTime() <= 25 && DriverStation.getMatchTime() >= 20) {
+                    scheduler.schedule(controllerVibrateCommandOn);
+                } else {
+                    scheduler.cancel(controllerVibrateCommandOn);
+                    scheduler.cancel(controllerVibrateCommandOff);
+                }
             }
+
+            if (teamAllianceWon) {
+                if (DriverStation.getMatchTime() <= 135 && DriverStation.getMatchTime() >= 130) {
+                    scheduler.schedule(controllerVibrateCommandOff);
+                } else if (DriverStation.getMatchTime() <= 110 && DriverStation.getMatchTime() >= 105) {
+                    scheduler.schedule(controllerVibrateCommandOn);
+                } else if (DriverStation.getMatchTime() <= 85 && DriverStation.getMatchTime() >= 80) {
+                    scheduler.schedule(controllerVibrateCommandOff);
+                } else if (DriverStation.getMatchTime() <= 50 && DriverStation.getMatchTime() >= 45) {
+                    scheduler.schedule(controllerVibrateCommandOn);
+                } else {
+                    scheduler.cancel(controllerVibrateCommandOn);
+                    scheduler.cancel(controllerVibrateCommandOff);
+                }
 
 
 
@@ -279,7 +277,7 @@ public class Robot extends LoggedRobot {
 
 
  */
-
+/*
             if (driverJoystick.getRawButton(1)) {
                 robot.getRobotSwerveDrive().setPose(new Pose2d(robot.getRobotSwerveDrive().getPose().getTranslation(), DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue ? Rotation2d.kZero : Rotation2d.kPi));
             }
@@ -295,8 +293,9 @@ public class Robot extends LoggedRobot {
                 }
             }
 
-
-        }}
+*/
+            }
+        }
 
         @Override
         public void testInit () {
@@ -304,10 +303,10 @@ public class Robot extends LoggedRobot {
 
         @Override
         public void testPeriodic () {
+            scheduler.schedule(controllerVibrateTestCommand);
             scheduler.schedule(climberTestCommand);
             scheduler.schedule(shooterTestCommand);
             scheduler.schedule(collectorTestCommand);
-            scheduler.schedule(controllerVibrateCommandOff);
         }
 
         @Override
@@ -334,7 +333,7 @@ public class Robot extends LoggedRobot {
         }
 
 
-
+    }
 
 
     }
