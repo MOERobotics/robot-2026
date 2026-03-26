@@ -5,6 +5,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,6 +23,10 @@ public class ShooterTeleopAutoAimCommand extends Command {
     public final ShooterSubsystem shooterSubsystem;
     public final Joystick joystick;
     private final SwerveDriveSubsystem drive;
+
+    private InterpolatingDoubleTreeMap shooterMap = new InterpolatingDoubleTreeMap();
+    private InterpolatingDoubleTreeMap hoodMap = new InterpolatingDoubleTreeMap();
+
 
     boolean isFlywheelOn = false;
 
@@ -55,6 +61,8 @@ public class ShooterTeleopAutoAimCommand extends Command {
         shooterPIDController.setTolerance(100);
 
         addRequirements(shooterSubsystem);
+
+        
     }
 
     @Override
@@ -89,9 +97,11 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
         Logger.recordOutput("LockedDistance", distance);
 
+
+
         if (isFlywheelOn) {
-            shooterSetpoint = calculateShooterSpeed(distance);
-            hoodSetpoint = calcHoodAngle(distance);
+           shooterSetpoint = calculateShooterSpeed(distance);
+           hoodSetpoint = calcHoodAngle(distance);
 
         }
 
@@ -129,7 +139,7 @@ public class ShooterTeleopAutoAimCommand extends Command {
         shooterSubsystem.getSensors().atShooterSpeed = shooterPIDController.atSetpoint();
 
         if (joystick.getRawAxis(3) > 0.3) {
-            shooterSubsystem.setSpindexerPower(1);
+            shooterSubsystem.setSpindexerPower(0.5);
         } else if (joystick.getRawAxis(2) > 0.3) {
             shooterSubsystem.setSpindexerPower(-1);
             shooterSubsystem.setTransitionPower(-0.6);
@@ -208,15 +218,15 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
 
         return isRed
-                ? new Translation2d(12.040, 4.164)
-                : new Translation2d(4.524, 4.212);
+                ? new Translation2d(12.286869, 4.034)
+                : new Translation2d(4.624, 4.034);
     }
 
     private double calculateShooterSpeed(double distance) {
-        return 2899.72+ 327.1608* distance;
+        return 3040.48652 + 219.83512* distance;
     }
 
     private double calcHoodAngle(double distance) {
-        return 168.99 + 4.1195 * distance;
+        return 169.17252 + 4.07866 * distance;
     }
 }

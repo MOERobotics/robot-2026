@@ -30,6 +30,8 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
 
         public boolean transitionOn = false;
 
+        public boolean rampOn = false;
+
         public AngularVelocity flywheelSpeed = RPM.zero();
 
         public AngularVelocity spindexerSpeed =  RPM.zero();
@@ -39,12 +41,19 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
 
         public AngularVelocity hoodSpeed = RPM.zero();
 
+        public AngularVelocity rampSpeed = RPM.zero();
+
+
+
         public double spindexerPower=  0;
 
         public double turretPower=  0;
         public double flywheelPower=  0;
         public double transitionPower=  0;
         public double hoodPower=  0;
+        public double rampPower=  0;
+
+
 
         public double turretMaxAngle = 0;
         public double turretMinAngle = 0;

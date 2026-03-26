@@ -186,7 +186,7 @@ public class ShooterTeleopCommand extends Command {
                 // && isFlywheelOn
 //                    && shooterPIDController.atSetpoint()
             ) {
-                shooterSubsystem.setSpindexerPower(1);
+                shooterSubsystem.setSpindexerPower(0.75);
             } else {
                 shooterSubsystem.setSpindexerPower(0);
             }

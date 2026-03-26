@@ -21,6 +21,8 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
     public final SparkMax transitionMotor;
     public final SparkMax flywheelMotor;
 
+    public final SparkMax rampMotor;
+
     protected final SparkAbsoluteEncoder turretEncoder;
     protected final SparkAbsoluteEncoder hoodEncoder;
 
@@ -54,6 +56,7 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
                    SparkMax spindexerMotor,
                    SparkMax transitionMotor,
                    SparkMax flywheelMotor,
+                   SparkMax rampMotor,
                    SparkAbsoluteEncoder turretEncoder,
                    SparkAbsoluteEncoder hoodEncoder,
                    Angle turretMinAngle,
@@ -67,6 +70,8 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
         this.hoodMotor = hoodMotor;
         this.spindexerMotor = spindexerMotor;
         this.transitionMotor = transitionMotor;
+        this.rampMotor = rampMotor;
+
 
         this.flywheelMotor = flywheelMotor;
 
@@ -91,31 +96,40 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
         getSensors().hoodAngleThroughboreDegrees = getHoodAngleFromThroughbore().in(Degrees);
         getSensors().turretAngleDegrees = getTurretAngle().in(Degrees);
         getSensors().turretAngle = getTurretAngle();
+
         getSensors().flywheelSpeed = getFlywheelSpeed();
         getSensors().hoodSpeed = RPM.of(hoodMotor.getAbsoluteEncoder().getVelocity());
         getSensors().spindexerSpeed = RPM.of(spindexerMotor.getEncoder().getVelocity());
         getSensors().transitionSpeed = RPM.of(transitionMotor.getEncoder().getVelocity());
+        getSensors().rampSpeed = RPM.of(rampMotor.getEncoder().getVelocity());
+        getSensors().turretSpeed = RPM.of(turretMotor.getEncoder().getVelocity());
+        getSensors().flywheelSpeedInRPM = getFlywheelSpeed().in(RPM);
+
+
         getSensors().transitionOn = getTransitionOn();
         getSensors().spindexerOn = getSpindexerOn();
         getSensors().reachedMaxHood = reachedHoodMax();
         getSensors().reachedMinHood = reachedHoodMin();
         getSensors().reachedMaxTurret = reachedTurretMax();
         getSensors().reachedMinTurret =reachedTurretMin();
-        getSensors().turretSpeed = RPM.of(turretMotor.getEncoder().getVelocity());
+
         getSensors().turretMaxAngle = this.turretMaxAngle.in(Degrees);
         getSensors().turretMinAngle = this.turretMinAngle.in(Degrees);
         getSensors().hoodMaxAngle = this.hoodMaxAngle.in(Degrees);
         getSensors().hoodMinAngle = this.hoodMinAngle.in(Degrees);
-        getSensors().flywheelSpeedInRPM = getFlywheelSpeed().in(RPM);
+
 
         getSensors().flywheelPower = flywheelMotor.get();
         getSensors().transitionPower = transitionMotor.get();
+        getSensors().rampPower = rampMotor.get();
         getSensors().spindexerPower = spindexerMotor.get();
         getSensors().hoodPower = hoodMotor.get();
         getSensors().turretPower = turretMotor.get();
 
         getSensors().spindexerOn = spindexerMotor.get()>0;
         getSensors().transitionOn = transitionMotor.get()>0;
+        getSensors().rampOn = rampMotor.get()>0;
+
         getSensors().transitionCurrent = transitionMotor.getOutputCurrent();
         getSensors().transitionCurrentLimit = transitionMotor.getOutputCurrent() > 60;
 

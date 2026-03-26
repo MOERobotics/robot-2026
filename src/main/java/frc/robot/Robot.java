@@ -231,7 +231,8 @@ public class Robot extends LoggedRobot {
 
         scheduler.schedule(climberTestCommand);
 
-       // scheduler.schedule(shooterTeleopCommand);
+       //scheduler.schedule(shooterTeleopCommand);
+
         scheduler.schedule(shooterTeleopAutoAimCommand);
 
         scheduler.schedule(collectorTeleopCommand);

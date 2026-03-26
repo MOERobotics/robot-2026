@@ -151,16 +151,18 @@ public class SubMOErine extends RobotContainer {
 
 
 
+        SparkMax turretMotor = new SparkMax(2, SparkLowLevel.MotorType.kBrushless);
 
-        SparkMax turretMotor = new SparkMax(7, SparkLowLevel.MotorType.kBrushless);
+        SparkMax hoodMotor = new SparkMax(7, SparkLowLevel.MotorType.kBrushless);
 
-        SparkMax hoodMotor = new SparkMax(26, SparkLowLevel.MotorType.kBrushless);
+        SparkMax spindexerMotor = new SparkMax(26, SparkLowLevel.MotorType.kBrushless);
 
-        SparkMax spindexerMotor = new SparkMax(45, SparkLowLevel.MotorType.kBrushless);
+        SparkMax transitionMotor = new SparkMax(45, SparkLowLevel.MotorType.kBrushless);
 
-        SparkMax transitionMotor = new SparkMax(50, SparkLowLevel.MotorType.kBrushless);
+        SparkMax flywheelMotor = new SparkMax(50, SparkLowLevel.MotorType.kBrushless);
 
-        SparkMax flywheelMotor = new SparkMax(29, SparkLowLevel.MotorType.kBrushless);
+        SparkMax rampMotor = new SparkMax(900, SparkLowLevel.MotorType.kBrushless);
+
 
 
         SparkMaxConfig flywheelConfig = new SparkMaxConfig();
@@ -173,6 +175,7 @@ public class SubMOErine extends RobotContainer {
 
         SparkMaxConfig transitionConfig = new SparkMaxConfig();
 
+        SparkMaxConfig rampConfig = new SparkMaxConfig();
 
 
         flywheelConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
@@ -186,20 +189,24 @@ public class SubMOErine extends RobotContainer {
 
 
         hoodConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
-        hoodConfig.inverted(false);
+        hoodConfig.inverted(true);
         hoodMotor.configure(hoodConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
 
-        spindexerConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
+        spindexerConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
         spindexerConfig.inverted(true);
         spindexerMotor.configure(spindexerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
 
-        transitionConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);
-        transitionConfig.inverted(false);
+        transitionConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
+        transitionConfig.inverted(false)/*.smartCurrentLimit(20)*/;
+
         transitionMotor.configure(transitionConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
 
+        rampConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
+        rampConfig.inverted(false);
+        rampMotor.configure(rampConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
 
         Shooter shooter = new Shooter(
@@ -208,6 +215,7 @@ public class SubMOErine extends RobotContainer {
                 spindexerMotor,
                 transitionMotor,
                 flywheelMotor,
+                rampMotor,
                 turretMotor.getAbsoluteEncoder(),
                 hoodMotor.getAbsoluteEncoder(),
                 Degrees.of(-5),

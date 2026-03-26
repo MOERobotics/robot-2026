@@ -188,6 +188,7 @@ public class ProMOEtheus extends RobotContainer {
 
         SparkMax flywheelMotor = new SparkMax(4, SparkLowLevel.MotorType.kBrushless);
 
+        SparkMax rampMotor = new SparkMax(900, SparkLowLevel.MotorType.kBrushless);
 
 
 
@@ -201,6 +202,7 @@ public class ProMOEtheus extends RobotContainer {
 
         SparkMaxConfig transitionConfig = new SparkMaxConfig();
 
+        SparkMaxConfig rampConfig = new SparkMaxConfig();
 
 
         flywheelConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
@@ -229,12 +231,18 @@ public class ProMOEtheus extends RobotContainer {
         transitionMotor.configure(transitionConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
 
+        rampConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
+        rampConfig.inverted(false);
+        rampMotor.configure(rampConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+
         Shooter shooter = new Shooter(
                 turretMotor,
                 hoodMotor,
                 spindexerMotor,
                 transitionMotor,
                 flywheelMotor,
+                rampMotor,
                 turretMotor.getAbsoluteEncoder(),
                 hoodMotor.getAbsoluteEncoder(),
                 Degrees.of(30),

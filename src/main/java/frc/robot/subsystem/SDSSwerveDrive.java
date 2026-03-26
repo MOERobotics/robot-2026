@@ -240,12 +240,16 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
             getSensors().photon2 = results2.get(results2.size()-1);
         }
         getSensors().turretCamPose = (
-                estimator1.estimateAverageBestTargetsPose(getSensors().photon1).
-                        map((erp) -> erp.estimatedPose).orElse(null)
+                estimator1.estimateCoprocMultiTagPose(getSensors().photon1).
+                        map((erp) -> erp.estimatedPose).
+                        orElse(estimator1.estimateLowestAmbiguityPose(getSensors().photon1).
+                        map((erp) -> erp.estimatedPose).orElse(null))
         );
         getSensors().swerveCamPose = (
-                estimator2.estimateAverageBestTargetsPose(getSensors().photon2).
-                        map((erp) -> erp.estimatedPose).orElse(null)
+                estimator2.estimateCoprocMultiTagPose(getSensors().photon2).
+                        map((erp) -> erp.estimatedPose).
+                        orElse(estimator2.estimateLowestAmbiguityPose(getSensors().photon2).
+                        map((erp) -> erp.estimatedPose).orElse(null))
         );
     }
 
