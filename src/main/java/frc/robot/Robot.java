@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.*;
 import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
+import frc.robot.container.SubMOErine;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
@@ -31,12 +32,13 @@ import org.photonvision.targeting.PhotonTrackedTarget;
  */
 
 import java.util.List;
+import java.util.Optional;
 
 import static edu.wpi.first.units.Units.*;
 
 public class Robot extends LoggedRobot {
 
-    public RobotContainer robot = new ProMOEtheus();
+    public RobotContainer robot = new SubMOErine();
     public Joystick driverJoystick = new Joystick(0);
     public Joystick functionJoystick = new Joystick(1);
 
@@ -56,7 +58,7 @@ public class Robot extends LoggedRobot {
     public Command driveTeleopCommand = new DriveTeleopCommand(robot, driverJoystick);
     public Command controllerVibrateCommandOn = new ControllerVibrateCommandOn(driverJoystick, functionJoystick);
     public Command controllerVibrateCommandOff = new ControllerVibrateCommandOff(driverJoystick, functionJoystick);
-
+    public Command controllerVibrateTestCommand = new ControllerVIbrateTestCommand(driverJoystick, functionJoystick);
     public Command hubLoggingCommand = new HubLoggingCommand(driverJoystick);
     public Command autoRotate = new AutoRotateCommand(robot, driverJoystick);
 
@@ -274,20 +276,20 @@ public class Robot extends LoggedRobot {
     @Override
     public void teleopInit() {
 
-        scheduler.schedule(climberTestCommand);
+       // scheduler.schedule(climberTestCommand);
 
-        scheduler.schedule(shooterTeleopCommand);
-        scheduler.schedule(collectorTeleopCommand);
+       // scheduler.schedule(shooterTeleopCommand);
+        //scheduler.schedule(collectorTeleopCommand);
         // scheduler.schedule(climberTeleopCommand);
 
     }
 
     @Override
     public void teleopPeriodic() {
-        boolean teamAllianceWonR = DriverStation.getGameSpecificMessage().equals("R") && DriverStation.getAlliance().equals((DriverStation.Alliance.Red));
-        boolean teamAllianceWonB = DriverStation.getGameSpecificMessage().equals("B") && DriverStation.getAlliance().equals((DriverStation.Alliance.Blue));
+        boolean teamAllianceWonR = DriverStation.getGameSpecificMessage().equals("R") && DriverStation.getAlliance().equals(Optional.of(DriverStation.Alliance.Red));
+        boolean teamAllianceWonB = DriverStation.getGameSpecificMessage().equals("B") && DriverStation.getAlliance().equals(Optional.of(DriverStation.Alliance.Blue));
         boolean teamAllianceWon = teamAllianceWonR || teamAllianceWonB;
-
+        Logger.recordOutput("teamAllianceWOn",teamAllianceWon );
 
         if (!teamAllianceWon) {
             if (DriverStation.getMatchTime() <= 110 && DriverStation.getMatchTime() >= 105) {
@@ -333,7 +335,7 @@ public class Robot extends LoggedRobot {
 
 
  */
-
+/*
             if (driverJoystick.getRawButton(1)) {
                 robot.getRobotSwerveDrive().setPose(new Pose2d(robot.getRobotSwerveDrive().getPose().getTranslation(), DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue ? Rotation2d.kZero : Rotation2d.kPi));
             }
@@ -349,7 +351,7 @@ public class Robot extends LoggedRobot {
                 }
             }
 
-
+*/
         }}
 
         @Override
@@ -358,10 +360,10 @@ public class Robot extends LoggedRobot {
 
         @Override
         public void testPeriodic () {
+            scheduler.schedule(controllerVibrateTestCommand);
             scheduler.schedule(climberTestCommand);
             scheduler.schedule(shooterTestCommand);
             scheduler.schedule(collectorTestCommand);
-            scheduler.schedule(controllerVibrateCommandOff);
         }
 
         @Override

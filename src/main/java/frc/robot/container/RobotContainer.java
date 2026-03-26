@@ -30,7 +30,7 @@ public abstract @Data class RobotContainer implements LoggableInputs {
         table.put("SwerveDrive", robotSwerveDrive);
         table.put("Climber", climber);
         table.put("Collector", collector);
-        SmartDashboard.putData("MPDH", pdh);
+//        SmartDashboard.putData("MPDH", pdh);
     }
 
     @Override
