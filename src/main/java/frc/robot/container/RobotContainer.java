@@ -17,6 +17,7 @@ public abstract @Data class RobotContainer implements LoggableInputs {
     private CollectorSubsystem collector;
     private SwerveDriveSubsystem robotSwerveDrive;
     ClimberSubsystem climber;
+    LEDSubsystem led;
     private PowerDistribution pdh;
 
     public RobotContainer() {
@@ -30,6 +31,7 @@ public abstract @Data class RobotContainer implements LoggableInputs {
         table.put("SwerveDrive", robotSwerveDrive);
         table.put("Climber", climber);
         table.put("Collector", collector);
+        table.put("Led", led);
         SmartDashboard.putData("MPDH", pdh);
     }
 
@@ -40,6 +42,7 @@ public abstract @Data class RobotContainer implements LoggableInputs {
         shooterSubsystem = table.get("Shooter", shooterSubsystem);
         climber = table.get("Climber", climber);
         collector = table.get("Collector", collector);
+        led = table.get("Led", led);
 
     }
 }
