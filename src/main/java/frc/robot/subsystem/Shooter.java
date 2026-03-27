@@ -32,6 +32,12 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
     private final Angle hoodMinAngle;
     private final Angle hoodMaxAngle;
 
+
+    public static double TURRET_CHAIN = 8.266;
+
+    public static double TURRET_CORNER = 100; // corner gear ratio
+
+
     private static final Angle HOOD_TOLERANCE = Degree.of(1);
     private static final Angle TURRET_TOLERANCE = Degree.of(1);
 
@@ -85,17 +91,41 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
         this.hoodMaxAngle = hoodMaxAngle;
         this.hoodMinAngle = hoodMinAngle;
 
+        Angle absoluteAngle = getTurretAngle();
+
+        this.turretMotor.getEncoder().setPosition(0);
+
+
+        Angle offset = absoluteAngle.minus(Degrees.of(180));
+
+        Logger.recordOutput("offset", offset);
+
+        double adjustedAngle = offset.in(Rotation)*TURRET_CORNER;
+
+        this.turretMotor.getEncoder().setPosition(adjustedAngle);
+
+
         ShooterSimulator shooterSimulator = new ShooterSimulator(this);
         setSimulator(shooterSimulator);
     }
 
     @Override
     public void readSensors(ShooterInputsAutoLogged sensors) {
+
+
         getSensors().hoodAngleThroughbore = getHoodAngleFromThroughbore();
         getSensors().hoodAngleMotor = getHoodAngleFromMotor();
         getSensors().hoodAngleThroughboreDegrees = getHoodAngleFromThroughbore().in(Degrees);
+
+        getSensors().turretRelativeAngleDegrees =Rotation.of(turretMotor.getEncoder().getPosition()).in(Degrees);
+
+        getSensors().turretRelativeAngle = Rotations.of(turretMotor.getEncoder().getPosition());
+        getSensors().turretAngleThroughbore =  Rotation.of(turretEncoder.getPosition());
+
+
         getSensors().turretAngleDegrees = getTurretAngle().in(Degrees);
         getSensors().turretAngle = getTurretAngle();
+
 
         getSensors().flywheelSpeed = getFlywheelSpeed();
         getSensors().hoodSpeed = RPM.of(hoodMotor.getAbsoluteEncoder().getVelocity());

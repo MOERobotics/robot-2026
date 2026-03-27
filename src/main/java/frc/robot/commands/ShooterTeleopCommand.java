@@ -130,6 +130,8 @@ public class ShooterTeleopCommand extends Command {
         }
 
 
+
+
         // Flywheel Toggle
         if (joystick.getRawButtonPressed(2)) {
             isFlywheelOn = !isFlywheelOn;

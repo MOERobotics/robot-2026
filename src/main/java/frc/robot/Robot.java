@@ -107,9 +107,9 @@ public class Robot extends LoggedRobot {
     public void driverStationConnected() {
         Autos.setupAutos(robot);
 
+
     }
 
-    long _heartbeat = 0;
 
     @Override
     public void robotPeriodic() {
@@ -121,28 +121,6 @@ public class Robot extends LoggedRobot {
 
         }
 
-        /*
-       List<PhotonPipelineResult> results = _camera.getAllUnreadResults();
-
-        if(!results.isEmpty()){
-           PhotonPipelineResult latest =  results.get(results.size()-1);
-
-           if(latest.hasTargets()) {
-               PhotonTrackedTarget bestTarget = latest.getBestTarget();
-               SmartDashboard.putBoolean("Vision/hasTargets", latest.hasTargets());
-               SmartDashboard.putNumber("Vision/BestTargetID", bestTarget.getFiducialId());
-               SmartDashboard.putNumber("Vision/Pitch", bestTarget.pitch);
-               SmartDashboard.putNumber("Vision/Yaw", bestTarget.yaw);
-               SmartDashboard.putNumber("Vision/skew", bestTarget.skew);
-               Pose3d averageBestTargetPose = photonPoseEstimator.estimateAverageBestTargetsPose(latest).get().estimatedPose;
-                Pose3d tagPose = fieldLayout.getTagPose(bestTarget.fiducialId).get();
-               Pose3d robotPose = PhotonUtils.estimateFieldToRobotAprilTag(bestTarget.getBestCameraToTarget(), tagPose, robotToCam);
-               SmartDashboard.putData("Vision/averageBestTargetPose", (Sendable) averageBestTargetPose);
-               SmartDashboard.putData("Vision/RobotPose", (Sendable) robotPose);
-
-           }
-
-         */
         robot.getRobotSwerveDrive().photonPoses();
     }
 
@@ -158,6 +136,7 @@ public class Robot extends LoggedRobot {
             setFieldPose();
         }
 
+    }
         @Override
         public void autonomousInit () {
             //      scheduler.schedule(autoShootercommand);
@@ -217,6 +196,8 @@ public class Robot extends LoggedRobot {
 
             scheduler.schedule(climberTestCommand);
 
+            scheduler.schedule(driveTeleopCommand);
+
             //scheduler.schedule(shooterTeleopCommand);
 
             scheduler.schedule(shooterTeleopAutoAimCommand);
@@ -263,6 +244,9 @@ public class Robot extends LoggedRobot {
                 }
 
 
+                if (driverJoystick.getRawButton(1)) {
+                    robot.getRobotSwerveDrive().setPose(new Pose2d(robot.getRobotSwerveDrive().getPose().getTranslation(), DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue ? Rotation2d.kZero : Rotation2d.kPi));
+                }
 
 
 
@@ -278,9 +262,6 @@ public class Robot extends LoggedRobot {
 
  */
 /*
-            if (driverJoystick.getRawButton(1)) {
-                robot.getRobotSwerveDrive().setPose(new Pose2d(robot.getRobotSwerveDrive().getPose().getTranslation(), DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue ? Rotation2d.kZero : Rotation2d.kPi));
-            }
 
             if (driverJoystick.getPOV() != -1) {
                 scheduler.cancel(driveTeleopCommand);
@@ -336,4 +317,4 @@ public class Robot extends LoggedRobot {
     }
 
 
-    }
+

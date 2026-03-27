@@ -15,6 +15,12 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
     class ShooterInputs{
         public Angle turretAngle = Degrees.zero();
 
+        public Angle turretAngleThroughbore = Rotation.zero();
+
+        public Angle turretRelativeAngle = Rotation.zero();
+
+        public double turretRelativeAngleDegrees = 0;
+
         public Angle hoodAngleThroughbore = Rotation.zero();
 
         public Angle hoodAngleMotor = Rotation.zero();

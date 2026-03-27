@@ -4,6 +4,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
@@ -15,8 +16,7 @@ import frc.robot.subsystem.interfaces.ShooterSubsystem;
 import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
 import org.littletonrobotics.junction.Logger;
 
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.*;
 
 public class ShooterTeleopAutoAimCommand extends Command {
 
@@ -32,7 +32,7 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
     private Pose2d lockedPose;
 
-    public double kP = 2.0 / 1500.0;
+    public double kP = 2.5 / 1500.0;
     public double kI = 0.00015;
     public double kD = 0.4 / 14000;
     public double IZone = 1000;
@@ -59,8 +59,19 @@ public class ShooterTeleopAutoAimCommand extends Command {
         this.drive = robot.getRobotSwerveDrive();
 
         shooterPIDController.setTolerance(100);
+        shooterMap.put(1.975, 3400.0);
+        shooterMap.put(3.258, 3892.0);
+        shooterMap.put(4.75, 3986.0);
+        shooterMap.put(4.61,4902.0);
+
+
+        hoodMap.put(1.975, 177.2);
+        hoodMap.put(3.258, 182.5);
+        hoodMap.put(4.75, 188.4);
+        hoodMap.put(4.61, 188.11);
 
         addRequirements(shooterSubsystem);
+
 
 
     }
@@ -93,15 +104,32 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
         Pose2d pose = (lockedPose != null) ? lockedPose : drive.getPose();
 
-        double distance = pose.getTranslation().getDistance(getHunPosition());
+        double distance = pose.getTranslation().plus(new Translation2d(Inches.of(2.172), Inches.of(-8.4375))).getDistance(getHunPosition());
+
+
+
+        Rotation2d targetTurretAngle = getHunPosition().minus(pose.getTranslation()).getAngle();
+
+        Rotation2d robotHeading = pose.getRotation();
+
+        Rotation2d desiredTurret = targetTurretAngle.minus(robotHeading);
+
+
+        double currTurretAngle = shooterSubsystem.getSensors().turretRelativeAngle.in(Degrees);
+
+
+        double desiredAngle = desiredTurret.getDegrees();
+
+
 
         Logger.recordOutput("LockedDistance", distance);
 
 
 
         if (isFlywheelOn) {
-           shooterSetpoint = calculateShooterSpeed(distance);
-           hoodSetpoint = calcHoodAngle(distance);
+          // shooterSetpoint = calculateShooterSpeed(distance);
+         //  hoodSetpoint = calcHoodAngle(distance);
+         //  turretSetpoint = desiredAngle;
 
         }
 
@@ -144,7 +172,7 @@ public class ShooterTeleopAutoAimCommand extends Command {
         shooterSubsystem.getSensors().atShooterSpeed = shooterPIDController.atSetpoint();
 
         if (joystick.getRawAxis(3) > 0.3) {
-            shooterSubsystem.setSpindexerPower(0.5);
+            shooterSubsystem.setSpindexerPower(1);
         } else if (joystick.getRawAxis(2) > 0.3) {
             shooterSubsystem.setSpindexerPower(-1);
             shooterSubsystem.setTransitionPower(-0.6);
@@ -167,6 +195,10 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
         double turretOutput = turretPIDController.calculate(shooterSubsystem.getTurretAngle().in(Degrees), turretSetpoint);
 
+      // double turretOutput = turretPIDController.calculate(currTurretAngle, turretSetpoint);
+
+
+
         if (turretOutput > 0.4) turretOutput = 0.4;
 
 
@@ -182,7 +214,7 @@ public class ShooterTeleopAutoAimCommand extends Command {
                 hoodSetpoint += 2 / 8.0;
             }
         } else {
-            hoodSetpoint = calcHoodAngle(distance);
+           // hoodSetpoint = calcHoodAngle(distance);
         }
 
         hoodSetpoint = MathUtil.clamp(hoodSetpoint, shooterSubsystem.getSensors().hoodMinAngle, shooterSubsystem.getSensors().hoodMaxAngle);
@@ -232,9 +264,13 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
     private double calculateShooterSpeed(double distance) {
         return 3040.48652 + 219.83512* distance;
+
+       // return shooterMap.get(distance);
     }
 
     private double calcHoodAngle(double distance) {
         return 169.17252 + 4.07866 * distance;
+        // return hoodMap.get(distance);
+
     }
 }

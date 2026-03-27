@@ -50,6 +50,7 @@ public class NeutralZone {
                         plannerPath2,
                         new FuelCollectorAutoCommand(robot ,true, true, "in")),
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
+                new FuelCollectorAutoCommand(robot ,true, true, "stop"),
                 plannerPath3,
 
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop())

@@ -39,6 +39,11 @@ public class ShooterFake extends MOESubsystem<ShooterInputsAutoLogged> implement
     }
 
     @Override
+    public void setRampPower(double rampPower) {
+
+    }
+
+    @Override
     public void setSpindexerPower(double spindexerPower) {
 
     }

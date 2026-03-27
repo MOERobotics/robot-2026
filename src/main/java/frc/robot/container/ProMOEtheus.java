@@ -188,7 +188,7 @@ public class ProMOEtheus extends RobotContainer {
 
         SparkMax flywheelMotor = new SparkMax(4, SparkLowLevel.MotorType.kBrushless);
 
-        SparkMax rampMotor = new SparkMax(900, SparkLowLevel.MotorType.kBrushless);
+        SparkMax rampMotor = new SparkMax(12, SparkLowLevel.MotorType.kBrushless);
 
 
 
@@ -232,7 +232,7 @@ public class ProMOEtheus extends RobotContainer {
 
 
         rampConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
-        rampConfig.inverted(false);
+        rampConfig.inverted(true);
         rampMotor.configure(rampConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
 
