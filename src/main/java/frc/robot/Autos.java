@@ -30,6 +30,9 @@ public class Autos {
 
         autoChooser.setDefaultOption("Auto13: Neutral Zone NRT Back", NeutralZone.NRT_Back(robot));
 
+        autoChooser.setDefaultOption("Auto14: Neutral Zone ART Back", NeutralZone.ART_Back(robot));
+
+
         Consumer<CommandAndPose> onAutoUpdate = (commandandPose) -> robot.getRobotSwerveDrive().setPose(autoChooser.getSelected().pose());
 
         autoChooser.onChange(onAutoUpdate);

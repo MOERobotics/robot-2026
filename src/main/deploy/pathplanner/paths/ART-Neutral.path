@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.46,
-        "y": 7.325
+        "x": 3.56,
+        "y": 0.725
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.3938944365192585,
-        "y": 7.586661911554922
+        "x": 5.035335235378032,
+        "y": 0.6515406562054205
       },
       "isLocked": false,
-      "linkedName": "NLT"
+      "linkedName": "ART"
     },
     {
       "anchor": {
-        "x": 7.830085592011411,
-        "y": 6.784465049928674
+        "x": 7.7265763195435095,
+        "y": 1.2725962910128386
       },
       "prevControl": {
-        "x": 6.31626248216833,
-        "y": 7.379643366619116
+        "x": 6.484465049928673,
+        "y": 0.3798288159771769
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "LN"
+      "linkedName": "RN"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": "Trenches ",

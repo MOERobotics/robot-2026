@@ -28,7 +28,7 @@ public class ShooterAutoCommand extends Command {
 
 
     // TODO tune PID for flywheel/shooter thingy
-    public double kP = 1.8 / 1500.0;
+    public double kP = 2.0 / 1500.0;
     public double kI = 0.00015;
     public double kD = 0.4 / 14000;
     private PIDController flywheelPID = new PIDController(kP, kI, kD);
@@ -86,7 +86,7 @@ public class ShooterAutoCommand extends Command {
         double flywheelOutput = flywheelPID.calculate(shooter.getFlywheelSpeed().in(RPM), flywheelSetpoint);
 
         double feedforward = shooter.feedForwardCalc(flywheelRPM);
-        double outputMax = 1- feedforward;
+        double outputMax = 1 - feedforward;
 
         if (flywheelOutput > outputMax) flywheelOutput = outputMax;
         if (flywheelOutput < 0) flywheelOutput = 0;
@@ -149,7 +149,7 @@ public class ShooterAutoCommand extends Command {
         hoodOutput = MathUtil.clamp(hoodOutput, -0.32, 0.32);
 
 
-        shooter.setHoodPower(hoodOutput);
+        //shooter.setHoodPower(hoodOutput);
 
 
         boolean flywheelReady = flywheelPID.atSetpoint();
@@ -161,7 +161,7 @@ public class ShooterAutoCommand extends Command {
         boolean hoodReady = hoodPID.atSetpoint();
 
 
-        Logger.recordOutput("hoodReady", flywheelReady);
+        Logger.recordOutput("flywheelReady", flywheelReady);
         Logger.recordOutput("turretReady", turretReady);
         Logger.recordOutput("hoodReady", hoodReady);
 

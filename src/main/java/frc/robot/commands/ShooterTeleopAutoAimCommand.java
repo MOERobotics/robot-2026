@@ -253,10 +253,6 @@ public class ShooterTeleopAutoAimCommand extends Command {
             isRed = DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
         }
 
-
-
-
-
         return isRed
                 ? new Translation2d(12.286869, 4.034)
                 : new Translation2d(4.624, 4.034);

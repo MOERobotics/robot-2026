@@ -16,47 +16,56 @@ import frc.robot.container.RobotContainer;
 
 public class NeutralZone {
 
+    //TODO: make a LA-ROTATION path
     public static Autos.CommandAndPose NLT(RobotContainer robot) {
-        return buildNeutral(robot, "NLT-Neutral", "LN Collect", "RN Return");
+        return buildNeutral(robot, "NLT-Neutral", "LN Collect", "RN Return","RA-Rotation");
     }
 
     public static Autos.CommandAndPose NRT(RobotContainer robot) {
-        return buildNeutral(robot, "NRT-Neutral", "RN Collect", "LN Return");
+        return buildNeutral(robot, "NRT-Neutral", "RN Collect", "LN Return","RA-Rotation");
     }
 
     public static Autos.CommandAndPose NRT_Back(RobotContainer robot) {
-        return buildNeutral(robot, "NRT-Neutral", "RN Collect", "RN Return");
+        return buildNeutral(robot, "NRT-Neutral", "RN Collect", "RN Return", "RA-Rotation");
+    }
+    public static Autos.CommandAndPose ART_Back(RobotContainer robot) {
+        return buildNeutral(robot, "ART-Neutral", "RN Collect", "RN Return", "RA-Rotation");
     }
     public static Autos.CommandAndPose buildNeutral(
             RobotContainer robot,
             String path1,
             String path2,
-            String path3) {
+            String path3,
+            String path4) {
 
         PathsFollower plannerPath1 = new PathsFollower(path1);
         PathsFollower plannerPath2 = new PathsFollower(path2);
         PathsFollower plannerPath3 = new PathsFollower(path3);
+        PathsFollower plannerPath4 = new PathsFollower(path4);
 
         Pose2d startingPose = plannerPath1.path.getStartingHolonomicPose().get();
 
 
         Command auto = Commands.sequence(
 
-
-                plannerPath1,
+                new FuelCollectorAutoCommand(robot, true, true, "stop").withTimeout(1),
+                Commands.parallel(
+                        plannerPath1,
+                        new FuelCollectorAutoCommand(robot ,true, true, "in")),
 
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
                 Commands.deadline(
-                        plannerPath2,
-                        new FuelCollectorAutoCommand(robot ,true, true, "in")),
+                        plannerPath2),
+                       // new FuelCollectorAutoCommand(robot ,true, true, "in")),
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
-                new FuelCollectorAutoCommand(robot ,true, true, "stop"),
+                new FuelCollectorAutoCommand(robot ,true, true, "stop").withTimeout(1),
                 plannerPath3,
 
-                Commands.runOnce(() -> robot.getRobotSwerveDrive().stop())
+                Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
+                plannerPath4,
 
-
-
+                Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
+                new ShooterAutoCommand(robot, ShooterAutoCommand.Target.HUB, true)
         );
 
 

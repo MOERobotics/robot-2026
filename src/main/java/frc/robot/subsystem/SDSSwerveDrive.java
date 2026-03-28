@@ -49,9 +49,9 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
             )
     );
     Transform3d swerveCamLocation = new Transform3d(
-            Millimeters.of(-310.015),
-            Millimeters.of(-308.6365),
-            Millimeters.of(205.983),
+            Inches.of(-11.7459),
+            Inches.of(-11.791),
+            Inches.of(8.021),
             new Rotation3d(
                     Degrees.of(0),
                     Degrees.of(-27),
@@ -131,7 +131,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
         sensors.moduleBR = swerveModules[3];
         sensors.modulePositions = Arrays.stream(swerveModules).map(SwerveModuleSubsystem::getTravelDistanceNRobotAngle).toArray(SwerveModulePosition[]::new);
         sensors.moduleStates = Arrays.stream(swerveModules).map(SwerveModuleSubsystem::getSpeedNDirectionOfMod).toArray(SwerveModuleState[]::new);
-        boolean rejectUpdate = false;
+        boolean rejectUpdate = true;
         if(getSensors().photon1 == null || getSensors().photon2 == null){
             rejectUpdate = true;
         }
