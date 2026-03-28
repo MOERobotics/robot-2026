@@ -24,7 +24,7 @@ public class ShooterTeleopCommand extends Command {
     boolean isFlywheelOn = false;
     public double kP = 2.0 / 1500.0;
     public double kI = 0.00015;
-    public double kD = 0.4 / 14000;
+    public double kD = 0.6 / 14000;
     public double IZone = 1000;
 
     public double hoodKP = 0.056;

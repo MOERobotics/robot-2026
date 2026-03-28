@@ -49,14 +49,14 @@ public class NeutralZone {
         Command auto = Commands.sequence(
 
                 new FuelCollectorAutoCommand(robot, true, true, "stop").withTimeout(1),
-                Commands.parallel(
+                Commands.deadline(
                         plannerPath1,
                         new FuelCollectorAutoCommand(robot ,true, true, "in")),
 
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
                 Commands.deadline(
-                        plannerPath2),
-                       // new FuelCollectorAutoCommand(robot ,true, true, "in")),
+                        plannerPath2,
+                        new FuelCollectorAutoCommand(robot ,true, true, "in")),
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
                 new FuelCollectorAutoCommand(robot ,true, true, "stop").withTimeout(1),
                 plannerPath3,

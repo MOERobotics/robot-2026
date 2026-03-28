@@ -33,9 +33,9 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
     private final Angle hoodMaxAngle;
 
 
-    public static double TURRET_CHAIN = 1/8.266; // corner gear to chain ratio
+    public static double TURRET_CHAIN = 8.266; // corner gear to chain ratio
 
-    public static double TURRET_CORNER = 1/100.0; // motor to corner gear ratio
+    public static double TURRET_CORNER = 100.0; // motor to corner gear ratio
 
 
     private static final Angle HOOD_TOLERANCE = Degree.of(1);
@@ -119,7 +119,7 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
 
         getSensors().turretRelativeAngleDegrees = getSensors().turretRelativeAngle.in(Degrees);
 
-        getSensors().turretRelativeAngle = Rotations.of(turretMotor.getEncoder().getPosition()).times(TURRET_CONVERSION_FACTOR);
+        getSensors().turretRelativeAngle = getRatioedRelTurretAngle();
        // getSensors().turretAngleThroughbore = getTurretAngle();
 
 
@@ -217,6 +217,9 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
     @Override
     public Angle getTurretAngle() {
         return Rotations.of(turretEncoder.getPosition());//.times(1/8.266);
+    }
+    public Angle getRatioedRelTurretAngle(){
+        return Rotations.of(turretMotor.getEncoder().getPosition()).times(TURRET_CONVERSION_FACTOR);
     }
 
     @Override

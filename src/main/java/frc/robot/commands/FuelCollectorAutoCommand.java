@@ -15,7 +15,7 @@ public class FuelCollectorAutoCommand extends Command {
     CollectorSubsystem collectorSubsystem;
     boolean shouldGoToStartPosition;
     boolean shouldGoToCollectPosition;
-    double armkp = 6.0/600;
+    double armkp = 5.0 /600;
     double armki = 0.02/180;
     double armkd = 0.0002/180;
     double feedforward;
