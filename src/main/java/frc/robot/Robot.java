@@ -81,6 +81,9 @@ public class Robot extends LoggedRobot {
 
     Autos.CommandAndPose autoCommand = new Autos.CommandAndPose(Commands.none(), new Pose2d());
 
+    // Toggle for setting our pose to starting pose while disabled
+    public boolean autoSetpoint = true;
+
 
     // public AprilTagFieldLayout fieldLayout = new AprilTagFieldLayout();
 
@@ -121,6 +124,9 @@ public class Robot extends LoggedRobot {
 
         }
 
+        if (autoCommand != null) Logger.recordOutput("AutoCommand Pose", autoCommand.pose());
+        Logger.recordOutput("AutoSetpoint", autoSetpoint);
+
         robot.getRobotSwerveDrive().photonPoses();
     }
 
@@ -132,10 +138,12 @@ public class Robot extends LoggedRobot {
     @Override
     public void disabledPeriodic() {
 
-        if (driverJoystick.getRawButton(3)) {
+        if (driverJoystick.getRawButtonPressed(3)) {
+            autoSetpoint = !autoSetpoint;
+        }
+        if (autoSetpoint){
             setFieldPose();
         }
-
     }
         @Override
         public void autonomousInit () {
@@ -245,12 +253,15 @@ public class Robot extends LoggedRobot {
 
 
                 if (driverJoystick.getRawButton(1)) {
-                    robot.getRobotSwerveDrive().setPose(new Pose2d(robot.getRobotSwerveDrive()
-                            .getPose().getTranslation(),
+                    robot.getRobotSwerveDrive().setPose(
+                        new Pose2d(
+                            robot.getRobotSwerveDrive().getPose().getTranslation(),
                             DriverStation.getAlliance()
                                     .orElse(DriverStation.Alliance.Blue) ==
                                     DriverStation.Alliance.Blue ?
-                                    Rotation2d.kZero : Rotation2d.kPi));
+                                    Rotation2d.kZero : Rotation2d.kPi
+                        )
+                    );
                 }
 
 

@@ -245,8 +245,8 @@ public class ProMOEtheus extends RobotContainer {
                 rampMotor,
                 turretMotor.getAbsoluteEncoder(),
                 hoodMotor.getAbsoluteEncoder(),
-                Degrees.of(30),
-                Degrees.of(330),
+                Degrees.of(-45),
+                Degrees.of(45),
                 Degrees.of(175),
                 Degrees.of(205));
 

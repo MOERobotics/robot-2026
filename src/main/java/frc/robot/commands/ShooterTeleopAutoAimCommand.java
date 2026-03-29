@@ -78,7 +78,7 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
     @Override
     public void initialize() {
-        turretSetpoint = shooterSubsystem.getTurretAngle().in(Degrees);
+        turretSetpoint = shooterSubsystem.getSensors().turretRelativeAngle.in(Degrees);
         hoodSetpoint = shooterSubsystem.getHoodAngleFromThroughbore().in(Degrees);
         shooterSetpoint = 4300;
 
@@ -193,7 +193,7 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
         turretPIDController.setSetpoint(turretSetpoint);
 
-        double turretOutput = turretPIDController.calculate(shooterSubsystem.getTurretAngle().in(Degrees), turretSetpoint);
+        double turretOutput = turretPIDController.calculate(shooterSubsystem.getSensors().turretRelativeAngle.in(Degrees), turretSetpoint);
 
       // double turretOutput = turretPIDController.calculate(currTurretAngle, turretSetpoint);
 

@@ -24,6 +24,8 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
         public Angle hoodAngleThroughbore = Rotation.zero();
 
         public Angle hoodAngleMotor = Rotation.zero();
+
+        public Angle relativeEncoderAngle = Rotation.zero();
         public double flywheelSpeedInRPM = 0;
 
         public double turretAngleDegrees = 0;

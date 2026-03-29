@@ -120,6 +120,9 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
         getSensors().turretRelativeAngleDegrees = getSensors().turretRelativeAngle.in(Degrees);
 
         getSensors().turretRelativeAngle = getRatioedRelTurretAngle();
+
+        getSensors().relativeEncoderAngle = Rotations.of(turretMotor.getEncoder().getPosition());
+
        // getSensors().turretAngleThroughbore = getTurretAngle();
 
 
@@ -171,7 +174,16 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
 
     @Override
     public void setTurretPower(double power) {
-        turretMotor.set(power);
+        if (power < 0 && !reachedTurretMin()){
+            turretMotor.set(power);
+        }
+        else if (power > 0 && !reachedTurretMax()){
+            turretMotor.set(power);
+        }
+        else {
+            turretMotor.set(0);
+        }
+
     }
 
     @Override
@@ -250,11 +262,11 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
     }
     @Override
     public boolean reachedTurretMax() {
-        return this.getTurretAngle().gt(Degrees.of(turretMaxAngle.in(Degrees)).minus(Degrees.of(TURRET_TOLERANCE.in(Degrees))));
+        return this.getRatioedRelTurretAngle().gt(Degrees.of(turretMaxAngle.in(Degrees)).minus(Degrees.of(TURRET_TOLERANCE.in(Degrees))));
     }
     @Override
     public boolean reachedTurretMin() {
-        return this.getTurretAngle().lt(Degrees.of(turretMinAngle.in(Degrees)).plus(Degrees.of(TURRET_TOLERANCE.in(Degrees))));
+        return this.getRatioedRelTurretAngle().lt(Degrees.of(turretMinAngle.in(Degrees)).plus(Degrees.of(TURRET_TOLERANCE.in(Degrees))));
     }
 
 
