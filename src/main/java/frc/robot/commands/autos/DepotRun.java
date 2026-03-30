@@ -51,7 +51,7 @@ public class DepotRun{
 
                 ),
 
-                new ShooterAutoCommand(robot, ShooterAutoCommand.Target.HUB, false),
+                new ShooterAutoCommand(robot),
                 new PathsFollower("Depot Climb"),
                 Commands.runOnce(
                         () -> robot.getRobotSwerveDrive().stop()

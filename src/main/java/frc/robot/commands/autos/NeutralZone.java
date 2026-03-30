@@ -69,7 +69,7 @@ public class NeutralZone {
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
                 plannerPath5,
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop())
-                //new ShooterAutoCommand(robot, ShooterAutoCommand.Target.HUB, true)
+                //new ShooterAutoCommand(robot)
         );
 
 

@@ -63,11 +63,6 @@ public class Robot extends LoggedRobot {
     public Command controllerVibrateCommandOff = new ControllerVibrateCommandOff(driverJoystick, functionJoystick);
     public Command controllerVibrateTestCommand = new ControllerVIbrateTestCommand(driverJoystick, functionJoystick);
     public Command hubLoggingCommand = new HubLoggingCommand(driverJoystick);
-    public Command autoRotate = new AutoRotateCommand(robot, driverJoystick);
-
-
-    public Command autoShootercommand = new ShooterAutoCommand(robot, ShooterAutoCommand.Target.HUB, false);
-
     public PathsFollower testPath = new PathsFollower("Curved Path");
 
     public Command climberTeleopCommand = new ClimberTeleopCommand(robot, driverJoystick);
@@ -147,13 +142,6 @@ public class Robot extends LoggedRobot {
     }
         @Override
         public void autonomousInit () {
-            //      scheduler.schedule(autoShootercommand);
-
-            // scheduler.schedule(collectorAutoCommand);
-            //scheduler.schedule(climberAutoCommand);
-            // testPath =  new PathsFollower("ALT-Depot");
-            // robot.getRobotSwerveDrive().setPose( testPath.path.getStartingHolonomicPose().get());
-            //scheduler.schedule(autoCommand.getAuto());
 /*
         robot.getTankDrive().setPose(testPath.path.getStartingDifferentialPose());
         scheduler.schedule(testPath);
@@ -220,7 +208,7 @@ public class Robot extends LoggedRobot {
             boolean teamAllianceWonR = DriverStation.getGameSpecificMessage().equals("R") && DriverStation.getAlliance().equals(Optional.of(DriverStation.Alliance.Red));
             boolean teamAllianceWonB = DriverStation.getGameSpecificMessage().equals("B") && DriverStation.getAlliance().equals(Optional.of(DriverStation.Alliance.Blue));
             boolean teamAllianceWon = teamAllianceWonR || teamAllianceWonB;
-            Logger.recordOutput("teamAllianceWOn", teamAllianceWon);
+            Logger.recordOutput("teamAllianceWon", teamAllianceWon);
 
             if (!teamAllianceWon) {
                 if (DriverStation.getMatchTime() <= 110 && DriverStation.getMatchTime() >= 105) {
@@ -266,31 +254,7 @@ public class Robot extends LoggedRobot {
 
 
 
-/*
-        ChassisSpeeds robotSpeed = new ChassisSpeeds(
-       /* ChassisSpeeds robotSpeed = new ChassisSpeeds(
-                MathUtil.applyDeadband(driverJoystick.getRawAxis(1) * -1, deadband),
-                MathUtil.applyDeadband(driverJoystick.getRawAxis(0) * -1, deadband),
-                MathUtil.applyDeadband(driverJoystick.getRawAxis(2) * -1, deadband));
 
-        robot.getRobotSwerveDrive().robotDrive(robotSpeed, false);
-
-
- */
-/*
-
-            if (driverJoystick.getPOV() != -1) {
-                scheduler.cancel(driveTeleopCommand);
-                scheduler.schedule(rotateCommand);
-
-            } else {
-                {
-                    scheduler.cancel(autoRotate);
-                    scheduler.schedule(driveTeleopCommand);
-                }
-            }
-
-*/
             }
         }
 

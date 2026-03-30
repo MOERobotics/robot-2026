@@ -33,7 +33,7 @@ public class Shoot {
 
         Command auto = Commands.sequence(
                 plannerPath1,
-                new ShooterAutoCommand(robot, ShooterAutoCommand.Target.HUB, true)
+                new ShooterAutoCommand(robot)
 
 
         );

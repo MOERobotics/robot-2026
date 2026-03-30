@@ -131,7 +131,8 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
         sensors.moduleBR = swerveModules[3];
         sensors.modulePositions = Arrays.stream(swerveModules).map(SwerveModuleSubsystem::getTravelDistanceNRobotAngle).toArray(SwerveModulePosition[]::new);
         sensors.moduleStates = Arrays.stream(swerveModules).map(SwerveModuleSubsystem::getSpeedNDirectionOfMod).toArray(SwerveModuleState[]::new);
-        boolean rejectUpdate = true;
+        boolean rejectUpdate = false;
+
         if(getSensors().photon1 == null || getSensors().photon2 == null){
             rejectUpdate = true;
         }

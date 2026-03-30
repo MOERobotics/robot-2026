@@ -7,7 +7,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -102,17 +101,31 @@ public class ShooterTeleopAutoAimCommand extends Command {
             }
         }
 
-        Pose2d pose = (lockedPose != null) ? lockedPose : drive.getPose();
+        Pose2d pose;
 
-        double distance = pose.getTranslation().plus(new Translation2d(Inches.of(2.172), Inches.of(-8.4375))).getDistance(getHunPosition());
+        if(lockedPose!=null){
+            pose = lockedPose;
+        }else{
+            pose = drive.getPose();
+        }
+
+
+        Translation2d turretOffset = new Translation2d(Inches.of(2.172), Inches.of(-8.4375)).rotateBy(pose.getRotation());
+        Translation2d turretPosition = pose.getTranslation().plus(turretOffset);
+
+        double currDistance = drive.getPose().getTranslation().plus(turretOffset).getDistance(getHubPosition());
+
+        double distance = turretPosition.getDistance(getHubPosition());
 
 
 
-        Rotation2d targetTurretAngle = getHunPosition().minus(pose.getTranslation()).getAngle();
+        Rotation2d targetTurretAngle = getHubPosition().minus(pose.getTranslation()).getAngle();
 
         Rotation2d robotHeading = pose.getRotation();
 
         Rotation2d desiredTurret = targetTurretAngle.minus(robotHeading);
+
+
 
 
         double currTurretAngle = shooterSubsystem.getSensors().turretRelativeAngle.in(Degrees);
@@ -123,12 +136,12 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
 
         Logger.recordOutput("LockedDistance", distance);
+        Logger.recordOutput("CurrDistance", currDistance);
 
 
 
         if (isFlywheelOn) {
           // shooterSetpoint = calculateShooterSpeed(distance);
-         //  hoodSetpoint = calcHoodAngle(distance);
          //  turretSetpoint = desiredAngle;
 
         }
@@ -246,7 +259,7 @@ public class ShooterTeleopAutoAimCommand extends Command {
         return false;
     }
 
-    private Translation2d getHunPosition() {
+    private Translation2d getHubPosition() {
         boolean isRed = false;
 
         if (DriverStation.getAlliance().isPresent()) {
