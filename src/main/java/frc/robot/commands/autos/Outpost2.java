@@ -53,7 +53,7 @@ public class Outpost2 {
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
                 plannerPath3,
                 Commands.deadline(
-                    new ShooterAutoCommand(robot, ShooterAutoCommand.Target.HUB, false),
+                    new ShooterAutoCommand(robot),
                     Commands.runOnce(() -> robot.getRobotSwerveDrive().stop())
                 ).withTimeout(Seconds.of(5)),
                 plannerPath4,

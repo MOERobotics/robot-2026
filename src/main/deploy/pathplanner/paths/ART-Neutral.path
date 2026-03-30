@@ -3,32 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.15853409090909065,
+        "x": 3.56,
         "y": 0.725
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.1585340909090907,
-        "y": 0.7249999999999996
+        "x": 6.989072753209699,
+        "y": 0.7291726105563499
       },
       "isLocked": false,
-      "linkedName": "Outposr-Collecting"
+      "linkedName": "ART"
     },
     {
       "anchor": {
-        "x": 1.9818116975748925,
-        "y": 2.268873038516405
+        "x": 7.7265763195435095,
+        "y": 1.2725962910128386
       },
       "prevControl": {
-        "x": 0.9818116975748925,
-        "y": 2.268873038516405
+        "x": 7.002011412268189,
+        "y": 0.6644793152639102
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Outpost-Shooting"
+      "linkedName": "RN"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.2921108742004265,
+      "rotationDegrees": 180.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,10 +47,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -135.00000000000006
+    "rotation": 90.0
   },
   "reversed": false,
-  "folder": "Outpost",
+  "folder": "Trenches ",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

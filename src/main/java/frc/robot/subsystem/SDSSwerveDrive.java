@@ -49,9 +49,9 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
             )
     );
     Transform3d swerveCamLocation = new Transform3d(
-            Millimeters.of(-310.015),
-            Millimeters.of(-308.6365),
-            Millimeters.of(205.983),
+            Inches.of(-11.7459),
+            Inches.of(-11.791),
+            Inches.of(8.021),
             new Rotation3d(
                     Degrees.of(0),
                     Degrees.of(-27),
@@ -95,7 +95,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
                 this::getChassisSpeed, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 (speeds, feedforwards) -> robotDrive(speeds, true), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
                 new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                        new PIDConstants(3, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(4, 0.0, 0.0), // Translation PID constants
                         new PIDConstants(1, 0.0, 0.0) // Rotation PID constants
                 ),
                 config, // The robot configuration
@@ -132,6 +132,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
         sensors.modulePositions = Arrays.stream(swerveModules).map(SwerveModuleSubsystem::getTravelDistanceNRobotAngle).toArray(SwerveModulePosition[]::new);
         sensors.moduleStates = Arrays.stream(swerveModules).map(SwerveModuleSubsystem::getSpeedNDirectionOfMod).toArray(SwerveModuleState[]::new);
         boolean rejectUpdate = false;
+
         if(getSensors().photon1 == null || getSensors().photon2 == null){
             rejectUpdate = true;
         }

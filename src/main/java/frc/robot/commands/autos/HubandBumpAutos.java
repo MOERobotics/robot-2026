@@ -42,7 +42,7 @@ public class HubandBumpAutos {
 
 
         Command auto = Commands.sequence(
-               // new ShooterAutoCommand(robot, ShooterAutoCommand.Target.HUB).withTimeout(5),
+               // new ShooterAutoCommand(robot).withTimeout(5),
 
 
                 plannerPath1,

@@ -15,9 +15,17 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
     class ShooterInputs{
         public Angle turretAngle = Degrees.zero();
 
+        public Angle turretAngleThroughbore = Rotation.zero();
+
+        public Angle turretRelativeAngle = Rotation.zero();
+
+        public double turretRelativeAngleDegrees = 0;
+
         public Angle hoodAngleThroughbore = Rotation.zero();
 
         public Angle hoodAngleMotor = Rotation.zero();
+
+        public Angle relativeEncoderAngle = Rotation.zero();
         public double flywheelSpeedInRPM = 0;
 
         public double turretAngleDegrees = 0;
@@ -59,6 +67,7 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
         public double turretMinAngle = 0;
         public double hoodMaxAngle = 0;
         public double hoodMinAngle = 0;
+        public double adjustedAngle = 0;
         public boolean reachedMaxTurret = false;
         public boolean reachedMinTurret = false;
         public boolean reachedMaxHood = false;
@@ -68,6 +77,8 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
         public double transitionCurrent =0;
 
         public boolean transitionCurrentLimit =false;
+
+        public Angle offset;
     }
 
     public ShooterInputs getSensors();
@@ -145,7 +156,7 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
     default double feedForwardCalc(double rpm){
         // magic numbers obtained from linear regression model of optimal flywheel rpms & power
         // returns percentage power needed for obtaining inputted rpm
-        return ((0.000193104*rpm)-0.0171404);
+        return ((rpm/5178.55)-0.0171404);
     }
 
 

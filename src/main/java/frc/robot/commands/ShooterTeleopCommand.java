@@ -24,7 +24,7 @@ public class ShooterTeleopCommand extends Command {
     boolean isFlywheelOn = false;
     public double kP = 2.0 / 1500.0;
     public double kI = 0.00015;
-    public double kD = 0.4 / 14000;
+    public double kD = 0.6 / 14000;
     public double IZone = 1000;
 
     public double hoodKP = 0.056;
@@ -82,7 +82,7 @@ public class ShooterTeleopCommand extends Command {
     @Override
     public void initialize() {
         //shooterPIDController.reset(); isnt needed right now since kI and kD are zero
-        turretSetpoint = shooterSubsystem.getTurretAngle().in(Degrees);
+        turretSetpoint = shooterSubsystem.getSensors().turretRelativeAngleDegrees;
         hoodSetpoint = shooterSubsystem.getHoodAngleFromThroughbore().in(Degrees);
         shooterSetpoint = 4300;
         hoodPIDController.setSetpoint(hoodSetpoint);
@@ -90,6 +90,7 @@ public class ShooterTeleopCommand extends Command {
         shooterPIDController.reset();
         shooterPIDController.setIZone(IZone);
         shooterPIDController.setIntegratorRange(-.05, .05);
+        Logger.recordOutput("turretSetpoint", turretSetpoint);
     }
 
     @Override
@@ -128,6 +129,8 @@ public class ShooterTeleopCommand extends Command {
 
             }
         }
+
+
 
 
         // Flywheel Toggle
@@ -217,12 +220,12 @@ public class ShooterTeleopCommand extends Command {
 
         turretPIDController.setSetpoint(turretSetpoint);
         Logger.recordOutput("turretSetpoint", turretPIDController.getSetpoint());
-        Logger.recordOutput("turretRotation", shooterSubsystem.getTurretAngle().in(Degrees));
+        Logger.recordOutput("turretRotation", shooterSubsystem.getSensors().turretRelativeAngle.in(Degrees));
         Logger.recordOutput("shootetAtSetPoint", shooterPIDController.atSetpoint());
 
 
         double output = turretPIDController.calculate(
-                shooterSubsystem.getTurretAngle().in(Degrees),
+                shooterSubsystem.getSensors().turretRelativeAngle.in(Degrees),
                 turretSetpoint);
 
         if (output > 0.4) {
@@ -258,6 +261,7 @@ public class ShooterTeleopCommand extends Command {
 
         Logger.recordOutput("hoodOutput", outputHood);
         shooterSubsystem.setHoodPower(outputHood);
+        shooterSubsystem.setRampPower(0.7);
 
 
     }
@@ -265,6 +269,7 @@ public class ShooterTeleopCommand extends Command {
 
     public void end(boolean interrupted) {
         shooterSubsystem.setFlywheelPower(0);
+        shooterSubsystem.setRampPower(0.7);
         shooterSubsystem.setTurretPower(0);
         shooterSubsystem.setHoodPower(0);
         shooterSubsystem.stopFeeding();

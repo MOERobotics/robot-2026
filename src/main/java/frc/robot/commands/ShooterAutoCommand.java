@@ -28,7 +28,7 @@ public class ShooterAutoCommand extends Command {
 
 
     // TODO tune PID for flywheel/shooter thingy
-    public double kP = 1.8 / 1500.0;
+    public double kP = 2.0 / 1500.0;
     public double kI = 0.00015;
     public double kD = 0.4 / 14000;
     private PIDController flywheelPID = new PIDController(kP, kI, kD);
@@ -47,11 +47,10 @@ public class ShooterAutoCommand extends Command {
 
     boolean justShoot;
 
-    public ShooterAutoCommand(RobotContainer robot, Target target, boolean justShoot) {
+    public ShooterAutoCommand(RobotContainer robot) {
 
         this.shooter = robot.getShooterSubsystem();
         this.drive = robot.getRobotSwerveDrive();
-        this.selectedTarget = target;
 
         flywheelPID.setTolerance(300);
         turretPID.setTolerance(1.0);
@@ -63,8 +62,6 @@ public class ShooterAutoCommand extends Command {
 
     @Override
     public void initialize() {
-        targetPosition = getTargetPosition(selectedTarget);
-
         shootTimer.reset();
         shootTimer.stop();
         feeding = false;
@@ -77,16 +74,24 @@ public class ShooterAutoCommand extends Command {
         // TODO make an agitate function in auto?? for jamming?
         Pose2d pose = drive.getPose();
 
-        double distance = pose.getTranslation().getDistance(targetPosition);
+        Translation2d turretOffset = new Translation2d(Inches.of(2.172), Inches.of(-8.4375)).rotateBy(pose.getRotation());
+        Translation2d turretPosition = pose.getTranslation().plus(turretOffset);
+
+
+
+        double distance = turretPosition.getDistance(getHubPosition());
+
 
 
         double flywheelSetpoint = calculateShooterSpeed(distance);
 
 
-        double flywheelOutput = flywheelPID.calculate(shooter.getFlywheelSpeed().in(RPM), flywheelSetpoint);
+        flywheelPID.setSetpoint(flywheelSetpoint);
 
-        double feedforward = shooter.feedForwardCalc(flywheelRPM);
-        double outputMax = 1- feedforward;
+        double flywheelOutput = flywheelPID.calculate(shooter.getFlywheelSpeed().in(RPM));
+
+        double feedforward = shooter.feedForwardCalc(flywheelSetpoint);
+        double outputMax = 1 - feedforward;
 
         if (flywheelOutput > outputMax) flywheelOutput = outputMax;
         if (flywheelOutput < 0) flywheelOutput = 0;
@@ -98,23 +103,28 @@ public class ShooterAutoCommand extends Command {
 
 
 
-        Rotation2d targetTurretAngle = targetPosition.minus(pose.getTranslation()).getAngle();
+
+        Rotation2d targetTurretAngle = getHubPosition().minus(turretPosition).getAngle();
 
         Rotation2d robotHeading = pose.getRotation();
 
         Rotation2d desiredTurret = targetTurretAngle.minus(robotHeading);
 
 
-        double currTurretAngle = shooter.getTurretAngle().in(Degrees);
+        double currTurretAngle = shooter.getSensors().turretRelativeAngle.in(Degrees);
+
 
         double desiredAngle = desiredTurret.getDegrees();
 
-        desiredAngle = MathUtil.inputModulus(desiredAngle, 0, 360);
 
 
-        double desTurretAngle = MathUtil.clamp(desiredAngle, 30,330);
 
-        double turretOutput = turretPID.calculate(currTurretAngle, 100);
+
+        double desTurretAngle = MathUtil.clamp(desiredAngle, shooter.getSensors().turretMinAngle,shooter.getSensors().turretMaxAngle);
+
+        turretPID.setSetpoint(desTurretAngle);
+
+        double turretOutput = turretPID.calculate(currTurretAngle);
 
 
 
@@ -125,9 +135,9 @@ public class ShooterAutoCommand extends Command {
 
 
 
-        if(!justShoot){
-           // shooter.setTurretPower(turretOutput);
-        }
+
+       // shooter.setTurretPower(turretOutput);
+
 
         Logger.recordOutput("turretOutput", turretOutput);
         Logger.recordOutput("turretDesiredAngle", desiredTurret.getDegrees());
@@ -138,18 +148,17 @@ public class ShooterAutoCommand extends Command {
 
         double currHoodAngle = shooter.getHoodAngleFromThroughbore().in(Degrees);
 
-        double desHoodAngle = MathUtil.clamp(calculateHoodAngle(distance), 180,220);
+        double desHoodAngle = MathUtil.clamp(calcHoodAngle(distance), shooter.getSensors().hoodMinAngle,shooter.getSensors().hoodMaxAngle);
 
 
-        double setpoint1 = 194.14;
+        hoodPID.setSetpoint(desHoodAngle);
 
-
-        double hoodOutput = hoodPID.calculate(currHoodAngle,desHoodAngle);
+        double hoodOutput = hoodPID.calculate(currHoodAngle);
 
         hoodOutput = MathUtil.clamp(hoodOutput, -0.32, 0.32);
 
 
-        shooter.setHoodPower(hoodOutput);
+        //shooter.setHoodPower(hoodOutput);
 
 
         boolean flywheelReady = flywheelPID.atSetpoint();
@@ -161,7 +170,7 @@ public class ShooterAutoCommand extends Command {
         boolean hoodReady = hoodPID.atSetpoint();
 
 
-        Logger.recordOutput("hoodReady", flywheelReady);
+        Logger.recordOutput("flywheelReady", flywheelReady);
         Logger.recordOutput("turretReady", turretReady);
         Logger.recordOutput("hoodReady", hoodReady);
 
@@ -197,6 +206,20 @@ public class ShooterAutoCommand extends Command {
     }
 
 
+
+    private Translation2d getHubPosition() {
+        boolean isRed = false;
+
+        if (DriverStation.getAlliance().isPresent()) {
+            isRed = DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+        }
+
+        return isRed
+                ? new Translation2d(12.286869, 4.034)
+                : new Translation2d(4.624, 4.034);
+    }
+
+/*
     private Translation2d getTargetPosition(Target target) {
 
         boolean isRed = false;
@@ -208,7 +231,6 @@ public class ShooterAutoCommand extends Command {
 
             }
         }
-
 
         // TODO find translations??
 
@@ -243,17 +265,18 @@ public class ShooterAutoCommand extends Command {
     }
 
 
-    private double calculateHoodAngle(double distance) {
-
-        //TODO implement this with linear regression????
-        return 191;
-    }
-
+ */
 
     private double calculateShooterSpeed(double distance) {
+        return 3040.48652 + 219.83512* distance;
 
-        //TODO implement this with linear regression????
-        return 191;
+        // return shooterMap.get(distance);
+    }
+
+    private double calcHoodAngle(double distance) {
+        return 169.17252 + 4.07866 * distance;
+        // return hoodMap.get(distance);
+
     }
 
 }

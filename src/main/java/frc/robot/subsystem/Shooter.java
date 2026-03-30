@@ -32,6 +32,12 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
     private final Angle hoodMinAngle;
     private final Angle hoodMaxAngle;
 
+
+    public static double TURRET_CHAIN = 8.266; // corner gear to chain ratio
+
+    public static double TURRET_CORNER = 100.0; // motor to corner gear ratio
+
+
     private static final Angle HOOD_TOLERANCE = Degree.of(1);
     private static final Angle TURRET_TOLERANCE = Degree.of(1);
 
@@ -40,7 +46,7 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
             Revolutions.of(1)
                     .div(100) // corner gear ratio
                     .div(8.266) // chain ratio
-                    .in(Degrees)
+                    .in(Rotations)
     );
     ;
     public static double HOOD_CONVERSION_FACTOR = (
@@ -85,17 +91,44 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
         this.hoodMaxAngle = hoodMaxAngle;
         this.hoodMinAngle = hoodMinAngle;
 
+        Angle absoluteAngle = getTurretAngle();
+
+        this.turretMotor.getEncoder().setPosition(0);
+
+
+        getSensors().offset = absoluteAngle.minus(Degrees.of(180));
+
+
+        getSensors().adjustedAngle = getSensors().offset.in(Rotation)*TURRET_CORNER;
+
+        this.turretMotor.getEncoder().setPosition(getSensors().adjustedAngle);
+
+
+
         ShooterSimulator shooterSimulator = new ShooterSimulator(this);
         setSimulator(shooterSimulator);
     }
 
     @Override
     public void readSensors(ShooterInputsAutoLogged sensors) {
+
+
         getSensors().hoodAngleThroughbore = getHoodAngleFromThroughbore();
         getSensors().hoodAngleMotor = getHoodAngleFromMotor();
         getSensors().hoodAngleThroughboreDegrees = getHoodAngleFromThroughbore().in(Degrees);
+
+        getSensors().turretRelativeAngleDegrees = getSensors().turretRelativeAngle.in(Degrees);
+
+        getSensors().turretRelativeAngle = getRatioedRelTurretAngle();
+
+        getSensors().relativeEncoderAngle = Rotations.of(turretMotor.getEncoder().getPosition());
+
+       // getSensors().turretAngleThroughbore = getTurretAngle();
+
+
         getSensors().turretAngleDegrees = getTurretAngle().in(Degrees);
         getSensors().turretAngle = getTurretAngle();
+
 
         getSensors().flywheelSpeed = getFlywheelSpeed();
         getSensors().hoodSpeed = RPM.of(hoodMotor.getAbsoluteEncoder().getVelocity());
@@ -141,7 +174,16 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
 
     @Override
     public void setTurretPower(double power) {
-        turretMotor.set(power);
+        if (power < 0 && !reachedTurretMin()){
+            turretMotor.set(power);
+        }
+        else if (power > 0 && !reachedTurretMax()){
+            turretMotor.set(power);
+        }
+        else {
+            turretMotor.set(0);
+        }
+
     }
 
     @Override
@@ -186,7 +228,10 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
 
     @Override
     public Angle getTurretAngle() {
-        return Rotations.of(turretEncoder.getPosition());
+        return Rotations.of(turretEncoder.getPosition());//.times(1/8.266);
+    }
+    public Angle getRatioedRelTurretAngle(){
+        return Rotations.of(turretMotor.getEncoder().getPosition()).times(TURRET_CONVERSION_FACTOR);
     }
 
     @Override
@@ -217,11 +262,11 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
     }
     @Override
     public boolean reachedTurretMax() {
-        return this.getTurretAngle().gt(Degrees.of(turretMaxAngle.in(Degrees)).minus(Degrees.of(TURRET_TOLERANCE.in(Degrees))));
+        return this.getRatioedRelTurretAngle().gt(Degrees.of(turretMaxAngle.in(Degrees)).minus(Degrees.of(TURRET_TOLERANCE.in(Degrees))));
     }
     @Override
     public boolean reachedTurretMin() {
-        return this.getTurretAngle().lt(Degrees.of(turretMinAngle.in(Degrees)).plus(Degrees.of(TURRET_TOLERANCE.in(Degrees))));
+        return this.getRatioedRelTurretAngle().lt(Degrees.of(turretMinAngle.in(Degrees)).plus(Degrees.of(TURRET_TOLERANCE.in(Degrees))));
     }
 
 
