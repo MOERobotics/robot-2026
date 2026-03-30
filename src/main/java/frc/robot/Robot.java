@@ -286,6 +286,21 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void teleopPeriodic() {
+
+            if (DriverStation.getMatchTime() <= 110 && DriverStation.getMatchTime() >= 105) {
+                scheduler.schedule();
+            } else if (DriverStation.getMatchTime() <= 85 && DriverStation.getMatchTime() >= 80) {
+                scheduler.schedule(controllerVibrateCommandOn);
+            } else if (DriverStation.getMatchTime() <= 50 && DriverStation.getMatchTime() >= 45) {
+                scheduler.schedule(controllerVibrateCommandOff);
+            } else if (DriverStation.getMatchTime() <= 25 && DriverStation.getMatchTime() >= 20) {
+                scheduler.schedule(controllerVibrateCommandOn);
+            } else {
+                scheduler.cancel(controllerVibrateCommandOn);
+                scheduler.cancel(controllerVibrateCommandOff);
+            }
+        }
+
         boolean teamAllianceWonR = DriverStation.getGameSpecificMessage().equals("R") && DriverStation.getAlliance().equals(Optional.of(DriverStation.Alliance.Red));
         boolean teamAllianceWonB = DriverStation.getGameSpecificMessage().equals("B") && DriverStation.getAlliance().equals(Optional.of(DriverStation.Alliance.Blue));
         boolean teamAllianceWon = teamAllianceWonR || teamAllianceWonB;

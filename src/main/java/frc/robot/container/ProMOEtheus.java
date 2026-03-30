@@ -147,6 +147,7 @@ public class ProMOEtheus extends RobotContainer {
                 backRightCorner
         );
 
+
     SparkMax climberMotor = new SparkMax(6, SparkLowLevel.MotorType.kBrushless);
     SparkMaxConfig climberMotorConfig = new SparkMaxConfig();
     climberMotorConfig.idleMode(SparkBaseConfig.IdleMode.kBrake);

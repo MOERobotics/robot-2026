@@ -23,7 +23,7 @@ public class LED implements LEDSubsystem {
 
     }
 
-    private void setPattern(LEDPattern pattern) {
+    private static void setPattern(LEDPattern pattern) {
         pattern.applyTo(moeLEDBuffer);
         moeLED.setData(moeLEDBuffer);
 
