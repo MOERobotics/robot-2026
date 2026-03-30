@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.3662482168330956,
-        "y": 5.542353780313838
+        "x": 3.2237018694196427,
+        "y": 5.461982485288231
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.6162482168330956,
-        "y": 5.542353780313838
+        "x": 3.4737018694196427,
+        "y": 5.461982485288231
       },
       "isLocked": false,
-      "linkedName": "LA-Returned"
+      "linkedName": "L-Return2"
     },
     {
       "anchor": {
-        "x": 3.3662482168330956,
-        "y": 5.542353780313838
+        "x": 3.2237018694196427,
+        "y": 5.461982485288231
       },
       "prevControl": {
-        "x": 3.1162482168330956,
-        "y": 5.542353780313838
+        "x": 2.9737018694196427,
+        "y": 5.461982485288231
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "LB-Shoot"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 140.0
+    "rotation": 150.0
   },
   "reversed": false,
   "folder": "Neutral",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -3.4165881917714094
+    "rotation": 59.739992419501554
   },
   "useDefaultConstraints": true
 }
