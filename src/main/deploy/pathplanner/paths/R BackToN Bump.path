@@ -1,0 +1,59 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.210984308131241,
+        "y": 2.527646219686162
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.4343762999695615,
+        "y": 2.468289018110795
+      },
+      "isLocked": false,
+      "linkedName": "RB-Shoot"
+    },
+    {
+      "anchor": {
+        "x": 6.3196126407771915,
+        "y": 2.527646219686162
+      },
+      "prevControl": {
+        "x": 4.872831809303977,
+        "y": 2.5552682693283284
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.03420596272421513,
+      "rotationDegrees": -125.00000000000001
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 1.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -125.00000000000001
+  },
+  "reversed": false,
+  "folder": "Neutral",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -65.0
+  },
+  "useDefaultConstraints": true
+}
