@@ -23,18 +23,15 @@ public class ShooterTeleopAutoAimCommand extends Command {
     public final Joystick joystick;
     private final SwerveDriveSubsystem drive;
 
-    private InterpolatingDoubleTreeMap shooterMap = new InterpolatingDoubleTreeMap();
-    private InterpolatingDoubleTreeMap hoodMap = new InterpolatingDoubleTreeMap();
-
 
     boolean isFlywheelOn = false;
 
     private Pose2d lockedPose;
 
-    public double kP = 2.5 / 1500.0;
+    public double kP = 1.8 / 1500.0;
     public double kI = 0.00015;
-    public double kD = 0.4 / 14000;
-    public double IZone = 1000;
+    public double kD = 0.8 / 14000;
+    public double IZone = 500;
 
     public double hoodKP = 0.056;
     public double hoodKI = 0;
@@ -52,22 +49,16 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
     public double turretSetpoint, hoodSetpoint, shooterSetpoint;
 
+    double currDistance=0;
+    double distance=0;
+
     public ShooterTeleopAutoAimCommand(RobotContainer robot, Joystick joystick) {
         this.joystick = joystick;
         this.shooterSubsystem = robot.getShooterSubsystem();
         this.drive = robot.getRobotSwerveDrive();
 
         shooterPIDController.setTolerance(100);
-        shooterMap.put(1.975, 3400.0);
-        shooterMap.put(3.258, 3892.0);
-        shooterMap.put(4.75, 3986.0);
-        shooterMap.put(4.61,4902.0);
 
-
-        hoodMap.put(1.975, 177.2);
-        hoodMap.put(3.258, 182.5);
-        hoodMap.put(4.75, 188.4);
-        hoodMap.put(4.61, 188.11);
 
         addRequirements(shooterSubsystem);
 
@@ -79,7 +70,7 @@ public class ShooterTeleopAutoAimCommand extends Command {
     public void initialize() {
         turretSetpoint = shooterSubsystem.getSensors().turretRelativeAngle.in(Degrees);
         hoodSetpoint = shooterSubsystem.getHoodAngleFromThroughbore().in(Degrees);
-        shooterSetpoint = 4300;
+        shooterSetpoint = 3000;
 
         hoodPIDController.setSetpoint(hoodSetpoint);
         turretPIDController.setSetpoint(turretSetpoint);
@@ -96,61 +87,63 @@ public class ShooterTeleopAutoAimCommand extends Command {
             isFlywheelOn = !isFlywheelOn;
             shooterPIDController.reset();
 
-            if (isFlywheelOn) {
-                lockedPose = drive.getPose();
-            }
+
         }
 
-        Pose2d pose;
+        Translation2d turretOffset = new Translation2d(Inches.of(2.172), Inches.of(-8.4375)).rotateBy(drive.getPose().getRotation());
+        currDistance = Meters.of(drive.getPose().getTranslation().plus(turretOffset).getDistance(getHubPosition())).in(Inches);
 
-        if(lockedPose!=null){
-            pose = lockedPose;
-        }else{
-            pose = drive.getPose();
+
+
+
+
+        if (joystick.getRawButtonPressed(1)) {
+            lockedPose = drive.getPose();
+            Pose2d pose =lockedPose;
+
+            Translation2d lockedOffset = new Translation2d(
+                    Inches.of(2.172),
+                    Inches.of(-8.4375)).rotateBy(pose.getRotation());
+
+            Translation2d turretPosition = pose.getTranslation().plus(lockedOffset);
+
+
+
+            distance = Meters.of(turretPosition.getDistance(getHubPosition())).in(Inches);
+
+
+            Rotation2d targetTurretAngle = getHubPosition().minus(turretPosition).getAngle();
+
+            Rotation2d robotHeading = pose.getRotation();
+
+            Rotation2d desiredTurret = targetTurretAngle.minus(robotHeading);
+
+            double desiredAngle = desiredTurret.getDegrees();
+
+
+            shooterSetpoint = calculateShooterSpeed(distance);
+            turretSetpoint = desiredAngle;
+            hoodSetpoint = calcHoodAngle(distance);
+
+
         }
-
-
-        Translation2d turretOffset = new Translation2d(Inches.of(2.172), Inches.of(-8.4375)).rotateBy(pose.getRotation());
-        Translation2d turretPosition = pose.getTranslation().plus(turretOffset);
-
-        double currDistance = drive.getPose().getTranslation().plus(turretOffset).getDistance(getHubPosition());
-
-        double distance = turretPosition.getDistance(getHubPosition());
-
-
-
-        Rotation2d targetTurretAngle = getHubPosition().minus(pose.getTranslation()).getAngle();
-
-        Rotation2d robotHeading = pose.getRotation();
-
-        Rotation2d desiredTurret = targetTurretAngle.minus(robotHeading);
-
-
-
-
-        double currTurretAngle = shooterSubsystem.getSensors().turretRelativeAngle.in(Degrees);
-
-
-        double desiredAngle = desiredTurret.getDegrees();
 
 
 
         Logger.recordOutput("LockedDistance", distance);
+
+        Logger.recordOutput("HoodSetpoint", hoodSetpoint);
+
         Logger.recordOutput("CurrDistance", currDistance);
 
 
 
-        if (isFlywheelOn) {
-          // shooterSetpoint = calculateShooterSpeed(distance);
-         //  turretSetpoint = desiredAngle;
-
-        }
 
         if (joystick.getRawButton(3)) {
-            shooterSetpoint -= 2;
+            shooterSetpoint -=5;
         }
         if (joystick.getRawButton(4)) {
-            shooterSetpoint += 2;
+            shooterSetpoint += 5;
         }
 
         shooterPIDController.setSetpoint(shooterSetpoint);
@@ -171,7 +164,7 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
             shooterSubsystem.setFlywheelPower(feedforward + output);
             shooterSubsystem.setTransitionPower(0.7);
-            shooterSubsystem.setRampPower(0.7);
+            shooterSubsystem.setRampPower(0.6);
 
 
 
@@ -185,7 +178,7 @@ public class ShooterTeleopAutoAimCommand extends Command {
         shooterSubsystem.getSensors().atShooterSpeed = shooterPIDController.atSetpoint();
 
         if (joystick.getRawAxis(3) > 0.3) {
-            shooterSubsystem.setSpindexerPower(1);
+            shooterSubsystem.setSpindexerPower(0.75);
         } else if (joystick.getRawAxis(2) > 0.3) {
             shooterSubsystem.setSpindexerPower(-1);
             shooterSubsystem.setTransitionPower(-0.6);
@@ -196,17 +189,17 @@ public class ShooterTeleopAutoAimCommand extends Command {
         }
 
         if (joystick.getRawAxis(0) > deadZone) {
-            turretSetpoint -= 5;
+            turretSetpoint -= 0.2;
         }
         if (joystick.getRawAxis(0) < -deadZone) {
-            turretSetpoint += 5;
+            turretSetpoint += 0.2;
         }
 
         turretSetpoint = MathUtil.clamp(turretSetpoint, shooterSubsystem.getSensors().turretMinAngle, shooterSubsystem.getSensors().turretMaxAngle);
 
         turretPIDController.setSetpoint(turretSetpoint);
 
-        double turretOutput = turretPIDController.calculate(shooterSubsystem.getSensors().turretRelativeAngle.in(Degrees), turretSetpoint);
+        double turretOutput = turretPIDController.calculate(shooterSubsystem.getSensors().turretRelativeAngle.in(Degrees));
 
       // double turretOutput = turretPIDController.calculate(currTurretAngle, turretSetpoint);
 
@@ -218,17 +211,14 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
         shooterSubsystem.setTurretPower(turretOutput);
 
-
-        if (!isFlywheelOn) {
-            if (joystick.getRawAxis(5) > deadZone) {
-                hoodSetpoint -= 2 / 8.0;
-            }
-            if (joystick.getRawAxis(5) < -deadZone) {
-                hoodSetpoint += 2 / 8.0;
-            }
-        } else {
-           // hoodSetpoint = calcHoodAngle(distance);
+        if (joystick.getRawAxis(5) > deadZone) {
+            hoodSetpoint -= 1 / 15.0;
         }
+        if (joystick.getRawAxis(5) < -deadZone) {
+            hoodSetpoint += 1 / 15.0;
+        }
+
+
 
         hoodSetpoint = MathUtil.clamp(hoodSetpoint, shooterSubsystem.getSensors().hoodMinAngle, shooterSubsystem.getSensors().hoodMaxAngle);
 
@@ -272,13 +262,13 @@ public class ShooterTeleopAutoAimCommand extends Command {
     }
 
     private double calculateShooterSpeed(double distance) {
-        return 3040.48652 + 219.83512* distance;
-
+        return 6.18842*distance+2429.32725;
        // return shooterMap.get(distance);
     }
 
     private double calcHoodAngle(double distance) {
-        return 169.17252 + 4.07866 * distance;
+        return 0.000586636*Math.pow(distance, 2) - (0.0564512*distance) + 184.01223;
+
         // return hoodMap.get(distance);
 
     }

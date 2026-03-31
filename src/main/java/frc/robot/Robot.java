@@ -240,22 +240,25 @@ public class Robot extends LoggedRobot {
                 }
 
 
-                if (driverJoystick.getRawButton(1)) {
-                    robot.getRobotSwerveDrive().setPose(
-                        new Pose2d(
-                            robot.getRobotSwerveDrive().getPose().getTranslation(),
-                            DriverStation.getAlliance()
-                                    .orElse(DriverStation.Alliance.Blue) ==
-                                    DriverStation.Alliance.Blue ?
-                                    Rotation2d.kZero : Rotation2d.kPi
-                        )
-                    );
-                }
-
 
 
 
             }
+
+            if (driverJoystick.getRawButtonPressed(1)) {
+                robot.getRobotSwerveDrive().setPose(
+                        new Pose2d(
+                                robot.getRobotSwerveDrive().getPose().getTranslation(),
+                                DriverStation.getAlliance()
+                                        .orElse(DriverStation.Alliance.Blue) ==
+                                        DriverStation.Alliance.Blue ?
+                                        Rotation2d.kZero : Rotation2d.kPi
+                        )
+                );
+            }
+
+
+
         }
 
         @Override

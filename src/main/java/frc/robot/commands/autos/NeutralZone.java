@@ -22,7 +22,7 @@ public class NeutralZone {
     }
 
     public static Autos.CommandAndPose NRT(RobotContainer robot) {
-        return buildNeutral(robot, "NRT-Neutral", "RN Collect", "LN Return", "RN Return-2", "RA-Rotation");
+        return buildNeutral(robot, "NRT-Neutral", "RN Collect", "LN Return-1", "RN Return-2", "LA-Rotation");
     }
 
     public static Autos.CommandAndPose NRT_Back(RobotContainer robot) {
