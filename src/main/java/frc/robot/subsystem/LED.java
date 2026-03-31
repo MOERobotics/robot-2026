@@ -32,7 +32,7 @@ public class LED implements LEDSubsystem {
     }
     public void setPatternBlinking(Color color){
        LEDPattern blinking = LEDPattern.solid(color);
-        blinking.blink(Seconds.of(0.5),Seconds.of(0.5));
+        blinking.blink(Seconds.of(1));
          setPattern(blinking);
 
     }

@@ -321,6 +321,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void testPeriodic() {
+        scheduler.schedule(ledBlinkingCommandRed);
         scheduler.schedule(controllerVibrateTestCommand);
         scheduler.schedule(climberTestCommand);
         scheduler.schedule(shooterTestCommand);
