@@ -18,6 +18,7 @@ public abstract @Data class RobotContainer implements LoggableInputs {
     private SwerveDriveSubsystem robotSwerveDrive;
     ClimberSubsystem climber;
     private PowerDistribution pdh;
+    public LEDSubsystem led;
 
     public RobotContainer() {
         System.out.println("Constructed RobotContainer type: " + getClass());
@@ -31,6 +32,7 @@ public abstract @Data class RobotContainer implements LoggableInputs {
         table.put("Climber", climber);
         table.put("Collector", collector);
 //        SmartDashboard.putData("MPDH", pdh);
+        table.put("LEDState", led);
     }
 
     @Override
@@ -40,6 +42,7 @@ public abstract @Data class RobotContainer implements LoggableInputs {
         shooterSubsystem = table.get("Shooter", shooterSubsystem);
         climber = table.get("Climber", climber);
         collector = table.get("Collector", collector);
+        led = table.get("LEDState", led);
 
     }
 }

@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.subsystem.interfaces.LEDSubsystem;
 import org.littletonrobotics.junction.LogTable;
+import org.littletonrobotics.junction.Logger;
 
 import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
@@ -23,15 +24,16 @@ public class LED implements LEDSubsystem {
 
     }
 
-    private static void setPattern(LEDPattern pattern) {
+    private void setPattern(LEDPattern pattern) {
         pattern.applyTo(moeLEDBuffer);
         moeLED.setData(moeLEDBuffer);
 
+
     }
     public void setPatternBlinking(Color color){
-        LEDPattern blinking = LEDPattern.solid(color);
+       LEDPattern blinking = LEDPattern.solid(color);
         blinking.blink(Seconds.of(0.5),Seconds.of(0.5));
-        setPattern(blinking);
+         setPattern(blinking);
 
     }
     public void setSolidColor(Color color){

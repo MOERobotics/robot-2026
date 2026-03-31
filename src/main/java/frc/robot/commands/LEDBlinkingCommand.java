@@ -9,34 +9,40 @@ import frc.robot.subsystem.LED;
 import frc.robot.subsystem.interfaces.LEDSubsystem;
 import frc.robot.subsystem.interfaces.ShooterSubsystem;
 import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
+import org.littletonrobotics.junction.Logger;
 
 import java.awt.*;
 
+import static edu.wpi.first.wpilibj.util.Color.kBlack;
 import static edu.wpi.first.wpilibj.util.Color.kLimeGreen;
 import static java.awt.Color.red;
 
 public class LEDBlinkingCommand extends Command {
     public LEDSubsystem LED;
-    AddressableLED moeLED;
-    AddressableLEDBuffer moeLEDBuffer;
-    public int timePassed = 0;
+    Color colorForBlinking;
 
 
-    public LEDBlinkingCommand(RobotContainer robot, AddressableLED moeLED, AddressableLEDBuffer moeLEDBuffer) {
-        this.LED = robot.;
-        this.moeLED = moeLED;
-       this.moeLEDBuffer = moeLEDBuffer;
+
+    public LEDBlinkingCommand(Color colorForBlinking, RobotContainer robot) {
+        this.LED = robot.getLed();
+       this.colorForBlinking = colorForBlinking;
+       addRequirements(robot.led);
 
        }
 
 
-    public void execute(Color colorForBlinking) {
-        colorForBlinking = kLimeGreen ;
+    public void execute() {
         LED.setPatternBlinking(colorForBlinking);
+        Logger.recordOutput("LEDBlinking", true);
+        Logger.recordOutput("LEDBlinkingColor", colorForBlinking);
     }
 
     @Override
     public void end(boolean interrupted) {
+        LED.setSolidColor(kBlack);
+        Logger.recordOutput("LEDBlinking", false);
+
+
     }
 }
 

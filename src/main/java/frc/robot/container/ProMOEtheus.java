@@ -42,7 +42,7 @@ public class ProMOEtheus extends RobotContainer {
         // smart current limit of 40-> 30 amps
         // secondary limit of 70 amps (per suggestion)
 
-        LED led = new LED(70, 6);
+        this.led = new LED(70, 6);
 
         PIDConstants pivotFeedback = new PIDConstants(pivotkP, pivotkI, pivotkD, pivotkIMax);
         PIDConstants driveFeedback = new PIDConstants(drivekP, drivekI, drivekD);
