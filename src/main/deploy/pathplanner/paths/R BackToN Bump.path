@@ -8,27 +8,32 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.460984308131241,
-        "y": 2.527646219686162
+        "x": 4.4343762999695615,
+        "y": 2.468289018110795
       },
       "isLocked": false,
-      "linkedName": "R-Return2"
+      "linkedName": "RB-Shoot"
     },
     {
       "anchor": {
-        "x": 3.210984308131241,
+        "x": 6.3196126407771915,
         "y": 2.527646219686162
       },
       "prevControl": {
-        "x": 2.960984308131241,
-        "y": 2.527646219686162
+        "x": 4.872831809303977,
+        "y": 2.5552682693283284
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "RB-Shoot"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.03420596272421513,
+      "rotationDegrees": -125.00000000000001
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -65.0
+    "rotation": -125.00000000000001
   },
   "reversed": false,
   "folder": "Neutral",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -45.0
+    "rotation": -65.0
   },
   "useDefaultConstraints": true
 }

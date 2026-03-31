@@ -1,0 +1,55 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "NRT-Neutral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RN Collect"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RN Return-1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RN Return-2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RA-Rotation"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "R BackToN Trench"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
