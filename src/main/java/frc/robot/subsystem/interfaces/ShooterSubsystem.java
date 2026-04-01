@@ -156,7 +156,7 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
     default double feedForwardCalc(double rpm){
         // magic numbers obtained from linear regression model of optimal flywheel rpms & power
         // returns percentage power needed for obtaining inputted rpm
-        return ((rpm/5178.55)-0.0171404);
+        return ((rpm/4950.0)-0.03975);
     }
 
 

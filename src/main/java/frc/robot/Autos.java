@@ -24,13 +24,14 @@ public class Autos {
 
         autoChooser.setDefaultOption("Auto9: Justshoot", Shoot.shoot(robot));
         autoChooser.setDefaultOption("Auto10: Outpostw/Shooting", Outpost2.outpost(robot));
-        autoChooser.setDefaultOption("Auto11: Neutral Zone NLT", NeutralZone.NLT(robot));
 
-        autoChooser.setDefaultOption("Auto12: Neutral Zone NRT", NeutralZone.NRT(robot));
+        autoChooser.setDefaultOption("Auto11: Neutral Zone NLT Bump", NeutralZone.NLT_Back_Bump(robot));
 
-        autoChooser.setDefaultOption("Auto13: Neutral Zone NRT Back", NeutralZone.NRT_Back(robot));
+        autoChooser.setDefaultOption("Auto12: Neutral Zone NLT Trench", NeutralZone.NLT_Back_Trench(robot));
 
-        autoChooser.setDefaultOption("Auto14: Neutral Zone ART Back", NeutralZone.ART_Back(robot));
+        autoChooser.setDefaultOption("Auto13: Neutral Zone NRT Bump", NeutralZone.NRT_Back_Bump(robot));
+
+        autoChooser.setDefaultOption("Auto14: Neutral Zone NRT Trench", NeutralZone.NRT_Back_Trench(robot));
 
         autoChooser.setDefaultOption("Auto15: Drive 15ft", DriveForward.drive15Ft(robot));
 

@@ -16,20 +16,19 @@ import frc.robot.container.RobotContainer;
 
 public class NeutralZone {
 
-    //TODO: make a LA-ROTATION path
-    public static Autos.CommandAndPose NLT(RobotContainer robot) {
-        return buildNeutral(robot, "NLT-Neutral", "LN Collect", "RN Return-1", "LN Return-2", "LA-Rotation", "L BackToN");
+    public static Autos.CommandAndPose NLT_Back_Bump (RobotContainer robot) {
+        return buildNeutral(robot, "NLT-Neutral", "LN Collect", "LN Return-1", "LN Return-2", "LA-Rotation", "L BackToN Bump");
     }
 
-    public static Autos.CommandAndPose NRT(RobotContainer robot) {
-        return buildNeutral(robot, "NRT-Neutral", "RN Collect", "LN Return-1", "LN Return-2", "LA-Rotation", "L BackToN");
+    public static Autos.CommandAndPose NLT_Back_Trench(RobotContainer robot) {
+        return buildNeutral(robot, "NLT-Neutral", "LN Collect", "LN Return-1", "LN Return-2", "LA-Rotation", "L BackToN Trench");
     }
 
-    public static Autos.CommandAndPose NRT_Back(RobotContainer robot) {
-        return buildNeutral(robot, "NRT-Neutral", "RN Collect", "RN Return-1", "RN Return-2", "RA-Rotation", "R BackToN");
+    public static Autos.CommandAndPose NRT_Back_Bump(RobotContainer robot) {
+        return buildNeutral(robot, "NRT-Neutral", "RN Collect", "RN Return-1", "RN Return-2", "RA-Rotation", "R BackToN Bump");
     }
-    public static Autos.CommandAndPose ART_Back(RobotContainer robot) {
-        return buildNeutral(robot, "ART-Neutral", "RN Collect", "RN Return-1","RN Return-2", "RA-Rotation", "R BackToN");
+    public static Autos.CommandAndPose NRT_Back_Trench(RobotContainer robot) {
+        return buildNeutral(robot, "ART-Neutral", "RN Collect", "RN Return-1","RN Return-2", "RA-Rotation", "R BackToN Trench");
     }
     public static Autos.CommandAndPose buildNeutral(
             RobotContainer robot,
@@ -58,8 +57,7 @@ public class NeutralZone {
                                 plannerPath1,
                                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
                                 plannerPath2,
-                                Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
-
+                                Commands.runOnce(() -> robot.getRobotSwerveDrive().stop())
                                 ),
                         new FuelCollectorAutoCommand(robot ,true, true, "in")),
                 plannerPath3,
@@ -69,6 +67,7 @@ public class NeutralZone {
                 plannerPath5,
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
                 // TODO ADD SHOOT
+                new ShooterAutoCommand(robot),
                 plannerPath6,
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop())
         );

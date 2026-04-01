@@ -95,7 +95,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
                 this::getChassisSpeed, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 (speeds, feedforwards) -> robotDrive(speeds, true), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
                 new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                        new PIDConstants(4, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(3, 0.0, 0.0), // Translation PID constants
                         new PIDConstants(1, 0.0, 0.0) // Rotation PID constants
                 ),
                 config, // The robot configuration
@@ -132,18 +132,22 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
         sensors.modulePositions = Arrays.stream(swerveModules).map(SwerveModuleSubsystem::getTravelDistanceNRobotAngle).toArray(SwerveModulePosition[]::new);
         sensors.moduleStates = Arrays.stream(swerveModules).map(SwerveModuleSubsystem::getSpeedNDirectionOfMod).toArray(SwerveModuleState[]::new);
         boolean rejectUpdate = false;
+        photonPoses();
 
-        if(getSensors().photon1 == null || getSensors().photon2 == null){
+        if(getSensors().photon1 == null){
+            rejectUpdate = true;
+        }
+        if (getSensors().photon2 == null){
             rejectUpdate = true;
         }
         if(robotGyro.getAngularVelocityZWorld().getValue().abs(DegreesPerSecond)>=360){
             rejectUpdate = true;
         }
-        //if(getSensors().photon1.){}
+
         Logger.recordOutput("rejectUpdate", rejectUpdate);
 
         if(!rejectUpdate){
-            this.robotOdometry.setVisionMeasurementStdDevs(VecBuilder.fill(0.7,0.7,999999));
+            this.robotOdometry.setVisionMeasurementStdDevs(VecBuilder.fill(0.9,0.9,999999));
             if(getSensors().turretCamPose != null) {
                 this.robotOdometry.addVisionMeasurement(getSensors().turretCamPose.toPose2d(), getSensors().photon1.getTimestampSeconds());
             }

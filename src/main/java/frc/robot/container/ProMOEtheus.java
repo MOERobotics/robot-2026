@@ -207,7 +207,7 @@ public class ProMOEtheus extends RobotContainer {
         SparkMaxConfig rampConfig = new SparkMaxConfig();
 
 
-        flywheelConfig.idleMode(SparkBaseConfig.IdleMode.kCoast);
+        flywheelConfig.idleMode(SparkBaseConfig.IdleMode.kCoast).smartCurrentLimit(40);
         flywheelConfig.inverted(false);
         flywheelMotor.configure(flywheelConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 

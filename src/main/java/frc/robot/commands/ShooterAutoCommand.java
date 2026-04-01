@@ -79,7 +79,7 @@ public class ShooterAutoCommand extends Command {
 
 
 
-        double distance = turretPosition.getDistance(getHubPosition());
+        double distance = Meters.of(turretPosition.getDistance(getHubPosition())).in(Inches);
 
 
 
@@ -158,7 +158,7 @@ public class ShooterAutoCommand extends Command {
         hoodOutput = MathUtil.clamp(hoodOutput, -0.32, 0.32);
 
 
-        //shooter.setHoodPower(hoodOutput);
+        shooter.setHoodPower(hoodOutput);
 
 
         boolean flywheelReady = flywheelPID.atSetpoint();
@@ -194,7 +194,7 @@ public class ShooterAutoCommand extends Command {
     @Override
     public boolean isFinished() {
       //  return false;
-        return feeding && shootTimer.hasElapsed(10 /*TODO PICK A TIME*/);
+        return feeding && shootTimer.hasElapsed(5 /*TODO PICK A TIME*/);
     }
 
     @Override
@@ -268,13 +268,13 @@ public class ShooterAutoCommand extends Command {
  */
 
     private double calculateShooterSpeed(double distance) {
-        return 3040.48652 + 219.83512* distance;
-
+        return 6.18842*distance+2429.32725;
         // return shooterMap.get(distance);
     }
 
     private double calcHoodAngle(double distance) {
-        return 169.17252 + 4.07866 * distance;
+        return 0.000586636*Math.pow(distance, 2) - (0.0564512*distance) + 187.01223;
+
         // return hoodMap.get(distance);
 
     }

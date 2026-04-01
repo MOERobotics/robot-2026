@@ -20,6 +20,9 @@ import frc.robot.container.SubMOErine;
 import frc.robot.subsystem.interfaces.LEDSubsystem;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.targeting.PhotonPipelineResult;
 
 /*
 import org.photonvision.EstimatedRobotPose;
@@ -40,7 +43,7 @@ import static edu.wpi.first.wpilibj.util.Color.kRed;
 
 public class Robot extends LoggedRobot {
 
-    public RobotContainer robot = new SubMOErine();
+    public RobotContainer robot = new ProMOEtheus();
     public Joystick driverJoystick = new Joystick(0);
     public Joystick functionJoystick = new Joystick(1);
 
@@ -141,13 +144,17 @@ public class Robot extends LoggedRobot {
         if (driverJoystick.getRawButtonPressed(3)) {
             autoSetpoint = !autoSetpoint;
         }
-        if (autoSetpoint) {
+        if (autoSetpoint){
             setFieldPose();
         }
-    }
 
-    @Override
-    public void autonomousInit() {
+
+        autoCommand = Autos.getSelectedAuto();
+
+
+    }
+        @Override
+        public void autonomousInit () {
 /*
         robot.getTankDrive().setPose(testPath.path.getStartingDifferentialPose());
         scheduler.schedule(testPath);
@@ -158,12 +165,12 @@ public class Robot extends LoggedRobot {
  */
 
 
-        autoCommand = Autos.getSelectedAuto();
+
+            setFieldPose();
 
 
-        setFieldPose();
 
-        scheduler.schedule(autoCommand.command());
+            scheduler.schedule(autoCommand.command());
 
 
 
@@ -178,10 +185,10 @@ public class Robot extends LoggedRobot {
  */
 
 
-    }
+        }
 
-    @Override
-    public void autonomousPeriodic() {
+        @Override
+        public void autonomousPeriodic () {
 
         /*
         Logger.recordOutput("Auto Start Pose", testPath.path.getStartingHolonomicPose().get());
@@ -191,10 +198,10 @@ public class Robot extends LoggedRobot {
 
          */
 
-    }
+        }
 
-    @Override
-    public void teleopInit() {
+        @Override
+        public void teleopInit () {
 
         scheduler.schedule(climberTestCommand);
 
@@ -274,7 +281,12 @@ public class Robot extends LoggedRobot {
             }
 
 
-            if (driverJoystick.getRawButton(1)) {
+
+
+
+            }
+
+            if (driverJoystick.getRawButtonPressed(1)) {
                 robot.getRobotSwerveDrive().setPose(
                         new Pose2d(
                                 robot.getRobotSwerveDrive().getPose().getTranslation(),
@@ -286,12 +298,9 @@ public class Robot extends LoggedRobot {
                 );
             }
 
+
+
         }
-
-
-    }
-
-
     public void inactiveTransition() {
         scheduler.cancel(ledSolidColorCommandGreen);// active to inactive
         scheduler.schedule(controllerVibrateCommandOff, ledBlinkingCommandGreen);
@@ -317,9 +326,9 @@ public class Robot extends LoggedRobot {
 
     }
 
-    @Override
-    public void testInit() {
-    }
+        @Override
+        public void testInit () {
+        }
 
     @Override
     public void testPeriodic() {
@@ -330,31 +339,31 @@ public class Robot extends LoggedRobot {
         scheduler.schedule(collectorTestCommand);
     }
 
-    @Override
-    public void simulationInit() {
-    }
-
-    @Override
-    public void simulationPeriodic() {
-    }
-
-
-    public void setFieldPose() {
-        assert autoCommand != null;
-        Pose2d startingPoseBlue = autoCommand.pose();
-        final Pose2d startingPose;
-        if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
-            startingPose = FlippingUtil.flipFieldPose(startingPoseBlue);
-        } else {
-            startingPose = startingPoseBlue;
+        @Override
+        public void simulationInit () {
         }
-        robot.getRobotSwerveDrive().setPose(startingPose);
+
+        @Override
+        public void simulationPeriodic () {
+        }
+
+
+        public void setFieldPose () {
+            assert autoCommand != null;
+            Pose2d startingPoseBlue = autoCommand.pose();
+            final Pose2d startingPose;
+            if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
+                startingPose = FlippingUtil.flipFieldPose(startingPoseBlue);
+            } else {
+                startingPose = startingPoseBlue;
+            }
+            robot.getRobotSwerveDrive().setPose(startingPose);
+
+
+        }
 
 
     }
-
-
-}
 
 
 
