@@ -1,5 +1,6 @@
 package frc.robot.subsystem;
 
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
@@ -8,8 +9,7 @@ import frc.robot.subsystem.interfaces.LEDSubsystem;
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.Logger;
 
-import static edu.wpi.first.units.Units.Second;
-import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.*;
 
 public class LED implements LEDSubsystem {
   AddressableLED moeLED;
@@ -33,8 +33,7 @@ public class LED implements LEDSubsystem {
     public void setPatternBlinking(Color color){
        LEDPattern blinking = LEDPattern.solid(color);
         blinking.blink(Seconds.of(1));
-         setPattern(blinking);
-
+        setPattern(blinking);
     }
     public void setSolidColor(Color color){
         LEDPattern solidColor = LEDPattern.solid(color);

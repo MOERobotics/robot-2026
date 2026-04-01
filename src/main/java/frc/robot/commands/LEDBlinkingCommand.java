@@ -20,6 +20,7 @@ import static java.awt.Color.red;
 public class LEDBlinkingCommand extends Command {
     public LEDSubsystem LED;
     Color colorForBlinking;
+    int timePassed;
 
 
 
@@ -32,7 +33,10 @@ public class LEDBlinkingCommand extends Command {
 
 
     public void execute() {
-        LED.setPatternBlinking(colorForBlinking);
+         timePassed = ++timePassed % 32;
+        if (timePassed <=16){ LED.setSolidColor(colorForBlinking);} else {
+            LED.setSolidColor(kBlack);
+        }
         Logger.recordOutput("LEDBlinking", true);
         Logger.recordOutput("LEDBlinkingColor", colorForBlinking);
     }

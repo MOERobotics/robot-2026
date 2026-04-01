@@ -219,55 +219,57 @@ public class Robot extends LoggedRobot {
         Logger.recordOutput("teamAllianceWon", teamAllianceWon);
 
         if (!teamAllianceWon) {
-            if (DriverStation.getMatchTime() <= 140 && DriverStation.getMatchTime() >= 111) {
+            if (DriverStation.getMatchTime() <= 140 && DriverStation.getMatchTime() > 110) {
                 scheduler.schedule(ledSolidColorCommandGreen);
             } else if (DriverStation.getMatchTime() <= 110 && DriverStation.getMatchTime() >= 105) {
                 inactiveTransition();
-            } else if (DriverStation.getMatchTime() <= 104 && DriverStation.getMatchTime() >= 86) {
+            } else if (DriverStation.getMatchTime() < 105 && DriverStation.getMatchTime() > 85) {
                 inactivePeriod();
             } else if (DriverStation.getMatchTime() <= 85 && DriverStation.getMatchTime() >= 80) {
                 activeTransition();
-            } else if (DriverStation.getMatchTime() <= 79 && DriverStation.getMatchTime() >= 51) {
+            } else if (DriverStation.getMatchTime() < 80 && DriverStation.getMatchTime() > 50) {
                 activePeriod();
             } else if (DriverStation.getMatchTime() <= 50 && DriverStation.getMatchTime() >= 45) {
                 inactiveTransition();
-            } else if (DriverStation.getMatchTime() <= 44 && DriverStation.getMatchTime() >= 26) {
+            } else if (DriverStation.getMatchTime() < 45 && DriverStation.getMatchTime() > 25) {
                 inactivePeriod();
             } else if (DriverStation.getMatchTime() <= 25 && DriverStation.getMatchTime() >= 20) {
                 activeTransition();
             } else {
-                scheduler.schedule(ledSolidColorCommandGreen);
                 scheduler.cancel(controllerVibrateCommandOn);
                 scheduler.cancel(controllerVibrateCommandOff);
                 scheduler.cancel(ledBlinkingCommandGreen);
                 scheduler.cancel(ledBlinkingCommandRed);
                 scheduler.cancel(ledSolidColorCommandRed);
+                scheduler.schedule(ledSolidColorCommandGreen);
+
             }
         }
 
         if (teamAllianceWon) {
-            if (DriverStation.getMatchTime() <= 140 && DriverStation.getMatchTime() >= 136) {
+            if (DriverStation.getMatchTime() <= 140 && DriverStation.getMatchTime() > 135) {
                 scheduler.schedule(ledSolidColorCommandGreen);
             } else if (DriverStation.getMatchTime() <= 135 && DriverStation.getMatchTime() >= 130) {
                 inactiveTransition();
-            } else if (DriverStation.getMatchTime() <= 129 && DriverStation.getMatchTime() >= 111) {
+            } else if (DriverStation.getMatchTime() < 130 && DriverStation.getMatchTime() > 110) {
                 inactivePeriod();
             } else if (DriverStation.getMatchTime() <= 110 && DriverStation.getMatchTime() >= 105) {
                 activeTransition();
-            } else if (DriverStation.getMatchTime() <= 104 && DriverStation.getMatchTime() >= 86) {
+            } else if (DriverStation.getMatchTime() < 105 && DriverStation.getMatchTime() > 85) {
                 activePeriod();
             } else if (DriverStation.getMatchTime() <= 85 && DriverStation.getMatchTime() >= 80) {
                 inactiveTransition();
-            } else if (DriverStation.getMatchTime() <= 79 && DriverStation.getMatchTime() >= 51) {
+            } else if (DriverStation.getMatchTime() < 80 && DriverStation.getMatchTime() > 50) {
                 inactivePeriod();
             } else if (DriverStation.getMatchTime() <= 50 && DriverStation.getMatchTime() >= 45) {
                 activeTransition();
             } else {
-                scheduler.schedule(ledBlinkingCommandGreen);
                 scheduler.cancel(controllerVibrateCommandOn);
                 scheduler.cancel(controllerVibrateCommandOff);
                 scheduler.cancel(ledBlinkingCommandGreen);
                 scheduler.cancel(ledBlinkingCommandRed);
+                scheduler.schedule(ledSolidColorCommandGreen);
+
 
             }
 
@@ -291,25 +293,25 @@ public class Robot extends LoggedRobot {
 
 
     public void inactiveTransition() {
-        scheduler.cancel(ledSolidColorCommandGreen);
-        scheduler.schedule(controllerVibrateCommandOff, ledBlinkingCommandRed);
+        scheduler.cancel(ledSolidColorCommandGreen);// active to inactive
+        scheduler.schedule(controllerVibrateCommandOff, ledBlinkingCommandGreen);
 
     }
 
     public void activeTransition() {
-        scheduler.cancel(ledSolidColorCommandRed);
-        scheduler.schedule(controllerVibrateCommandOn, ledBlinkingCommandGreen);
+        scheduler.cancel(ledSolidColorCommandRed); // inactive to active
+        scheduler.schedule(controllerVibrateCommandOn, ledBlinkingCommandRed);
     }
 
     public void inactivePeriod() {
-        scheduler.cancel(ledBlinkingCommandRed);
+        scheduler.cancel(ledBlinkingCommandGreen);
         scheduler.cancel(controllerVibrateCommandOff);
         scheduler.schedule(ledSolidColorCommandRed);
 
     }
 
     public void activePeriod() {
-        scheduler.cancel(ledBlinkingCommandGreen);
+        scheduler.cancel(ledBlinkingCommandRed);
         scheduler.cancel(controllerVibrateCommandOn);
         scheduler.schedule(ledSolidColorCommandGreen);
 
