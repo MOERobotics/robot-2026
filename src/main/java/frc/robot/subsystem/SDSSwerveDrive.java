@@ -95,7 +95,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
                 this::getChassisSpeed, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 (speeds, feedforwards) -> robotDrive(speeds, true), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
                 new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                        new PIDConstants(4, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(3, 0.0, 0.0), // Translation PID constants
                         new PIDConstants(1, 0.0, 0.0) // Rotation PID constants
                 ),
                 config, // The robot configuration
@@ -143,7 +143,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
         Logger.recordOutput("rejectUpdate", rejectUpdate);
 
         if(!rejectUpdate){
-            this.robotOdometry.setVisionMeasurementStdDevs(VecBuilder.fill(0.7,0.7,999999));
+            this.robotOdometry.setVisionMeasurementStdDevs(VecBuilder.fill(0.9,0.9,999999));
             if(getSensors().turretCamPose != null) {
                 this.robotOdometry.addVisionMeasurement(getSensors().turretCamPose.toPose2d(), getSensors().photon1.getTimestampSeconds());
             }

@@ -98,6 +98,7 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
 
         if (joystick.getRawButtonPressed(1)) {
+
             lockedPose = drive.getPose();
             Pose2d pose =lockedPose;
 
@@ -105,7 +106,7 @@ public class ShooterTeleopAutoAimCommand extends Command {
                     Inches.of(2.172),
                     Inches.of(-8.4375)).rotateBy(pose.getRotation());
 
-            Translation2d turretPosition = pose.getTranslation().plus(lockedOffset);
+            Translation2d turretPosition = pose.getTranslation().plus(turretOffset);
 
 
 
@@ -121,9 +122,14 @@ public class ShooterTeleopAutoAimCommand extends Command {
             double desiredAngle = desiredTurret.getDegrees();
 
 
-            shooterSetpoint = calculateShooterSpeed(distance);
-            turretSetpoint = desiredAngle;
-            hoodSetpoint = calcHoodAngle(distance);
+            shooterSetpoint = calculateShooterSpeed(currDistance);
+
+            Logger.recordOutput("calcHoodSetpoint", hoodSetpoint);
+            Logger.recordOutput("calcShooterSetpoint", shooterSetpoint);
+
+
+            //turretSetpoint = desiredAngle-20;
+            hoodSetpoint = calcHoodAngle(currDistance);
 
 
         }
@@ -133,6 +139,8 @@ public class ShooterTeleopAutoAimCommand extends Command {
         Logger.recordOutput("LockedDistance", distance);
 
         Logger.recordOutput("HoodSetpoint", hoodSetpoint);
+
+
 
         Logger.recordOutput("CurrDistance", currDistance);
 
@@ -267,7 +275,7 @@ public class ShooterTeleopAutoAimCommand extends Command {
     }
 
     private double calcHoodAngle(double distance) {
-        return 0.000586636*Math.pow(distance, 2) - (0.0564512*distance) + 184.01223;
+        return 0.000586636*Math.pow(distance, 2) - (0.0564512*distance) + 187.01223;
 
         // return hoodMap.get(distance);
 

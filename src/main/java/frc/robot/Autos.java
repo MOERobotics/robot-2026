@@ -27,7 +27,7 @@ public class Autos {
 
         autoChooser.setDefaultOption("Auto11: Neutral Zone NLT Bump", NeutralZone.NLT_Back_Bump(robot));
 
-        autoChooser.setDefaultOption("Auto12: Neutral Zone NRT Trench", NeutralZone.NLT_Back_Trench(robot));
+        autoChooser.setDefaultOption("Auto12: Neutral Zone NLT Trench", NeutralZone.NLT_Back_Trench(robot));
 
         autoChooser.setDefaultOption("Auto13: Neutral Zone NRT Bump", NeutralZone.NRT_Back_Bump(robot));
 
