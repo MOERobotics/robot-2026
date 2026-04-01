@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.477329545454545,
+        "y": 4.025
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.5494641904185293,
+        "y": 4.025
+      },
+      "isLocked": false,
+      "linkedName": "H"
+    },
+    {
+      "anchor": {
+        "x": 1.8912410841654772,
+        "y": 4.025
+      },
+      "prevControl": {
+        "x": 2.891241084165477,
+        "y": 4.025
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "H Shot"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 1.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": "Hub",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}
