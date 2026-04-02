@@ -136,12 +136,13 @@ public class Robot extends LoggedRobot {
         if (driverJoystick.getRawButtonPressed(3)) {
             autoSetpoint = !autoSetpoint;
         }
+        autoCommand = Autos.getSelectedAuto();
+
         if (autoSetpoint){
             setFieldPose();
         }
 
 
-        autoCommand = Autos.getSelectedAuto();
 
 
     }
@@ -288,16 +289,17 @@ public class Robot extends LoggedRobot {
 
 
         public void setFieldPose () {
-            assert autoCommand != null;
-            Pose2d startingPoseBlue = autoCommand.pose();
-            final Pose2d startingPose;
-            if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
-                startingPose = FlippingUtil.flipFieldPose(startingPoseBlue);
-            } else {
-                startingPose = startingPoseBlue;
-            }
-            robot.getRobotSwerveDrive().setPose(startingPose);
+            if(autoCommand != null) {
+                Pose2d startingPoseBlue = autoCommand.pose();
+                final Pose2d startingPose;
+                if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
+                    startingPose = FlippingUtil.flipFieldPose(startingPoseBlue);
+                } else {
+                    startingPose = startingPoseBlue;
+                }
+                robot.getRobotSwerveDrive().setPose(startingPose);
 
+            }
 
         }
 

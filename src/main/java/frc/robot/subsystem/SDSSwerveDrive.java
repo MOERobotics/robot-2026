@@ -21,6 +21,7 @@ import frc.robot.subsystem.simulations.SwerveDriveSim;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import java.util.Arrays;
@@ -41,7 +42,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
     Transform3d turretCamLocation = new Transform3d(
             Millimeters.of(-272.98),
             Millimeters.of(317.26),
-            Millimeters.of(228.52),
+            Millimeters.of(180.0),
             new Rotation3d(
                     Degrees.of(0),
                     Degrees.of(-15),
@@ -228,17 +229,18 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
         List<PhotonPipelineResult> results1 = turretCam.getAllUnreadResults();
         if (!results1.isEmpty()) {
             Logger.recordOutput(
-                    "photon1",
+                    "turretCamResults",
                     PhotonPipelineResult.proto,
                     results1.get(results1.size()-1)
             );
             getSensors().photon1 = results1.get(results1.size()-1);
         }
+
         List<PhotonPipelineResult> results2 = swerveCam.getAllUnreadResults();
 
         if (!results2.isEmpty()) {
             Logger.recordOutput(
-                    "photon2",
+                    "swerveCamResults",
                     PhotonPipelineResult.proto,
                     results2.get(results2.size()-1)
             );
@@ -247,14 +249,22 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
         getSensors().turretCamPose = (
                 estimator1.estimateCoprocMultiTagPose(getSensors().photon1).
                         map((erp) -> erp.estimatedPose).
-                        orElse(estimator1.estimateLowestAmbiguityPose(getSensors().photon1).
+                        orElse(estimator1.estimateClosestToCameraHeightPose(getSensors().photon1).
                         map((erp) -> erp.estimatedPose).orElse(null))
         );
+        var photonTargetSwerve = getSensors().photon2.getBestTarget();
+        Pose3d photonBestSwerve = null;
+        if (photonTargetSwerve != null) {
+            photonBestSwerve = PhotonUtils.estimateFieldToRobotAprilTag(
+                swerveCamLocation,
+                fieldLayout.getTagPose(photonTargetSwerve.fiducialId).get(),
+                photonTargetSwerve.bestCameraToTarget
+            );
+        }
         getSensors().swerveCamPose = (
                 estimator2.estimateCoprocMultiTagPose(getSensors().photon2).
                         map((erp) -> erp.estimatedPose).
-                        orElse(estimator2.estimateLowestAmbiguityPose(getSensors().photon2).
-                        map((erp) -> erp.estimatedPose).orElse(null))
+                        orElse(photonBestSwerve)
         );
     }
 

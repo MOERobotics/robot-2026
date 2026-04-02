@@ -11,9 +11,9 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 import frc.robot.MOESimulator;
 
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static frc.robot.MOESimulator.decelerate;
 
 public class SwerveModuleSim implements MOESimulator {
-
     private final double pivotReduction = 150.0/7.0;
     private final double driveReduction = 6.75;
     private final double decelerationCoef = 60;
@@ -32,12 +32,12 @@ public class SwerveModuleSim implements MOESimulator {
         this.pivotMotorSim = new SparkMaxSim(pivotMotor, DCMotor.getNEO(1));
         this.pivotEncoderSim = pivotEncoder.getSimState();
     }
-    @Override
+
     public void updateSimState() {
         driveMotorSystem.setInputVoltage(driveMotor.getBusVoltage() * driveMotor.getAppliedOutput());
-        driveMotorSystem.setAngularVelocity(MOESimulator.decelerate(driveMotorSystem.getAngularVelocity(),decelerationCoef).in(RadiansPerSecond));
+        driveMotorSystem.setAngularVelocity(decelerate(driveMotorSystem.getAngularVelocity(),decelerationCoef).in(RadiansPerSecond));
         pivotMotorSystem.setInputVoltage(-pivotMotor.getBusVoltage() * pivotMotor.getAppliedOutput());
-        pivotMotorSystem.setAngularVelocity(MOESimulator.decelerate(pivotMotorSystem.getAngularVelocity(),decelerationCoef).in(RadiansPerSecond));
+        pivotMotorSystem.setAngularVelocity(decelerate(pivotMotorSystem.getAngularVelocity(),decelerationCoef).in(RadiansPerSecond));
 
         driveMotorSystem.update(.02);
         pivotMotorSystem.update(.02);
@@ -47,10 +47,6 @@ public class SwerveModuleSim implements MOESimulator {
         pivotMotorSim.getAlternateEncoderSim().iterate(pivotMotorSystem.getAngularVelocityRPM()*pivotReduction, .02);
         pivotEncoderSim.setRawPosition(pivotMotorSystem.getAngularPosition().unaryMinus().minus(offset));
         pivotEncoderSim.setVelocity(pivotMotorSystem.getAngularVelocity().unaryMinus());
-    }
-
-    public void simulationPeriodic() {
-        updateSimState();
     }
 
 

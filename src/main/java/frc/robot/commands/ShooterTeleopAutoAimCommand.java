@@ -33,13 +33,13 @@ public class ShooterTeleopAutoAimCommand extends Command {
     public double kD = 0.8 / 14000;
     public double IZone = 500;
 
-    public double hoodKP = 0.056;
+    public double hoodKP = 0.;
     public double hoodKI = 0;
     public double hoodKD = 0;
 
     public double deadZone = 0.4;
 
-    public double turretKP = 0.0055;
+    public double turretKP = 0.055;
     public double turretKI = 0;
     public double turretKD = 0;
 
@@ -68,6 +68,7 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
     @Override
     public void initialize() {
+
         turretSetpoint = shooterSubsystem.getSensors().turretRelativeAngle.in(Degrees);
         hoodSetpoint = shooterSubsystem.getHoodAngleFromThroughbore().in(Degrees);
         shooterSetpoint = 3000;
@@ -90,29 +91,19 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
         }
 
-        Translation2d turretOffset = new Translation2d(Inches.of(2.172), Inches.of(-8.4375)).rotateBy(drive.getPose().getRotation());
-        currDistance = Meters.of(drive.getPose().getTranslation().plus(turretOffset).getDistance(getHubPosition())).in(Inches);
+        Pose2d pose = drive.getPose();
+
+
+        Translation2d turretOffset = new Translation2d(Inches.of(-2.172), Inches.of(8.4375)).rotateBy(pose.getRotation());
+        currDistance = Meters.of(pose.getTranslation().plus(turretOffset).getDistance(getHubPosition())).in(Inches);
 
 
 
 
 
         if (joystick.getRawButtonPressed(1)) {
-
-            lockedPose = drive.getPose();
-            Pose2d pose =lockedPose;
-
-            Translation2d lockedOffset = new Translation2d(
-                    Inches.of(2.172),
-                    Inches.of(-8.4375)).rotateBy(pose.getRotation());
-
             Translation2d turretPosition = pose.getTranslation().plus(turretOffset);
-
-
-
             distance = Meters.of(turretPosition.getDistance(getHubPosition())).in(Inches);
-
-
             Rotation2d targetTurretAngle = getHubPosition().minus(turretPosition).getAngle();
 
             Rotation2d robotHeading = pose.getRotation();
@@ -127,9 +118,8 @@ public class ShooterTeleopAutoAimCommand extends Command {
             Logger.recordOutput("calcHoodSetpoint", hoodSetpoint);
             Logger.recordOutput("calcShooterSetpoint", shooterSetpoint);
 
-
-            //turretSetpoint = desiredAngle-20;
-            hoodSetpoint = calcHoodAngle(currDistance);
+            turretSetpoint = desiredAngle;
+          hoodSetpoint = calcHoodAngle(currDistance);
 
 
         }
@@ -157,6 +147,8 @@ public class ShooterTeleopAutoAimCommand extends Command {
         shooterPIDController.setSetpoint(shooterSetpoint);
 
         Logger.recordOutput("FlywheelSetpoint", shooterSetpoint);
+        Logger.recordOutput("TurretSetpoint", turretSetpoint);
+
         Logger.recordOutput("FlywheelSpeed", shooterSubsystem.getFlywheelSpeed().in(RPM));
 
         if (isFlywheelOn) {
@@ -209,11 +201,11 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
         double turretOutput = turretPIDController.calculate(shooterSubsystem.getSensors().turretRelativeAngle.in(Degrees));
 
-      // double turretOutput = turretPIDController.calculate(currTurretAngle, turretSetpoint);
+      //double turretOutput = turretPIDController.calculate(currTurretAngle, turretSetpoint);
 
 
 
-        if (turretOutput > 0.4) turretOutput = 0.4;
+        if (turretOutput > 0.6) turretOutput = 0.6;
 
 
 
