@@ -226,21 +226,21 @@ public class Robot extends LoggedRobot {
         Logger.recordOutput("teamAllianceWon", teamAllianceWon);
 
         if (!teamAllianceWon) {
-            if (DriverStation.getMatchTime() <= 140 && DriverStation.getMatchTime() > 110) {
+            if (DriverStation.getMatchTime() <= 140/*2:20*/ && DriverStation.getMatchTime() > 110/*1:50*/) {
                 scheduler.schedule(ledSolidColorCommandGreen);
-            } else if (DriverStation.getMatchTime() <= 110 && DriverStation.getMatchTime() >= 105) {
+            } else if (DriverStation.getMatchTime() <= 110/*1:50*/ && DriverStation.getMatchTime() >= 105/*1:45*/) {
                 inactiveTransition();
-            } else if (DriverStation.getMatchTime() < 105 && DriverStation.getMatchTime() > 85) {
+            } else if (DriverStation.getMatchTime() < 105/*1:45*/ && DriverStation.getMatchTime() > 85/*1:25*/) {
                 inactivePeriod();
-            } else if (DriverStation.getMatchTime() <= 85 && DriverStation.getMatchTime() >= 80) {
+            } else if (DriverStation.getMatchTime() <= 85/*1:25*/ && DriverStation.getMatchTime() >= 80/*1:20*/) {
                 activeTransition();
-            } else if (DriverStation.getMatchTime() < 80 && DriverStation.getMatchTime() > 50) {
+            } else if (DriverStation.getMatchTime() < 80/*1:20*/ && DriverStation.getMatchTime() > 60/*1:00*/) {
                 activePeriod();
-            } else if (DriverStation.getMatchTime() <= 50 && DriverStation.getMatchTime() >= 45) {
+            } else if (DriverStation.getMatchTime() <= 60/*1:00*/ && DriverStation.getMatchTime() >= 55)/*55*/ {
                 inactiveTransition();
-            } else if (DriverStation.getMatchTime() < 45 && DriverStation.getMatchTime() > 25) {
+            } else if (DriverStation.getMatchTime() < 55/*55*/ && DriverStation.getMatchTime() > 35/*35*/) {
                 inactivePeriod();
-            } else if (DriverStation.getMatchTime() <= 25 && DriverStation.getMatchTime() >= 20) {
+            } else if (DriverStation.getMatchTime() <= 35 && DriverStation.getMatchTime() >= 30) {
                 activeTransition();
             } else {
                 scheduler.cancel(controllerVibrateCommandOn);
@@ -254,21 +254,21 @@ public class Robot extends LoggedRobot {
         }
 
         if (teamAllianceWon) {
-            if (DriverStation.getMatchTime() <= 140 && DriverStation.getMatchTime() > 135) {
+            if (DriverStation.getMatchTime() <= 140/*2:20*/ && DriverStation.getMatchTime() > 135)/*2:15*/ {
                 scheduler.schedule(ledSolidColorCommandGreen);
-            } else if (DriverStation.getMatchTime() <= 135 && DriverStation.getMatchTime() >= 130) {
+            } else if (DriverStation.getMatchTime() <= 135/*2:15*/ && DriverStation.getMatchTime() >= 130/*2:10*/) {
                 inactiveTransition();
-            } else if (DriverStation.getMatchTime() < 130 && DriverStation.getMatchTime() > 110) {
+            } else if (DriverStation.getMatchTime() < 130/*2:10*/ && DriverStation.getMatchTime() > 110/*1:50*/) {
                 inactivePeriod();
-            } else if (DriverStation.getMatchTime() <= 110 && DriverStation.getMatchTime() >= 105) {
+            } else if (DriverStation.getMatchTime() <= 110/*1:50*/ && DriverStation.getMatchTime() >= 105/*1:45*/) {
                 activeTransition();
-            } else if (DriverStation.getMatchTime() < 105 && DriverStation.getMatchTime() > 85) {
+            } else if (DriverStation.getMatchTime() < 105/*1:45*/ && DriverStation.getMatchTime() > 85/*1:25*/) {
                 activePeriod();
-            } else if (DriverStation.getMatchTime() <= 85 && DriverStation.getMatchTime() >= 80) {
+            } else if (DriverStation.getMatchTime() <= 85/*1:25*/ && DriverStation.getMatchTime() >= 80/*1:20*/) {
                 inactiveTransition();
-            } else if (DriverStation.getMatchTime() < 80 && DriverStation.getMatchTime() > 50) {
+            } else if (DriverStation.getMatchTime() < 80/*1:20*/ && DriverStation.getMatchTime() > 60/*1:00*/) {
                 inactivePeriod();
-            } else if (DriverStation.getMatchTime() <= 50 && DriverStation.getMatchTime() >= 45) {
+            } else if (DriverStation.getMatchTime() <= 60 && DriverStation.getMatchTime() >= 55) {
                 activeTransition();
             } else {
                 scheduler.cancel(controllerVibrateCommandOn);
@@ -349,7 +349,7 @@ public class Robot extends LoggedRobot {
 
 
         public void setFieldPose () {
-            assert autoCommand != null;
+        /*    assert autoCommand != null;
             Pose2d startingPoseBlue = autoCommand.pose();
             final Pose2d startingPose;
             if (DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Red) {
@@ -359,7 +359,7 @@ public class Robot extends LoggedRobot {
             }
             robot.getRobotSwerveDrive().setPose(startingPose);
 
-
+*/
         }
 
 
