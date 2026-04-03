@@ -48,5 +48,9 @@ public interface SwerveDriveSubsystem extends Subsystem, LoggableInputs {
         public Pose3d turretCamPose = new Pose3d();
         public Pose3d swerveCamPose = new Pose3d();
 
+        public boolean hasNewPhoton1 = false;
+
+        public boolean hasNewPhoton2 =false;
+
     }
 }

@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.46,
+        "x": 3.56,
         "y": 0.725
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.083366619115549,
-        "y": 0.5739087018544944
+        "x": 5.56035778175313,
+        "y": 0.6844543828264751
       },
       "isLocked": false,
-      "linkedName": "NRT"
+      "linkedName": "ART"
     },
     {
       "anchor": {
@@ -28,7 +28,12 @@
       "linkedName": "RN"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.4117647058823529,
+      "rotationDegrees": 177.7051106718561
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],

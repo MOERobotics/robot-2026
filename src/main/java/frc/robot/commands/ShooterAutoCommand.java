@@ -74,9 +74,12 @@ public class ShooterAutoCommand extends Command {
         // TODO make an agitate function in auto?? for jamming?
         Pose2d pose = drive.getPose();
 
-        Translation2d turretOffset = new Translation2d(Inches.of(2.172), Inches.of(-8.4375)).rotateBy(pose.getRotation());
+        Translation2d turretOffset = new Translation2d(Inches.of(-2.172), Inches.of(8.4375)).rotateBy(pose.getRotation());
         Translation2d turretPosition = pose.getTranslation().plus(turretOffset);
 
+
+        Logger.recordOutput("turretOffset", turretOffset);
+        Logger.recordOutput("turretPosition", turretPosition);
 
 
         double distance = Meters.of(turretPosition.getDistance(getHubPosition())).in(Inches);
@@ -106,9 +109,20 @@ public class ShooterAutoCommand extends Command {
 
         Rotation2d targetTurretAngle = getHubPosition().minus(turretPosition).getAngle();
 
+
+
+
+
         Rotation2d robotHeading = pose.getRotation();
 
-        Rotation2d desiredTurret = targetTurretAngle.minus(robotHeading);
+        Rotation2d desiredTurret = targetTurretAngle.minus(robotHeading).plus(Rotation2d.k180deg);
+
+        double desiredTurretAngle = desiredTurret.getDegrees();
+        while (desiredTurretAngle > 180) desiredTurretAngle -= 360;
+        while (desiredTurretAngle < -180) desiredTurretAngle += 360;
+
+
+
 
 
         double currTurretAngle = shooter.getSensors().turretRelativeAngle.in(Degrees);
@@ -153,7 +167,7 @@ public class ShooterAutoCommand extends Command {
 
         hoodPID.setSetpoint(desHoodAngle);
 
-        double hoodOutput = hoodPID.calculate(currHoodAngle);
+        double hoodOutput = hoodPID.calculate(currHoodAngle+25);
 
         hoodOutput = MathUtil.clamp(hoodOutput, -0.32, 0.32);
 

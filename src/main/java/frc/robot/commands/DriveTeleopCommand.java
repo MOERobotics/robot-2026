@@ -4,11 +4,14 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.container.RobotContainer;
 import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
 import org.littletonrobotics.junction.Logger;
+
+import static edu.wpi.first.wpilibj.DriverStation.Alliance.*;
 
 public class DriveTeleopCommand extends Command {
 
@@ -46,13 +49,15 @@ public class DriveTeleopCommand extends Command {
         avgY= (avgY * ((num-1)/num)) + (joystick.getRawAxis(0)/num);
         avgRotation = (avgRotation * ((num-1)/num)) + (joystick.getRawAxis(2)/num);
 
+        int flippity = DriverStation.getAlliance().orElse(Blue) == Red ? -1 : 1;
+
         Logger.recordOutput("Avg X", avgX);
         Logger.recordOutput("Avg Y", avgY);
         Logger.recordOutput("Avg Rotation", avgRotation);
 
         ChassisSpeeds speeds = new ChassisSpeeds(
-                MathUtil.applyDeadband(avgX * -1, 0.06),
-                MathUtil.applyDeadband(avgY * -1, 0.06),
+                MathUtil.applyDeadband(avgX * -1, 0.06) * flippity,
+                MathUtil.applyDeadband(avgY * -1, 0.06) * flippity,
                 MathUtil.applyDeadband(avgRotation * -1, 0.06)
         );
 

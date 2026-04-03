@@ -5,6 +5,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -26,14 +27,12 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
     boolean isFlywheelOn = false;
 
-    private Pose2d lockedPose;
-
     public double kP = 1.8 / 1500.0;
     public double kI = 0.00015;
     public double kD = 0.8 / 14000;
     public double IZone = 500;
 
-    public double hoodKP = 0.;
+    public double hoodKP = 0.056;
     public double hoodKI = 0;
     public double hoodKD = 0;
 
@@ -51,6 +50,10 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
     double currDistance=0;
     double distance=0;
+
+    double desiredTurretAngle=0;
+
+    Translation2d turretPosition = new Translation2d();
 
     public ShooterTeleopAutoAimCommand(RobotContainer robot, Joystick joystick) {
         this.joystick = joystick;
@@ -102,31 +105,75 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
 
         if (joystick.getRawButtonPressed(1)) {
-            Translation2d turretPosition = pose.getTranslation().plus(turretOffset);
-            distance = Meters.of(turretPosition.getDistance(getHubPosition())).in(Inches);
+            turretPosition = pose.getTranslation().plus(turretOffset);
+           // distance = Meters.of(turretPosition.getDistance(getHubPosition())).in(Inches);
             Rotation2d targetTurretAngle = getHubPosition().minus(turretPosition).getAngle();
 
             Rotation2d robotHeading = pose.getRotation();
 
             Rotation2d desiredTurret = targetTurretAngle.minus(robotHeading);
 
-            double desiredAngle = desiredTurret.getDegrees();
+            desiredTurretAngle = desiredTurret.getDegrees();
 
 
             shooterSetpoint = calculateShooterSpeed(currDistance);
-
-            Logger.recordOutput("calcHoodSetpoint", hoodSetpoint);
-            Logger.recordOutput("calcShooterSetpoint", shooterSetpoint);
-
-            turretSetpoint = desiredAngle;
+           // turretSetpoint = desiredAngle;
           hoodSetpoint = calcHoodAngle(currDistance);
+//x, y are field coordinates of CoR
+// z is field centric angle of robot
+// a is distance from CoR to Center of turrent (front-back)
+// b is distance from CoR to CoT (left-right)
+// theta = z+180 where z is robot field angle
+// phi = atan2(ty-(y+a*sin(theta)-b*cos(theta),tx-(x+a*cos(theta)+b*sin(theta)) -theta
+
+        }
+        Logger.recordOutput("turretPosition", turretPosition);
 
 
+        int currentPOV = joystick.getPOV();
+
+        if (currentPOV != -1) {
+            switch (currentPOV) {
+                case 90:
+                    turretPosition = pose.getTranslation().plus(turretOffset);
+                    Logger.recordOutput("TurretPositionIThink", new Pose2d(turretPosition, pose.getRotation()));
+                    Rotation2d targetTurretAngle = getHubPosition().minus(turretPosition).getAngle();
+                    Logger.recordOutput("TargetTurretAngle", targetTurretAngle);
+                    Logger.recordOutput("Kevin's method1", getHubPosition().minus(pose.plus(new Transform2d(turretOffset, Rotation2d.kZero)).getTranslation()).getAngle());
+                    Logger.recordOutput("Kevin's method2", getHubPosition().minus(pose.plus(new Transform2d(turretOffset, pose.getRotation())).getTranslation()).getAngle());
+                    Rotation2d robotHeading = pose.getRotation();
+
+                    Rotation2d desiredTurret = targetTurretAngle.minus(robotHeading).plus(Rotation2d.k180deg);
+
+                    desiredTurretAngle = desiredTurret.getDegrees();
+                    while (desiredTurretAngle > 180) desiredTurretAngle -= 360;
+                    while (desiredTurretAngle < -180) desiredTurretAngle += 360;
+
+
+                    shooterSetpoint = calculateShooterSpeed(currDistance);
+                    //x, y are field coordinates of CoR
+// z is field centric angle of robot
+// a is distance from CoR to Center of turrent (front-back)
+// b is distance from CoR to CoT (left-right)
+// theta = z+180 where z is robot field angle
+// phi = atan2(ty-(y+a*sin(theta)-b*cos(theta),tx-(x+a*cos(theta)+b*sin(theta)) -theta
+
+                    double x = pose.getX();
+                    double y = pose.getX();
+                    double z = robotHeading.getDegrees() +180 % 360;
+                    double a = 6;
+
+
+                    turretSetpoint = desiredTurretAngle;
+                    hoodSetpoint = calcHoodAngle(currDistance);
+                    break;
+            }
         }
 
 
+        Logger.recordOutput("desiredTurretAngle", desiredTurretAngle);
 
-        Logger.recordOutput("LockedDistance", distance);
+
 
         Logger.recordOutput("HoodSetpoint", hoodSetpoint);
 
@@ -150,6 +197,9 @@ public class ShooterTeleopAutoAimCommand extends Command {
         Logger.recordOutput("TurretSetpoint", turretSetpoint);
 
         Logger.recordOutput("FlywheelSpeed", shooterSubsystem.getFlywheelSpeed().in(RPM));
+
+        Logger.recordOutput("turretOffset", turretOffset);
+
 
         if (isFlywheelOn) {
             double currentRPM = shooterSubsystem.getFlywheelSpeed().in(RPM);
@@ -189,10 +239,10 @@ public class ShooterTeleopAutoAimCommand extends Command {
         }
 
         if (joystick.getRawAxis(0) > deadZone) {
-            turretSetpoint -= 0.2;
+            turretSetpoint -= 0.25;
         }
         if (joystick.getRawAxis(0) < -deadZone) {
-            turretSetpoint += 0.2;
+            turretSetpoint += 0.25;
         }
 
         turretSetpoint = MathUtil.clamp(turretSetpoint, shooterSubsystem.getSensors().turretMinAngle, shooterSubsystem.getSensors().turretMaxAngle);
@@ -229,6 +279,8 @@ public class ShooterTeleopAutoAimCommand extends Command {
         if (hoodOutput > 0.4) hoodOutput = 0.4;
 
         shooterSubsystem.setHoodPower(hoodOutput);
+
+
 
 
 

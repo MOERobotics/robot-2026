@@ -39,24 +39,27 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
 
     PhotonCamera swerveCam = new PhotonCamera("Arducam_OV9281_USB_Camera (3)");
 
+    public static final double MAX_DISTANCE = 5.0;
+    public static final double MAX_AMBIGUITY = 0.25;
+
     Transform3d turretCamLocation = new Transform3d(
-            Millimeters.of(-272.98),
-            Millimeters.of(317.26),
-            Millimeters.of(180.0),
+           Inches.of(-10.7472441),
+            Inches.of(12.4905512),
+            Inches.of(4.08661),
             new Rotation3d(
                     Degrees.of(0),
-                    Degrees.of(-15),
+                    Degrees.of(15),
                     Degrees.of(180)
             )
     );
     Transform3d swerveCamLocation = new Transform3d(
             Inches.of(-11.7459),
             Inches.of(-11.791),
-            Inches.of(8.021),
+            Inches.of(5.021),
             new Rotation3d(
-                    Degrees.of(0),
-                    Degrees.of(-27),
-                    Degrees.of(225)
+                    Degrees.of(-19.813529),
+                    Degrees.of(18.724607),
+                    Degrees.of(-131.701246)
             )
     );
 
@@ -135,24 +138,38 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
         boolean rejectUpdate = false;
         photonPoses();
 
-        if(getSensors().photon1 == null){
+        if(getSensors().photon1 == null &&getSensors().photon2 == null){
             rejectUpdate = true;
         }
-        if (getSensors().photon2 == null){
-            rejectUpdate = true;
-        }
+
+
+
         if(robotGyro.getAngularVelocityZWorld().getValue().abs(DegreesPerSecond)>=360){
             rejectUpdate = true;
         }
 
+
+
         Logger.recordOutput("rejectUpdate", rejectUpdate);
+
+        if(getSensors().photon1!=null){
+            Logger.recordOutput("photon1Timestamp", getSensors().photon1.getTimestampSeconds());
+
+        }
+
+        if(getSensors().photon2!=null){
+            Logger.recordOutput("photon2Timestamp", getSensors().photon2.getTimestampSeconds());
+
+        }
+
+
 
         if(!rejectUpdate){
             this.robotOdometry.setVisionMeasurementStdDevs(VecBuilder.fill(0.9,0.9,999999));
-            if(getSensors().turretCamPose != null) {
+            if(getSensors().turretCamPose != null && getSensors().photon1 !=null) {
                 this.robotOdometry.addVisionMeasurement(getSensors().turretCamPose.toPose2d(), getSensors().photon1.getTimestampSeconds());
             }
-            if(getSensors().swerveCamPose != null) {
+            if(getSensors().swerveCamPose != null && getSensors().photon2 !=null) {
                 this.robotOdometry.addVisionMeasurement(getSensors().swerveCamPose.toPose2d(), getSensors().photon2.getTimestampSeconds());
             }
         }
@@ -227,6 +244,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
     @Override
     public void photonPoses(){
         List<PhotonPipelineResult> results1 = turretCam.getAllUnreadResults();
+
         if (!results1.isEmpty()) {
             Logger.recordOutput(
                     "turretCamResults",
@@ -234,6 +252,13 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
                     results1.get(results1.size()-1)
             );
             getSensors().photon1 = results1.get(results1.size()-1);
+            getSensors().hasNewPhoton1 = true;
+
+        } else{
+
+
+            getSensors().hasNewPhoton1 = false;
+            getSensors().photon1 = null;
         }
 
         List<PhotonPipelineResult> results2 = swerveCam.getAllUnreadResults();
@@ -245,27 +270,90 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
                     results2.get(results2.size()-1)
             );
             getSensors().photon2 = results2.get(results2.size()-1);
+            getSensors().hasNewPhoton2 = true;
+
+        } else{
+            getSensors().hasNewPhoton2 = false;
+            getSensors().photon2 = null;
+
+
         }
-        getSensors().turretCamPose = (
-                estimator1.estimateCoprocMultiTagPose(getSensors().photon1).
-                        map((erp) -> erp.estimatedPose).
-                        orElse(estimator1.estimateClosestToCameraHeightPose(getSensors().photon1).
-                        map((erp) -> erp.estimatedPose).orElse(null))
-        );
-        var photonTargetSwerve = getSensors().photon2.getBestTarget();
-        Pose3d photonBestSwerve = null;
-        if (photonTargetSwerve != null) {
-            photonBestSwerve = PhotonUtils.estimateFieldToRobotAprilTag(
-                swerveCamLocation,
-                fieldLayout.getTagPose(photonTargetSwerve.fiducialId).get(),
-                photonTargetSwerve.bestCameraToTarget
-            );
+
+
+
+        if(getSensors().hasNewPhoton1 && getSensors().photon1 != null && getSensors().photon1.hasTargets() ) {
+
+
+            var photonTargetTurret = getSensors().photon1.getBestTarget();
+            Pose3d photonBestTurret = null;
+
+            if (photonTargetTurret != null) {
+                photonBestTurret = PhotonUtils.estimateFieldToRobotAprilTag(
+                        photonTargetTurret.bestCameraToTarget,
+                        fieldLayout.getTagPose(photonTargetTurret.fiducialId).get(),
+                        turretCamLocation
+                );
+            }
+
+            double ambiguity = getSensors().photon1.getBestTarget().getPoseAmbiguity();
+            double distance = getSensors().photon1.getBestTarget().bestCameraToTarget.getTranslation().getNorm();
+
+            if (distance > MAX_DISTANCE || ambiguity > MAX_AMBIGUITY) {
+                getSensors().turretCamPose = null;
+
+            } else {
+
+                getSensors().turretCamPose = (
+                        estimator1.estimateCoprocMultiTagPose(getSensors().photon1).
+                                map((erp) -> erp.estimatedPose).orElse(photonBestTurret)
+                );
+
+                getSensors().turretCamPose = (
+                        photonBestTurret
+                );
+            }
+        } else{
+            getSensors().photon1 =null;
+
         }
-        getSensors().swerveCamPose = (
-                estimator2.estimateCoprocMultiTagPose(getSensors().photon2).
-                        map((erp) -> erp.estimatedPose).
-                        orElse(photonBestSwerve)
-        );
+
+
+
+
+        if(getSensors().hasNewPhoton2 && getSensors().photon2 != null && getSensors().photon2.hasTargets()) {
+
+            var photonTargetSwerve = getSensors().photon2.getBestTarget();
+
+            Pose3d photonBestSwerve = null;
+
+            if (photonTargetSwerve != null) {
+                photonBestSwerve = PhotonUtils.estimateFieldToRobotAprilTag(
+                        photonTargetSwerve.bestCameraToTarget,
+                        fieldLayout.getTagPose(photonTargetSwerve.fiducialId).get(),
+                        swerveCamLocation
+                );
+            }
+
+            double ambiguity = getSensors().photon2.getBestTarget().getPoseAmbiguity();
+            double distance = getSensors().photon2.getBestTarget().bestCameraToTarget.getTranslation().getNorm();
+
+            if (distance > MAX_DISTANCE || ambiguity > MAX_AMBIGUITY) {
+                getSensors().swerveCamPose = null;
+
+            } else {
+
+                getSensors().swerveCamPose = (photonBestSwerve);
+
+
+            }
+
+        } else{
+
+            getSensors().photon2 =null;
+
+        }
+
+
     }
 
 

@@ -45,8 +45,8 @@ public class Outpost2 {
                 ),
                 plannerPath2,
                 Commands.deadline(
-                        Commands.run(() -> robot.getRobotSwerveDrive().stop()).withTimeout(Seconds.of(5))
-                        // new FuelCollectorAutoCommand(robot, true, true, "in")
+                        Commands.run(() -> robot.getRobotSwerveDrive().stop()).withTimeout(Seconds.of(5)),
+                        new FuelCollectorAutoCommand(robot, true, true, "in")
                         ),
 
                 // new FuelCollectorAutoCommand(robot, true, true, "in").withTimeout(5),

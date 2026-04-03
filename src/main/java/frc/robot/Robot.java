@@ -78,6 +78,7 @@ public class Robot extends LoggedRobot {
 
     // Toggle for setting our pose to starting pose while disabled
     public boolean autoSetpoint = true;
+    public boolean applyAutoPose = false;
 
 
     // public AprilTagFieldLayout fieldLayout = new AprilTagFieldLayout();
@@ -122,26 +123,37 @@ public class Robot extends LoggedRobot {
         if (autoCommand != null) Logger.recordOutput("AutoCommand Pose", autoCommand.pose());
         Logger.recordOutput("AutoSetpoint", autoSetpoint);
 
-        robot.getRobotSwerveDrive().photonPoses();
+      //  robot.getRobotSwerveDrive().photonPoses();
     }
 
     @Override
     public void disabledInit() {
+
         scheduler.cancelAll();
+
+
     }
 
     @Override
     public void disabledPeriodic() {
 
-        if (driverJoystick.getRawButtonPressed(3)) {
-            autoSetpoint = !autoSetpoint;
-        }
         autoCommand = Autos.getSelectedAuto();
 
-        if (autoSetpoint){
+
+        if (driverJoystick.getRawButtonPressed(3)) {
             setFieldPose();
         }
 
+        /*
+        if (autoSetpoint){
+            applyAutoPose =true;
+        }
+
+        if(applyAutoPose){
+            setFieldPose();
+            applyAutoPose=false;
+        }
+       */
 
 
 
@@ -157,11 +169,7 @@ public class Robot extends LoggedRobot {
 
  */
 
-
-
             setFieldPose();
-
-
 
             scheduler.schedule(autoCommand.command());
 
@@ -298,6 +306,8 @@ public class Robot extends LoggedRobot {
                     startingPose = startingPoseBlue;
                 }
                 robot.getRobotSwerveDrive().setPose(startingPose);
+                Logger.recordOutput("RobotInitPose", startingPose);
+
 
             }
 
