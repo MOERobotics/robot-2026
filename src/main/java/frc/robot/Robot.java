@@ -16,6 +16,7 @@ import frc.robot.commands.*;
 import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
 import frc.robot.container.SubMOErine;
+import frc.robot.subsystem.interfaces.LEDSubsystem;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
@@ -31,10 +32,13 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
  */
 
+import java.sql.Driver;
 import java.util.List;
 import java.util.Optional;
 
 import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.wpilibj.util.Color.kGreen;
+import static edu.wpi.first.wpilibj.util.Color.kRed;
 
 public class Robot extends LoggedRobot {
 
@@ -57,12 +61,17 @@ public class Robot extends LoggedRobot {
 
 
     public Command rotateCommand = new AutoRotateCommand(robot, driverJoystick);
-
+    public Command ledBlinkingCommandRed = new LEDBlinkingCommand(kRed, robot);
+    public Command ledBlinkingCommandGreen = new LEDBlinkingCommand(kGreen, robot);
+    public Command ledSolidColorCommandRed = new LEDColorCommand(robot, kRed);
+    public Command ledSolidColorCommandGreen = new LEDColorCommand(robot, kGreen);
     public Command driveTeleopCommand = new DriveTeleopCommand(robot, driverJoystick);
     public Command controllerVibrateCommandOn = new ControllerVibrateCommandOn(driverJoystick, functionJoystick);
     public Command controllerVibrateCommandOff = new ControllerVibrateCommandOff(driverJoystick, functionJoystick);
     public Command controllerVibrateTestCommand = new ControllerVIbrateTestCommand(driverJoystick, functionJoystick);
     public Command hubLoggingCommand = new HubLoggingCommand(driverJoystick);
+
+
     public PathsFollower testPath = new PathsFollower("Curved Path");
 
     public Command climberTeleopCommand = new ClimberTeleopCommand(robot, driverJoystick);
@@ -74,7 +83,7 @@ public class Robot extends LoggedRobot {
     //AutosChooser autoCommand = new AutosChooser();
     private Autos.CommandAndPose auto;
 
-    Autos.CommandAndPose autoCommand = new Autos.CommandAndPose(Commands.none(), new Pose2d());
+    Autos.CommandAndPose autoCommand = new Autos.CommandAndPose(Commands.none().withName("Nothing"), new Pose2d());
 
     // Toggle for setting our pose to starting pose while disabled
     public boolean autoSetpoint = true;
@@ -123,7 +132,6 @@ public class Robot extends LoggedRobot {
         if (autoCommand != null) Logger.recordOutput("AutoCommand Pose", autoCommand.pose());
         Logger.recordOutput("AutoSetpoint", autoSetpoint);
 
-      //  robot.getRobotSwerveDrive().photonPoses();
     }
 
     @Override
@@ -136,51 +144,35 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void disabledPeriodic() {
-
+        autoCommand = Autos.getSelectedAuto();
         if (driverJoystick.getRawButtonPressed(3)) {
             setFieldPose();
         }
 
-        /*
-        if (autoSetpoint){
-            applyAutoPose =true;
-        }
-
-        if(applyAutoPose){
-            setFieldPose();
-            applyAutoPose=false;
-        }
-       */
         robot.getPdh().setSwitchableChannel(!functionJoystick.getRawButton(1));
 
 
     }
         @Override
         public void autonomousInit () {
-/*
-        robot.getTankDrive().setPose(testPath.path.getStartingDifferentialPose());
-        scheduler.schedule(testPath);
-        Logger.recordOutput("Auto Start Pose", testPath.path.getStartingDifferentialPose());
 
-        Logger.recordOutput("Auto End Pose", testPath.path.getGoalEndState());
-
- */
 
             setFieldPose();
 
             scheduler.schedule(autoCommand.command());
 
 
+            /*
+            scheduler.schedule(Commands.sequence(
+                new FlywheelRatesCommand(robot,0.4),
+                new FlywheelRatesCommand(robot,0.5),
+                new FlywheelRatesCommand(robot,0.6),
+                new FlywheelRatesCommand(robot,0.7),
+                new FlywheelRatesCommand(robot,0.8),
+                new FlywheelRatesCommand(robot,0.9)
+            ));
 
-
-/*
-
-
-        robot.getRobotSwerveDrive().setPose(auto.pose());
-        scheduler.schedule(auto.command());
-
-
- */
+             */
 
 
         }
@@ -205,7 +197,6 @@ public class Robot extends LoggedRobot {
 
             scheduler.schedule(driveTeleopCommand);
 
-            //scheduler.schedule(shooterTeleopCommand);
 
             scheduler.schedule(shooterTeleopAutoAimCommand);
 
@@ -221,34 +212,60 @@ public class Robot extends LoggedRobot {
             boolean teamAllianceWon = teamAllianceWonR || teamAllianceWonB;
             Logger.recordOutput("teamAllianceWon", teamAllianceWon);
 
-            if (!teamAllianceWon) {
-                if (DriverStation.getMatchTime() <= 110 && DriverStation.getMatchTime() >= 105) {
-                    scheduler.schedule(controllerVibrateCommandOff);
-                } else if (DriverStation.getMatchTime() <= 85 && DriverStation.getMatchTime() >= 80) {
-                    scheduler.schedule(controllerVibrateCommandOn);
-                } else if (DriverStation.getMatchTime() <= 50 && DriverStation.getMatchTime() >= 45) {
-                    scheduler.schedule(controllerVibrateCommandOff);
-                } else if (DriverStation.getMatchTime() <= 25 && DriverStation.getMatchTime() >= 20) {
-                    scheduler.schedule(controllerVibrateCommandOn);
-                } else {
-                    scheduler.cancel(controllerVibrateCommandOn);
-                    scheduler.cancel(controllerVibrateCommandOff);
-                }
-            }
+        if (!teamAllianceWon) {
+            if (DriverStation.getMatchTime() <= 140/*2:20*/ && DriverStation.getMatchTime() > 110/*1:50*/) {
+                scheduler.schedule(ledSolidColorCommandGreen);
+            } else if (DriverStation.getMatchTime() <= 110/*1:50*/ && DriverStation.getMatchTime() >= 105/*1:45*/) {
+                inactiveTransition();
+            } else if (DriverStation.getMatchTime() < 105/*1:45*/ && DriverStation.getMatchTime() > 85/*1:25*/) {
+                inactivePeriod();
+            } else if (DriverStation.getMatchTime() <= 85/*1:25*/ && DriverStation.getMatchTime() >= 80/*1:20*/) {
+                activeTransition();
+            } else if (DriverStation.getMatchTime() < 80/*1:20*/ && DriverStation.getMatchTime() > 60/*1:00*/) {
+                activePeriod();
+            } else if (DriverStation.getMatchTime() <= 60/*1:00*/ && DriverStation.getMatchTime() >= 55)/*55*/ {
+                inactiveTransition();
+            } else if (DriverStation.getMatchTime() < 55/*55*/ && DriverStation.getMatchTime() > 35/*35*/) {
+                inactivePeriod();
+            } else if (DriverStation.getMatchTime() <= 35 && DriverStation.getMatchTime() >= 30) {
+                activeTransition();
+            } else {
+                scheduler.cancel(controllerVibrateCommandOn);
+                scheduler.cancel(controllerVibrateCommandOff);
+                scheduler.cancel(ledBlinkingCommandGreen);
+                scheduler.cancel(ledBlinkingCommandRed);
+                scheduler.cancel(ledSolidColorCommandRed);
+                scheduler.schedule(ledSolidColorCommandGreen);
 
-            if (teamAllianceWon) {
-                if (DriverStation.getMatchTime() <= 135 && DriverStation.getMatchTime() >= 130) {
-                    scheduler.schedule(controllerVibrateCommandOff);
-                } else if (DriverStation.getMatchTime() <= 110 && DriverStation.getMatchTime() >= 105) {
-                    scheduler.schedule(controllerVibrateCommandOn);
-                } else if (DriverStation.getMatchTime() <= 85 && DriverStation.getMatchTime() >= 80) {
-                    scheduler.schedule(controllerVibrateCommandOff);
-                } else if (DriverStation.getMatchTime() <= 50 && DriverStation.getMatchTime() >= 45) {
-                    scheduler.schedule(controllerVibrateCommandOn);
-                } else {
-                    scheduler.cancel(controllerVibrateCommandOn);
-                    scheduler.cancel(controllerVibrateCommandOff);
-                }
+            }
+        }
+
+        if (teamAllianceWon) {
+            if (DriverStation.getMatchTime() <= 140/*2:20*/ && DriverStation.getMatchTime() > 135)/*2:15*/ {
+                scheduler.schedule(ledSolidColorCommandGreen);
+            } else if (DriverStation.getMatchTime() <= 135/*2:15*/ && DriverStation.getMatchTime() >= 130/*2:10*/) {
+                inactiveTransition();
+            } else if (DriverStation.getMatchTime() < 130/*2:10*/ && DriverStation.getMatchTime() > 110/*1:50*/) {
+                inactivePeriod();
+            } else if (DriverStation.getMatchTime() <= 110/*1:50*/ && DriverStation.getMatchTime() >= 105/*1:45*/) {
+                activeTransition();
+            } else if (DriverStation.getMatchTime() < 105/*1:45*/ && DriverStation.getMatchTime() > 85/*1:25*/) {
+                activePeriod();
+            } else if (DriverStation.getMatchTime() <= 85/*1:25*/ && DriverStation.getMatchTime() >= 80/*1:20*/) {
+                inactiveTransition();
+            } else if (DriverStation.getMatchTime() < 80/*1:20*/ && DriverStation.getMatchTime() > 60/*1:00*/) {
+                inactivePeriod();
+            } else if (DriverStation.getMatchTime() <= 60 && DriverStation.getMatchTime() >= 55) {
+                activeTransition();
+            } else {
+                scheduler.cancel(controllerVibrateCommandOn);
+                scheduler.cancel(controllerVibrateCommandOff);
+                scheduler.cancel(ledBlinkingCommandGreen);
+                scheduler.cancel(ledBlinkingCommandRed);
+                scheduler.schedule(ledSolidColorCommandGreen);
+
+
+            }
 
 
 
@@ -271,18 +288,43 @@ public class Robot extends LoggedRobot {
 
 
         }
+    public void inactiveTransition() {
+        scheduler.cancel(ledSolidColorCommandGreen);// active to inactive
+        scheduler.schedule(controllerVibrateCommandOff, ledBlinkingCommandGreen);
+
+    }
+
+    public void activeTransition() {
+        scheduler.cancel(ledSolidColorCommandRed); // inactive to active
+        scheduler.schedule(controllerVibrateCommandOn, ledBlinkingCommandRed);
+    }
+
+    public void inactivePeriod() {
+        scheduler.cancel(ledBlinkingCommandGreen);
+        scheduler.cancel(controllerVibrateCommandOff);
+        scheduler.schedule(ledSolidColorCommandRed);
+
+    }
+
+    public void activePeriod() {
+        scheduler.cancel(ledBlinkingCommandRed);
+        scheduler.cancel(controllerVibrateCommandOn);
+        scheduler.schedule(ledSolidColorCommandGreen);
+
+    }
 
         @Override
         public void testInit () {
         }
 
-        @Override
-        public void testPeriodic () {
-            scheduler.schedule(controllerVibrateTestCommand);
-            scheduler.schedule(climberTestCommand);
-            scheduler.schedule(shooterTestCommand);
-            scheduler.schedule(collectorTestCommand);
-        }
+    @Override
+    public void testPeriodic() {
+        scheduler.schedule(ledBlinkingCommandRed);
+        scheduler.schedule(controllerVibrateTestCommand);
+        scheduler.schedule(climberTestCommand);
+        scheduler.schedule(shooterTestCommand);
+        scheduler.schedule(collectorTestCommand);
+    }
 
         @Override
         public void simulationInit () {

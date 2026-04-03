@@ -3,6 +3,7 @@ package frc.robot.container;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystem.LED;
 import frc.robot.subsystem.interfaces.*;
 import lombok.Data;
 import org.littletonrobotics.junction.LogTable;
@@ -16,6 +17,7 @@ public abstract @Data class RobotContainer implements LoggableInputs {
     private ShooterSubsystem shooterSubsystem;
     private CollectorSubsystem collector;
     private SwerveDriveSubsystem robotSwerveDrive;
+    public LED led;
     ClimberSubsystem climber;
     private PowerDistribution pdh;
 
@@ -30,6 +32,8 @@ public abstract @Data class RobotContainer implements LoggableInputs {
         table.put("SwerveDrive", robotSwerveDrive);
         table.put("Climber", climber);
         table.put("Collector", collector);
+        table.put("LED", led);
+
 //        SmartDashboard.putData("MPDH", pdh);
     }
 

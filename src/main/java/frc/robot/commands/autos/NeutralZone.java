@@ -75,6 +75,6 @@ public class NeutralZone {
 
 
 
-        return new Autos.CommandAndPose(auto, startingPose);    }
+        return new Autos.CommandAndPose(auto.withName("Neutral"+path1), startingPose);    }
 
 }

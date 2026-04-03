@@ -65,6 +65,6 @@ public class HubandBumpAutos {
 
 
 
-        return new Autos.CommandAndPose(auto, startingPose);    }
+        return new Autos.CommandAndPose(auto.withName("HubBump"+path1), startingPose);    }
 
 }

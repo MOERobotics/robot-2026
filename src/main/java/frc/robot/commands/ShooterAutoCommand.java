@@ -56,6 +56,7 @@ public class ShooterAutoCommand extends Command {
         turretPID.setTolerance(1.0);
         hoodPID.setTolerance(1.0);
 
+
         this.justShoot = justShoot;
         addRequirements(shooter);
     }

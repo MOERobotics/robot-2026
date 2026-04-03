@@ -7,12 +7,17 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.Timer;
 
+import java.util.Arrays;
+
 import static edu.wpi.first.units.Units.RPM;
 
 public class FlywheelRatesCommand extends Command {
     ShooterSubsystem shooterSubsystem;
     double power;
     Timer timer = new Timer();
+
+    int i = 0;
+    double[] _rpm = new double[50];
 
 
     public FlywheelRatesCommand(RobotContainer robot, double power){
@@ -29,16 +34,25 @@ public class FlywheelRatesCommand extends Command {
     @Override
     public void execute() {
         shooterSubsystem.setFlywheelPower(power);
+        i = (i + 1) % 50;
+        _rpm[i] = shooterSubsystem.getFlywheelSpeed().in(RPM);
+
     }
 
     @Override
     public void end(boolean interrupted) {
-        Logger.recordOutput(("FlywheelTimers/Max FlywheelRPM at: " + power), shooterSubsystem.getFlywheelSpeed().in(RPM));
+        double sumOfRPM = 0;
+        for (double __rpm : _rpm) {
+            sumOfRPM+=__rpm;
+        }
+
+        Logger.recordOutput(("Flywheel RPM at " + power), sumOfRPM / _rpm.length);
+
         shooterSubsystem.setFlywheelPower(0);
     }
 
     @Override
     public boolean isFinished() {
-        return timer.hasElapsed(10);
+        return timer.hasElapsed(6);
     }
 }
