@@ -33,7 +33,10 @@ public class Autos {
 
         autoChooser.setDefaultOption("Auto14: Neutral Zone NRT Trench", NeutralZone.NRT_Back_Trench(robot));
 
-        autoChooser.setDefaultOption("Auto15: Drive 15ft", DriveForward.drive15Ft(robot));
+        autoChooser.setDefaultOption("Auto15: DepotCollect", DepotCollect.depot_Collect(robot));
+
+
+        //  autoChooser.setDefaultOption("Auto15: Drive 15ft", DriveForward.drive15Ft(robot));
 
 
 

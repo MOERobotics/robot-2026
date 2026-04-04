@@ -49,10 +49,10 @@ public class FuelCollectorTeleopCommand extends Command {
             if (collectorSubsystem.getSensors().collectorArmAngleDegrees < 45.0){
                 rollerVelocity = RPM.of(0.7);
             } else {
-                rollerVelocity = RPM.of(0.6);
+                rollerVelocity = RPM.of(0.75);
             }
         } else if (joystick.getRawButton(collectorOUTButton)) {
-            rollerVelocity = RPM.of(-0.6);
+            rollerVelocity = RPM.of(-0.75);
         } else {
             rollerVelocity = RPM.of(0);
 

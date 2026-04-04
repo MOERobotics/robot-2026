@@ -154,7 +154,7 @@ public class Robot extends LoggedRobot {
             applyAutoPose=false;
         }
        */
-
+        robot.getPdh().setSwitchableChannel(!functionJoystick.getRawButton(1));
 
 
     }

@@ -17,6 +17,7 @@ import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
 import org.littletonrobotics.junction.Logger;
 
 import static edu.wpi.first.units.Units.*;
+import static java.lang.Math.sin;
 
 public class ShooterTeleopAutoAimCommand extends Command {
 
@@ -54,6 +55,7 @@ public class ShooterTeleopAutoAimCommand extends Command {
     double desiredTurretAngle=0;
 
     Translation2d turretPosition = new Translation2d();
+
 
     public ShooterTeleopAutoAimCommand(RobotContainer robot, Joystick joystick) {
         this.joystick = joystick;
@@ -98,27 +100,29 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
 
         Translation2d turretOffset = new Translation2d(Inches.of(-2.172), Inches.of(8.4375)).rotateBy(pose.getRotation());
-        currDistance = Meters.of(pose.getTranslation().plus(turretOffset).getDistance(getHubPosition())).in(Inches);
+        // NOTE DUMMY NUMBER ADDITION
+        currDistance = Meters.of(pose.getTranslation().plus(turretOffset).getDistance(getHubPosition())).in(Inches)-10;
+        turretPosition = pose.getTranslation().plus(turretOffset);
+
 
 
 
 
 
         if (joystick.getRawButtonPressed(1)) {
-            turretPosition = pose.getTranslation().plus(turretOffset);
-           // distance = Meters.of(turretPosition.getDistance(getHubPosition())).in(Inches);
+             distance = Meters.of(turretPosition.getDistance(getHubPosition())).in(Inches);
             Rotation2d targetTurretAngle = getHubPosition().minus(turretPosition).getAngle();
 
             Rotation2d robotHeading = pose.getRotation();
 
             Rotation2d desiredTurret = targetTurretAngle.minus(robotHeading);
 
-            desiredTurretAngle = desiredTurret.getDegrees();
+            //desiredTurretAngle = desiredTurret.getDegrees();
 
 
-            shooterSetpoint = calculateShooterSpeed(currDistance);
+            shooterSetpoint = calculateShooterSpeed(distance);
            // turretSetpoint = desiredAngle;
-          hoodSetpoint = calcHoodAngle(currDistance);
+          hoodSetpoint = calcHoodAngle(distance);
 //x, y are field coordinates of CoR
 // z is field centric angle of robot
 // a is distance from CoR to Center of turrent (front-back)
@@ -126,7 +130,12 @@ public class ShooterTeleopAutoAimCommand extends Command {
 // theta = z+180 where z is robot field angle
 // phi = atan2(ty-(y+a*sin(theta)-b*cos(theta),tx-(x+a*cos(theta)+b*sin(theta)) -theta
 
+            Logger.recordOutput("Distance", distance);
+
+
         }
+
+
         Logger.recordOutput("turretPosition", turretPosition);
 
 
@@ -135,12 +144,10 @@ public class ShooterTeleopAutoAimCommand extends Command {
         if (currentPOV != -1) {
             switch (currentPOV) {
                 case 90:
-                    turretPosition = pose.getTranslation().plus(turretOffset);
                     Logger.recordOutput("TurretPositionIThink", new Pose2d(turretPosition, pose.getRotation()));
+                    distance = Meters.of(turretPosition.getDistance(getHubPosition())).in(Inches);
                     Rotation2d targetTurretAngle = getHubPosition().minus(turretPosition).getAngle();
-                    Logger.recordOutput("TargetTurretAngle", targetTurretAngle);
-                    Logger.recordOutput("Kevin's method1", getHubPosition().minus(pose.plus(new Transform2d(turretOffset, Rotation2d.kZero)).getTranslation()).getAngle());
-                    Logger.recordOutput("Kevin's method2", getHubPosition().minus(pose.plus(new Transform2d(turretOffset, pose.getRotation())).getTranslation()).getAngle());
+
                     Rotation2d robotHeading = pose.getRotation();
 
                     Rotation2d desiredTurret = targetTurretAngle.minus(robotHeading).plus(Rotation2d.k180deg);
@@ -150,25 +157,45 @@ public class ShooterTeleopAutoAimCommand extends Command {
                     while (desiredTurretAngle < -180) desiredTurretAngle += 360;
 
 
-                    shooterSetpoint = calculateShooterSpeed(currDistance);
+                    shooterSetpoint = calculateShooterSpeed(distance);
+
+                    Logger.recordOutput("TargetTurretAngle", targetTurretAngle);
+                    Logger.recordOutput("Kevin's method1", getHubPosition().minus(pose.plus(new Transform2d(turretOffset, Rotation2d.kZero)).getTranslation()).getAngle());
+                    Logger.recordOutput("Kevin's method2", getHubPosition().minus(pose.plus(new Transform2d(turretOffset, pose.getRotation())).getTranslation()).getAngle());
+                    Logger.recordOutput("Distance", distance);
+
+
                     //x, y are field coordinates of CoR
 // z is field centric angle of robot
-// a is distance from CoR to Center of turrent (front-back)
+// a is distance from CoR to Center of turret (front-back)
 // b is distance from CoR to CoT (left-right)
 // theta = z+180 where z is robot field angle
 // phi = atan2(ty-(y+a*sin(theta)-b*cos(theta),tx-(x+a*cos(theta)+b*sin(theta)) -theta
-
-                    double x = pose.getX();
-                    double y = pose.getX();
-                    double z = robotHeading.getDegrees() +180 % 360;
-                    double a = 6;
 
 
                     turretSetpoint = desiredTurretAngle;
                     hoodSetpoint = calcHoodAngle(currDistance);
                     break;
             }
+
+
+
+
+
         }
+
+        double x = pose.getX();
+        double y = pose.getY();
+        double theta = (pose.getRotation().getDegrees() +180) % 360;
+        double a = Inches.of(Math.abs(-2.172)).in(Meters);
+        double b =  Inches.of(Math.abs(8.4375)).in(Meters);;
+
+        double phi = Math.atan2(
+                getHubPosition().getY()-(y+a*Math.sin(Degrees.of(theta).in(Radian))-b*Math.cos(Degrees.of(theta).in(Radians))),
+                getHubPosition().getX()-(x+a*Math.cos(Degrees.of(theta).in(Radian))+b*sin(Degrees.of(theta).in(Radians))))  -Degrees.of(theta).in(Radian);
+
+
+        Logger.recordOutput("BlueTurretAngle", phi);
 
 
         Logger.recordOutput("desiredTurretAngle", desiredTurretAngle);
@@ -181,7 +208,19 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
         Logger.recordOutput("CurrDistance", currDistance);
 
+        // logging angle constantly
 
+        Rotation2d targetTurretAngle = getHubPosition().minus(turretPosition).getAngle();
+
+        Rotation2d robotHeading = pose.getRotation();
+
+        Rotation2d desiredTurret = targetTurretAngle.minus(robotHeading).plus(Rotation2d.k180deg);
+
+        desiredTurretAngle = desiredTurret.getDegrees();
+        while (desiredTurretAngle > 180) desiredTurretAngle -= 360;
+        while (desiredTurretAngle < -180) desiredTurretAngle += 360;
+
+        //
 
 
         if (joystick.getRawButton(3)) {
@@ -239,10 +278,10 @@ public class ShooterTeleopAutoAimCommand extends Command {
         }
 
         if (joystick.getRawAxis(0) > deadZone) {
-            turretSetpoint -= 0.25;
+            turretSetpoint -= 0.3;
         }
         if (joystick.getRawAxis(0) < -deadZone) {
-            turretSetpoint += 0.25;
+            turretSetpoint += 0.3;
         }
 
         turretSetpoint = MathUtil.clamp(turretSetpoint, shooterSubsystem.getSensors().turretMinAngle, shooterSubsystem.getSensors().turretMaxAngle);
@@ -262,10 +301,10 @@ public class ShooterTeleopAutoAimCommand extends Command {
         shooterSubsystem.setTurretPower(turretOutput);
 
         if (joystick.getRawAxis(5) > deadZone) {
-            hoodSetpoint -= 1 / 15.0;
+            hoodSetpoint -= 1 / 10.0;
         }
         if (joystick.getRawAxis(5) < -deadZone) {
-            hoodSetpoint += 1 / 15.0;
+            hoodSetpoint += 1 / 10.0;
         }
 
 

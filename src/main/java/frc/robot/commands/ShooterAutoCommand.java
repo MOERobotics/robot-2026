@@ -78,8 +78,8 @@ public class ShooterAutoCommand extends Command {
         Translation2d turretPosition = pose.getTranslation().plus(turretOffset);
 
 
-        Logger.recordOutput("turretOffset", turretOffset);
-        Logger.recordOutput("turretPosition", turretPosition);
+        Logger.recordOutput("turretOffsetAuto", turretOffset);
+        Logger.recordOutput("turretPositionAuto", turretPosition);
 
 
         double distance = Meters.of(turretPosition.getDistance(getHubPosition())).in(Inches);
@@ -99,7 +99,9 @@ public class ShooterAutoCommand extends Command {
         if (flywheelOutput > outputMax) flywheelOutput = outputMax;
         if (flywheelOutput < 0) flywheelOutput = 0;
 
-        Logger.recordOutput("flywheelOutput", flywheelOutput);
+        Logger.recordOutput("flywheelOutputAuto", flywheelOutput);
+
+        Logger.recordOutput("flywheelSetpointAuto", flywheelSetpoint);
 
         shooter.setFlywheelPower(feedforward + flywheelOutput);
 
@@ -153,9 +155,9 @@ public class ShooterAutoCommand extends Command {
        // shooter.setTurretPower(turretOutput);
 
 
-        Logger.recordOutput("turretOutput", turretOutput);
-        Logger.recordOutput("turretDesiredAngle", desiredTurret.getDegrees());
-        Logger.recordOutput("turretCurrentAngle", targetTurretAngle.getDegrees());
+        Logger.recordOutput("turretOutputAuto", turretOutput);
+        Logger.recordOutput("turretDesiredAngleAuto", desiredTurret.getDegrees());
+        Logger.recordOutput("turretCurrentAngleAuto", targetTurretAngle.getDegrees());
 
 
 
@@ -164,10 +166,11 @@ public class ShooterAutoCommand extends Command {
 
         double desHoodAngle = MathUtil.clamp(calcHoodAngle(distance), shooter.getSensors().hoodMinAngle,shooter.getSensors().hoodMaxAngle);
 
+        Logger.recordOutput("hoodSetpointAuto", desHoodAngle);
 
         hoodPID.setSetpoint(desHoodAngle);
 
-        double hoodOutput = hoodPID.calculate(currHoodAngle+25);
+        double hoodOutput = hoodPID.calculate(currHoodAngle);
 
         hoodOutput = MathUtil.clamp(hoodOutput, -0.32, 0.32);
 

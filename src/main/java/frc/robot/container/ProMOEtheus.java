@@ -51,19 +51,28 @@ public class ProMOEtheus extends RobotContainer {
         SparkMax driveMotorFL = new SparkMax(9, SparkLowLevel.MotorType.kBrushless);
         SparkMax pivotMotorFL = new SparkMax(8, SparkLowLevel.MotorType.kBrushless);
 
-        SparkMaxConfig FLConfig = new SparkMaxConfig();
-        FLConfig.openLoopRampRate(0.04).inverted(true).smartCurrentLimit(30).idleMode(SparkBaseConfig.IdleMode.kCoast).secondaryCurrentLimit(70);
-        pivotMotorFL.configure(FLConfig,ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        SparkMaxConfig FLConfigPivot = new SparkMaxConfig();
+        FLConfigPivot.openLoopRampRate(0.04).inverted(true).smartCurrentLimit(30).secondaryCurrentLimit(70);
+        pivotMotorFL.configure(FLConfigPivot,ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         pivotMotorFL.setInverted(true);
+
+        SparkMaxConfig FLConfigDrive = new SparkMaxConfig();
+        FLConfigDrive.smartCurrentLimit(40).secondaryCurrentLimit(70).idleMode(SparkBaseConfig.IdleMode.kBrake);
+        driveMotorFL.configure(FLConfigDrive,ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
         CANcoder swerveModuleEncoderFL = new CANcoder(34);
 
         SparkMax driveMotorFR = new SparkMax(10, SparkLowLevel.MotorType.kBrushless);
         SparkMax pivotMotorFR = new SparkMax(11, SparkLowLevel.MotorType.kBrushless);
 
-        SparkMaxConfig FRConfig = new SparkMaxConfig();
-        FRConfig.openLoopRampRate(0.04).inverted(true).smartCurrentLimit(30).idleMode(SparkBaseConfig.IdleMode.kCoast).secondaryCurrentLimit(70);;
-        pivotMotorFR.configure(FRConfig,ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        SparkMaxConfig FRConfigPivot = new SparkMaxConfig();
+        FRConfigPivot.openLoopRampRate(0.04).inverted(true).smartCurrentLimit(30).idleMode(SparkBaseConfig.IdleMode.kCoast).secondaryCurrentLimit(70);;
+        pivotMotorFR.configure(FRConfigPivot,ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+
+        SparkMaxConfig FRConfigDrive = new SparkMaxConfig();
+        FRConfigDrive.smartCurrentLimit(40).secondaryCurrentLimit(70).idleMode(SparkBaseConfig.IdleMode.kBrake);
+        driveMotorFR.configure(FRConfigDrive,ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
         pivotMotorFR.setInverted(true);
 
@@ -73,9 +82,13 @@ public class ProMOEtheus extends RobotContainer {
         SparkMax pivotMotorBL = new SparkMax(1, SparkLowLevel.MotorType.kBrushless);
         pivotMotorBL.setInverted(true);
 
-        SparkMaxConfig BLConfig = new SparkMaxConfig();
-        BLConfig.openLoopRampRate(0.04).inverted(true).smartCurrentLimit(30).idleMode(SparkBaseConfig.IdleMode.kCoast).secondaryCurrentLimit(70);;
-        pivotMotorBL.configure(BLConfig,ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        SparkMaxConfig BLConfigDrive = new SparkMaxConfig();
+        BLConfigDrive.smartCurrentLimit(40).idleMode(SparkBaseConfig.IdleMode.kBrake).secondaryCurrentLimit(70);
+        driveMotorBL.configure(BLConfigDrive,ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+        SparkMaxConfig BLConfigPivot = new SparkMaxConfig();
+        BLConfigPivot.openLoopRampRate(0.04).inverted(true).smartCurrentLimit(30).idleMode(SparkBaseConfig.IdleMode.kCoast).secondaryCurrentLimit(70);;
+        pivotMotorBL.configure(BLConfigPivot,ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
 
 
@@ -84,14 +97,22 @@ public class ProMOEtheus extends RobotContainer {
         SparkMax driveMotorBR = new SparkMax(19, SparkLowLevel.MotorType.kBrushless);
         SparkMax pivotMotorBR = new SparkMax(18, SparkLowLevel.MotorType.kBrushless);
 
-        SparkMaxConfig BRConfig = new SparkMaxConfig();
-        BRConfig
+
+        SparkMaxConfig BRConfigDrive = new SparkMaxConfig();
+        BRConfigDrive.smartCurrentLimit(40).secondaryCurrentLimit(70).idleMode(SparkBaseConfig.IdleMode.kBrake);
+        driveMotorBR.configure(BRConfigDrive,ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+
+
+        SparkMaxConfig BRConfigPivot = new SparkMaxConfig();
+        BRConfigPivot
                 .openLoopRampRate(0.04)
                 .inverted(true)
                 .smartCurrentLimit(30)
                 .secondaryCurrentLimit(70)
                 .idleMode(SparkBaseConfig.IdleMode.kCoast);
-        pivotMotorBR.configure(BRConfig,ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+        pivotMotorBR.configure(BRConfigPivot,ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
 
         pivotMotorBR.setInverted(true);

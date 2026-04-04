@@ -55,15 +55,15 @@ public class NeutralZone {
                 Commands.deadline(
                         Commands.sequence(
                                 plannerPath1,
-                                Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
-                                plannerPath2,
-                                Commands.runOnce(() -> robot.getRobotSwerveDrive().stop())
+                              //  Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
+                                plannerPath2
+                                //,Commands.runOnce(() -> robot.getRobotSwerveDrive().stop())
                                 ),
                         new FuelCollectorAutoCommand(robot ,true, true, "in")),
                 plannerPath3,
-                Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
+                //Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
                 plannerPath4,
-                Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
+               // Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
                 plannerPath5,
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
                 // TODO ADD SHOOT
