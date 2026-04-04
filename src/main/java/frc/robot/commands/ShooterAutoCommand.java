@@ -64,6 +64,7 @@ public class ShooterAutoCommand extends Command {
     public void initialize() {
         shootTimer.reset();
         shootTimer.stop();
+        shootTimer.start();
         feeding = false;
     }
 

@@ -122,7 +122,6 @@ public class Robot extends LoggedRobot {
         if (autoCommand != null) Logger.recordOutput("AutoCommand Pose", autoCommand.pose());
         Logger.recordOutput("AutoSetpoint", autoSetpoint);
 
-        robot.getRobotSwerveDrive().photonPoses();
     }
 
     @Override
@@ -139,7 +138,7 @@ public class Robot extends LoggedRobot {
         autoCommand = Autos.getSelectedAuto();
 
         if (autoSetpoint){
-            setFieldPose();
+            //setFieldPose();
         }
 
 
@@ -159,7 +158,7 @@ public class Robot extends LoggedRobot {
 
 
 
-            setFieldPose();
+            //setFieldPose();
 
 
 

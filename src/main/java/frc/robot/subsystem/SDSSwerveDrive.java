@@ -40,23 +40,23 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
     PhotonCamera swerveCam = new PhotonCamera("Arducam_OV9281_USB_Camera (3)");
 
     Transform3d turretCamLocation = new Transform3d(
-            Millimeters.of(-272.98),
-            Millimeters.of(317.26),
-            Millimeters.of(180.0),
+            Inches.of(-10.7472441),
+            Inches.of(12.4905512),
+            Inches.of(4.08661),
             new Rotation3d(
                     Degrees.of(0),
-                    Degrees.of(-15),
+                    Degrees.of(15),
                     Degrees.of(180)
             )
     );
     Transform3d swerveCamLocation = new Transform3d(
             Inches.of(-11.7459),
             Inches.of(-11.791),
-            Inches.of(8.021),
+            Inches.of(5.021),
             new Rotation3d(
-                    Degrees.of(0),
-                    Degrees.of(-27),
-                    Degrees.of(225)
+                    Degrees.of(-19.813529),
+                    Degrees.of(18.724607),
+                    Degrees.of(-131.701246)
             )
     );
 
@@ -246,21 +246,22 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
             );
             getSensors().photon2 = results2.get(results2.size()-1);
         }
-        getSensors().turretCamPose = (
-                estimator1.estimateCoprocMultiTagPose(getSensors().photon1).
-                        map((erp) -> erp.estimatedPose).
-                        orElse(estimator1.estimateClosestToCameraHeightPose(getSensors().photon1).
-                        map((erp) -> erp.estimatedPose).orElse(null))
-        );
         var photonTargetSwerve = getSensors().photon2.getBestTarget();
         Pose3d photonBestSwerve = null;
         if (photonTargetSwerve != null) {
             photonBestSwerve = PhotonUtils.estimateFieldToRobotAprilTag(
-                swerveCamLocation,
-                fieldLayout.getTagPose(photonTargetSwerve.fiducialId).get(),
-                photonTargetSwerve.bestCameraToTarget
+                    swerveCamLocation,
+                    fieldLayout.getTagPose(photonTargetSwerve.fiducialId).get(),
+                    photonTargetSwerve.bestCameraToTarget
             );
         }
+
+        getSensors().turretCamPose = (
+                estimator1.estimateCoprocMultiTagPose(getSensors().photon1).
+                        map((erp) -> erp.estimatedPose).
+                        orElse(photonBestSwerve)
+        );
+
         getSensors().swerveCamPose = (
                 estimator2.estimateCoprocMultiTagPose(getSensors().photon2).
                         map((erp) -> erp.estimatedPose).

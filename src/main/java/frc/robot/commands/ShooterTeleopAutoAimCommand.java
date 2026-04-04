@@ -87,8 +87,6 @@ public class ShooterTeleopAutoAimCommand extends Command {
         if (joystick.getRawButtonPressed(2)) {
             isFlywheelOn = !isFlywheelOn;
             shooterPIDController.reset();
-
-
         }
 
         Pose2d pose = drive.getPose();
