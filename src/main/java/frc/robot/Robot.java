@@ -137,9 +137,6 @@ public class Robot extends LoggedRobot {
     @Override
     public void disabledPeriodic() {
 
-        autoCommand = Autos.getSelectedAuto();
-
-
         if (driverJoystick.getRawButtonPressed(3)) {
             setFieldPose();
         }
@@ -307,7 +304,6 @@ public class Robot extends LoggedRobot {
                 }
                 robot.getRobotSwerveDrive().setPose(startingPose);
                 Logger.recordOutput("RobotInitPose", startingPose);
-
 
             }
 
