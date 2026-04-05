@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.210984308131241,
-        "y": 2.527646219686162
+        "x": 2.163,
+        "y": 1.881
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.185106990014266,
-        "y": 1.3631669044222532
+        "x": 2.137122681883025,
+        "y": 0.7165206847360912
       },
       "isLocked": false,
       "linkedName": "RB-Shoot"
@@ -73,7 +73,7 @@
   "folder": "Neutral",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -135.0
+    "rotation": -115.0
   },
   "useDefaultConstraints": true
 }

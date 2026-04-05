@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.210984308131241,
-        "y": 2.527646219686162
+        "x": 2.163,
+        "y": 1.881
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.460984308131241,
-        "y": 2.527646219686162
+        "x": 2.413,
+        "y": 1.881
       },
       "isLocked": false,
       "linkedName": "R-Return2"
     },
     {
       "anchor": {
-        "x": 3.210984308131241,
-        "y": 2.527646219686162
+        "x": 2.163,
+        "y": 1.881
       },
       "prevControl": {
-        "x": 2.960984308131241,
-        "y": 2.527646219686162
+        "x": 1.9129999999999998,
+        "y": 1.881
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": -135.0
+    "rotation": -115.0
   },
   "reversed": false,
   "folder": "Neutral",

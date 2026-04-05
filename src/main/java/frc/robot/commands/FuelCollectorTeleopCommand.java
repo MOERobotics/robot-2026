@@ -45,14 +45,13 @@ public class FuelCollectorTeleopCommand extends Command {
         Angle currentArmPosition;
         int collectorINButton = 6;
         int collectorOUTButton = 5;
+
+
+        //TODO: CHANGE THIS it is in
         if (joystick.getRawButton(collectorINButton)) {
-            if (collectorSubsystem.getSensors().collectorArmAngleDegrees < 45.0){
-                rollerVelocity = RPM.of(0.7);
-            } else {
-                rollerVelocity = RPM.of(0.75);
-            }
+                rollerVelocity = RPM.of(1);
         } else if (joystick.getRawButton(collectorOUTButton)) {
-            rollerVelocity = RPM.of(-0.75);
+            rollerVelocity = RPM.of(-1);
         } else {
             rollerVelocity = RPM.of(0);
 

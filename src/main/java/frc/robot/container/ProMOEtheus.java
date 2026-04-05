@@ -184,11 +184,16 @@ public class ProMOEtheus extends RobotContainer {
 
 
         SparkMaxConfig collectorArmConfig = new SparkMaxConfig();
+        SparkMaxConfig collectorRollerConfig = new SparkMaxConfig();
 
         // also put current limit on collector (forget why though)
         collectorArmConfig.smartCurrentLimit(40);
         collectorArmConfig.inverted(true);
         collectorArmMotor.configure(collectorArmConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+        collectorRollerConfig.smartCurrentLimit(50);
+
+        collectorRollerMotor.configure(collectorRollerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
         Angle collectorArmBottom = Degrees.of(135);
         Angle collectorArmTop = Degrees.of(215);

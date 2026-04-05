@@ -97,19 +97,13 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
         Pose2d pose = drive.getPose();
 
-
         Translation2d turretOffset = new Translation2d(Inches.of(-2.172), Inches.of(8.4375)).rotateBy(pose.getRotation());
-        // NOTE DUMMY NUMBER ADDITION
-        currDistance = Meters.of(pose.getTranslation().plus(turretOffset).getDistance(getHubPosition())).in(Inches)+10;
+        // NOTE DUMMY NUMBER ADDITION - nvm
+        currDistance = Meters.of(pose.getTranslation().plus(turretOffset).getDistance(getHubPosition())).in(Inches) - 20;
         turretPosition = pose.getTranslation().plus(turretOffset);
 
-
-
-
-
-
         if (joystick.getRawButtonPressed(1)) {
-             distance = Meters.of(turretPosition.getDistance(getHubPosition())).in(Inches)+10;
+             distance = Meters.of(turretPosition.getDistance(getHubPosition())).in(Inches) - 20;
             Rotation2d targetTurretAngle = getHubPosition().minus(turretPosition).getAngle();
 
             Rotation2d robotHeading = pose.getRotation();
@@ -172,7 +166,7 @@ public class ShooterTeleopAutoAimCommand extends Command {
 // phi = atan2(ty-(y+a*sin(theta)-b*cos(theta),tx-(x+a*cos(theta)+b*sin(theta)) -theta
 
 
-                    turretSetpoint = desiredTurretAngle;
+                    turretSetpoint = desiredTurretAngle - 10;
                     hoodSetpoint = calcHoodAngle(distance);
                     break;
             }
@@ -278,10 +272,10 @@ public class ShooterTeleopAutoAimCommand extends Command {
         }
 
         if (joystick.getRawAxis(0) > deadZone) {
-            turretSetpoint -= 0.3;
+            turretSetpoint -= 0.7;
         }
         if (joystick.getRawAxis(0) < -deadZone) {
-            turretSetpoint += 0.3;
+            turretSetpoint += 0.7;
         }
 
         turretSetpoint = MathUtil.clamp(turretSetpoint, shooterSubsystem.getSensors().turretMinAngle, shooterSubsystem.getSensors().turretMaxAngle);
@@ -300,10 +294,10 @@ public class ShooterTeleopAutoAimCommand extends Command {
         shooterSubsystem.setTurretPower(turretOutput);
 
         if (joystick.getRawAxis(5) > deadZone) {
-            hoodSetpoint -= 1 / 10.0;
+            hoodSetpoint -= 5.5 / 10.0;
         }
         if (joystick.getRawAxis(5) < -deadZone) {
-            hoodSetpoint += 1 / 10.0;
+            hoodSetpoint += 5.5 / 10.0;
         }
 
 

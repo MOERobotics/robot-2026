@@ -32,7 +32,7 @@ public class ShooterAutoCommand extends Command {
     public double kI = 0.00015;
     public double kD = 0.4 / 14000;
     private PIDController flywheelPID = new PIDController(kP, kI, kD);
-    private PIDController turretPID = new PIDController(0.0055, 0, 0);
+    private PIDController turretPID = new PIDController(0.055, 0, 0);
     private PIDController hoodPID = new PIDController(0.056, 0, 0);
     private Timer shootTimer = new Timer();
     boolean feeding = false;
@@ -84,7 +84,7 @@ public class ShooterAutoCommand extends Command {
         Logger.recordOutput("turretPositionAuto", turretPosition);
 
 
-        double distance = Meters.of(turretPosition.getDistance(getHubPosition())).in(Inches);
+        double distance = Meters.of(turretPosition.getDistance(getHubPosition())).in(Inches) - 14;
 
 
 
@@ -138,9 +138,9 @@ public class ShooterAutoCommand extends Command {
 
 
 
-        double desTurretAngle = MathUtil.clamp(desiredAngle, shooter.getSensors().turretMinAngle,shooter.getSensors().turretMaxAngle);
+        double desTurretAngleClamped = MathUtil.clamp(desiredAngle, shooter.getSensors().turretMinAngle,shooter.getSensors().turretMaxAngle);
 
-        turretPID.setSetpoint(desTurretAngle);
+        turretPID.setSetpoint(desTurretAngleClamped);
 
         double turretOutput = turretPID.calculate(currTurretAngle);
 
@@ -154,10 +154,11 @@ public class ShooterAutoCommand extends Command {
 
 
 
-       // shooter.setTurretPower(turretOutput);
+        shooter.setTurretPower(turretOutput);
 
 
         Logger.recordOutput("turretOutputAuto", turretOutput);
+        Logger.recordOutput("turretDesiredAngleClamped", desTurretAngleClamped);
         Logger.recordOutput("turretDesiredAngleAuto", desiredTurret.getDegrees());
         Logger.recordOutput("turretCurrentAngleAuto", targetTurretAngle.getDegrees());
 
@@ -194,7 +195,7 @@ public class ShooterAutoCommand extends Command {
         Logger.recordOutput("hoodReady", hoodReady);
 
 
-        if (flywheelReady /*&& turretReady */ && hoodReady) {
+        if (flywheelReady && turretReady && hoodReady) {
 
             if (!feeding) {
                 shootTimer.start();

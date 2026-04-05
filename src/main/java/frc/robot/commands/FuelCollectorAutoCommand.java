@@ -48,9 +48,9 @@ public class FuelCollectorAutoCommand extends Command {
         Angle currentArmPosition;
 
         if (collectRollers == "in") {
-            rollerVelocity = RPM.of(0.6);
+            rollerVelocity = RPM.of(1);
         } else if (collectRollers == "out") {
-            rollerVelocity = RPM.of(-0.6);
+            rollerVelocity = RPM.of(-1);
         } else if (collectRollers == "stop") {
             rollerVelocity = RPM.of(0);
 

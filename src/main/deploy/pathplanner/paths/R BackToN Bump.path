@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.210984308131241,
-        "y": 2.527646219686162
+        "x": 2.163,
+        "y": 1.881
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.4343762999695615,
-        "y": 2.468289018110795
+        "x": 3.3863919918383205,
+        "y": 1.821642798424633
       },
       "isLocked": false,
       "linkedName": "RB-Shoot"
@@ -38,7 +38,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.0,
+    "maxVelocity": 3.0,
     "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 360.0,
@@ -53,7 +53,7 @@
   "folder": "Neutral",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -135.0
+    "rotation": -115.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
