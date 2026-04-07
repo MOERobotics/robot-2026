@@ -35,9 +35,9 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
     SwerveModuleSubsystem[] swerveModules;
     SwerveDrivePoseEstimator robotOdometry;
     public Pigeon2 robotGyro;
-    PhotonCamera turretCam = new PhotonCamera("Arducam_OV9281_USB_Camera (1)");
+    PhotonCamera turretCam = new PhotonCamera("turretCamera");
 
-    PhotonCamera swerveCam = new PhotonCamera("Arducam_OV9281_USB_Camera (3)");
+    PhotonCamera swerveCam = new PhotonCamera("swerveCamera");
 
     public static final double MAX_DISTANCE = 5.0;
     public static final double MAX_AMBIGUITY = 0.25;
@@ -45,7 +45,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
     Transform3d turretCamLocation = new Transform3d(
            Inches.of(-10.7472441),
             Inches.of(12.4905512),
-            Inches.of(4.08661),
+            Inches.of(8.996732),
             new Rotation3d(
                     Degrees.of(0),
                     Degrees.of(15),
@@ -53,13 +53,13 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
             )
     );
     Transform3d swerveCamLocation = new Transform3d(
-            Inches.of(-11.7459),
-            Inches.of(-11.791),
-            Inches.of(5.021),
+            Inches.of(-11.745944),
+            Inches.of(-11.791497),
+            Inches.of(8.021322),
             new Rotation3d(
-                    Degrees.of(-19.813529),
-                    Degrees.of(18.724607),
-                    Degrees.of(-131.701246)
+                    Degrees.of(-26),
+                    Degrees.of(27),
+                    Degrees.of(-135)
             )
     );
 
