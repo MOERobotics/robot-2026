@@ -22,9 +22,11 @@ public class CollectorFake extends MOESubsystem<CollectorInputsAutoLogged> imple
     }
 
     @Override
-    public void setRollerVelocity(AngularVelocity rollerVelocity) {
+    public void setRollerPower(double power) {
 
     }
+
+
 
     @Override
     public AngularVelocity getArmVelocity() {

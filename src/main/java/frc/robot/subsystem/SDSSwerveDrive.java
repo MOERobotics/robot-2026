@@ -58,7 +58,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
             Inches.of(8.021322),
             new Rotation3d(
                     Degrees.of(-26),
-                    Degrees.of(27),
+                    Degrees.of(-27),
                     Degrees.of(-135)
             )
     );

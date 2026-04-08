@@ -2,6 +2,7 @@ package frc.robot.subsystem;
 
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.MOESubsystem;
@@ -41,7 +42,6 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
     private static final Angle HOOD_TOLERANCE = Degree.of(1);
     private static final Angle TURRET_TOLERANCE = Degree.of(1);
 
-    // TODO all all turret relative encoder stuff
     public static double TURRET_CONVERSION_FACTOR = (
             Revolutions.of(1)
                     .div(100) // corner gear ratio
@@ -122,9 +122,6 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
         getSensors().turretRelativeAngle = getRatioedRelTurretAngle();
 
         getSensors().relativeEncoderAngle = Rotations.of(turretMotor.getEncoder().getPosition());
-
-       // getSensors().turretAngleThroughbore = getTurretAngle();
-
 
         getSensors().turretAngleDegrees = getTurretAngle().in(Degrees);
         getSensors().turretAngle = getTurretAngle();

@@ -74,8 +74,8 @@ public class Collector extends MOESubsystem<CollectorInputsAutoLogged> implement
     }
 
     @Override
-    public void setRollerVelocity(AngularVelocity rollerVelocity) {
-        rollerMotor.set(rollerVelocity.in(RPM));
+    public void setRollerPower(double power) {
+        rollerMotor.set(power);
     }
 
     @Override

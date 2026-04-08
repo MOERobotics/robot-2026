@@ -1,7 +1,11 @@
 package frc.robot.subsystem.interfaces;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import org.littletonrobotics.junction.AutoLog;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
@@ -79,7 +83,19 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
         public boolean transitionCurrentLimit =false;
 
         public Angle offset;
+
+        public boolean hoodAtSetpoint = false;
+        public boolean turretAtSetpoint = false;
+
+        public Translation2d turretOffset = new Translation2d();
+        public Translation2d turretPosition = new Translation2d();
+
+
+
+
     }
+
+     public Translation2d turretOffset =  new Translation2d(Inches.of(-6), Inches.of(8.375));
 
     public ShooterInputs getSensors();
 
@@ -129,10 +145,6 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
         return getSensors().turretAngle;
     }
 
-    //default Angle getTurretAngleInRotation() {
-    //    return getSensors().turretRotation;
-    //}
-
     default Angle getHoodAngleFromThroughbore() {
         return getSensors().hoodAngleThroughbore;
     }
@@ -158,6 +170,53 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
         // returns percentage power needed for obtaining inputted rpm
         return ((rpm/5796.35)+0.0487);
     }
+
+    default double calculateShooterSpeed(double distance) {
+        return 6.18842*distance+2429.32725;
+    }
+
+    default double calcHoodAngle(double distance) {
+        return 0.000586636*Math.pow(distance, 2) - (0.0564512*distance) + 187.01223;
+
+
+    }
+
+    default Translation2d getHubPosition() {
+        boolean isRed = false;
+
+        if (DriverStation.getAlliance().isPresent()) {
+            isRed = DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
+        }
+
+        return isRed
+                ? new Translation2d(12.286869, 4.034)
+                : new Translation2d(4.624, 4.034);
+    }
+
+
+
+        default Translation2d getTurretPosition(Pose2d pose, Translation2d offset) {
+            return pose.getTranslation().plus(offset);
+        }
+
+        default double getDistance(Translation2d turretPos, Translation2d target) {
+            return Meters.of(turretPos.getDistance(target)).in(Inches);
+        }
+
+        default double getTurretAngle(Pose2d pose, Translation2d turretPos, Translation2d target) {
+            Rotation2d targetAngle = target.minus(turretPos).getAngle();
+            Rotation2d robotHeading = pose.getRotation();
+
+            double angle = targetAngle.minus(robotHeading)
+                    .plus(Rotation2d.k180deg)
+                    .getDegrees();
+
+            while (angle > 180) angle -= 360;
+            while (angle < -180) angle += 360;
+
+            return angle;
+        }
+
 
 
 

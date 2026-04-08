@@ -21,8 +21,6 @@ public class ShooterAutoCommand extends Command {
     private ShooterSubsystem shooter;
     private SwerveDriveSubsystem drive;
 
-    private Target selectedTarget;
-    private Translation2d targetPosition;
 
     // copied from teleop stuff
 
@@ -39,12 +37,8 @@ public class ShooterAutoCommand extends Command {
 
     private double flywheelRPM = 3510;
 
-    public enum Target {
-        HUB,
-        DEPOT,
-        OUTPOST
-    }
 
+    public Translation2d hubPosition = new Translation2d();
     boolean justShoot;
 
     public ShooterAutoCommand(RobotContainer robot) {
@@ -67,6 +61,7 @@ public class ShooterAutoCommand extends Command {
         shootTimer.stop();
         shootTimer.start();
         feeding = false;
+        hubPosition = shooter.getHubPosition();
     }
 
     @Override
@@ -76,19 +71,20 @@ public class ShooterAutoCommand extends Command {
         // TODO make an agitate function in auto?? for jamming?
         Pose2d pose = drive.getPose();
 
-        Translation2d turretOffset = new Translation2d(Inches.of(-2.172), Inches.of(8.4375)).rotateBy(pose.getRotation());
-        Translation2d turretPosition = pose.getTranslation().plus(turretOffset);
+        Translation2d turretOffset = ShooterSubsystem.turretOffset.rotateBy(pose.getRotation());
 
 
-        Logger.recordOutput("turretOffsetAuto", turretOffset);
-        Logger.recordOutput("turretPositionAuto", turretPosition);
+        Translation2d turretPosition = shooter.getTurretPosition(pose,turretOffset);
+
+        shooter.getSensors().turretOffset = turretOffset;
+        shooter.getSensors().turretPosition = turretPosition;
 
 
-        double distance = Meters.of(turretPosition.getDistance(getHubPosition())).in(Inches) - 14;
+        double distance = shooter.getDistance(turretOffset,hubPosition);
 
 
 
-        double flywheelSetpoint = calculateShooterSpeed(distance);
+        double flywheelSetpoint = shooter.calculateShooterSpeed(distance);
 
 
         flywheelPID.setSetpoint(flywheelSetpoint);
@@ -103,7 +99,7 @@ public class ShooterAutoCommand extends Command {
 
         Logger.recordOutput("flywheelOutputAuto", flywheelOutput);
 
-        Logger.recordOutput("flywheelSetpointAuto", flywheelSetpoint);
+        shooter.getSensors().atShooterSpeed = flywheelPID.atSetpoint();
 
         shooter.setFlywheelPower(feedforward + flywheelOutput);
 
@@ -111,19 +107,7 @@ public class ShooterAutoCommand extends Command {
 
 
 
-        Rotation2d targetTurretAngle = getHubPosition().minus(turretPosition).getAngle();
-
-
-
-
-
-        Rotation2d robotHeading = pose.getRotation();
-
-        Rotation2d desiredTurret = targetTurretAngle.minus(robotHeading).plus(Rotation2d.k180deg);
-
-        double desiredTurretAngle = desiredTurret.getDegrees();
-        while (desiredTurretAngle > 180) desiredTurretAngle -= 360;
-        while (desiredTurretAngle < -180) desiredTurretAngle += 360;
+        Rotation2d targetTurretAngle = shooter.getHubPosition().minus(turretPosition).getAngle();
 
 
 
@@ -132,7 +116,7 @@ public class ShooterAutoCommand extends Command {
         double currTurretAngle = shooter.getSensors().turretRelativeAngle.in(Degrees);
 
 
-        double desiredAngle = desiredTurret.getDegrees();
+        double desiredAngle = shooter.getTurretAngle(pose, turretPosition, hubPosition);
 
 
 
@@ -157,9 +141,8 @@ public class ShooterAutoCommand extends Command {
         shooter.setTurretPower(turretOutput);
 
 
-        Logger.recordOutput("turretOutputAuto", turretOutput);
         Logger.recordOutput("turretDesiredAngleClamped", desTurretAngleClamped);
-        Logger.recordOutput("turretDesiredAngleAuto", desiredTurret.getDegrees());
+        Logger.recordOutput("turretDesiredAngleAuto", desiredAngle);
         Logger.recordOutput("turretCurrentAngleAuto", targetTurretAngle.getDegrees());
 
 
@@ -167,7 +150,7 @@ public class ShooterAutoCommand extends Command {
 
         double currHoodAngle = shooter.getHoodAngleFromThroughbore().in(Degrees);
 
-        double desHoodAngle = MathUtil.clamp(calcHoodAngle(distance), shooter.getSensors().hoodMinAngle,shooter.getSensors().hoodMaxAngle);
+        double desHoodAngle = MathUtil.clamp(shooter.calcHoodAngle(distance), shooter.getSensors().hoodMinAngle,shooter.getSensors().hoodMaxAngle);
 
         Logger.recordOutput("hoodSetpointAuto", desHoodAngle);
 
@@ -193,6 +176,12 @@ public class ShooterAutoCommand extends Command {
         Logger.recordOutput("flywheelReady", flywheelReady);
         Logger.recordOutput("turretReady", turretReady);
         Logger.recordOutput("hoodReady", hoodReady);
+
+        shooter.getSensors().hoodAtSetpoint = hoodPID.atSetpoint();
+        shooter.getSensors().turretAtSetpoint = turretPID.atSetpoint();
+
+
+
 
 
         if (flywheelReady && turretReady && hoodReady) {
@@ -227,76 +216,10 @@ public class ShooterAutoCommand extends Command {
 
 
 
-    private Translation2d getHubPosition() {
-        boolean isRed = false;
-
-        if (DriverStation.getAlliance().isPresent()) {
-            isRed = DriverStation.getAlliance().get() == DriverStation.Alliance.Red;
-        }
-
-        return isRed
-                ? new Translation2d(12.286869, 4.034)
-                : new Translation2d(4.624, 4.034);
-    }
-
-/*
-    private Translation2d getTargetPosition(Target target) {
-
-        boolean isRed = false;
-
-        if (DriverStation.getAlliance().isPresent()) {
-            if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-                isRed = true;
 
 
-            }
-        }
-
-        // TODO find translations??
-
-        if (target == Target.HUB) {
-
-            if (isRed) {
-                return new Translation2d(12.040, 4.164);
-            } else {
-                return new Translation2d(4.524, 4.212);
-            }
-
-        } else if (target == Target.DEPOT) {
-
-            if (isRed) {
-                return new Translation2d(16.232, 2.026);
-            } else {
-                return new Translation2d(0.286, 5.837);
-            }
-
-        } else if (target == Target.OUTPOST) {
-
-            if (isRed) {
-                return new Translation2d(16.383, 7.310);
-            } else {
-                return new Translation2d(-0.152, 0.734);
-            }
-        }
-
-        return new Translation2d();
 
 
-    }
 
-
- */
-
-    private double calculateShooterSpeed(double distance) {
-        return 6.18842*distance+2429.32725;
-        // return shooterMap.get(distance);
-    }
-
-    private double calcHoodAngle(double distance) {
-        return 0.000586636*Math.pow(distance, 2) - (0.0564512*distance) + 187.01223;
-
-        // return hoodMap.get(distance);
-
-    }
 
 }

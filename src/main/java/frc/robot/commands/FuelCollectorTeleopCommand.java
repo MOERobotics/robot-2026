@@ -3,7 +3,6 @@ package frc.robot.commands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.container.RobotContainer;
@@ -25,6 +24,10 @@ public class FuelCollectorTeleopCommand extends Command {
             armkp, armki, armkd
     );
 
+    double rollerPower;
+    Angle targetArmPosition;
+    Angle currentArmPosition;
+
     public FuelCollectorTeleopCommand(RobotContainer robot, Joystick joystick) {
         this.collectorSubsystem = robot.getCollector();
         this.joystick = joystick;
@@ -40,23 +43,21 @@ public class FuelCollectorTeleopCommand extends Command {
 
     @Override
     public void execute() {
-        AngularVelocity rollerVelocity;
-        Angle targetArmPosition;
-        Angle currentArmPosition;
+
         int collectorINButton = 6;
         int collectorOUTButton = 5;
 
 
         //TODO: CHANGE THIS it is in
         if (joystick.getRawButton(collectorINButton)) {
-                rollerVelocity = RPM.of(1);
+            rollerPower = 1;
         } else if (joystick.getRawButton(collectorOUTButton)) {
-            rollerVelocity = RPM.of(-1);
+            rollerPower = -1;
         } else {
-            rollerVelocity = RPM.of(0);
+            rollerPower = 0;
 
         }
-        collectorSubsystem.setRollerVelocity(rollerVelocity);
+        collectorSubsystem.setRollerPower(rollerPower);
         int collectorStartPositionButton = 7;
         int collectorIntakePositionButton = 8;
         currentArmPosition = collectorSubsystem.getArmAngle();
@@ -102,7 +103,7 @@ public class FuelCollectorTeleopCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         collectorSubsystem.setArmVelocity(RPM.zero());
-        collectorSubsystem.setRollerVelocity(RPM.zero());
+        collectorSubsystem.setRollerPower(0);
     }
 
     @Override

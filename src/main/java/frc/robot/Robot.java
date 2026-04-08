@@ -46,7 +46,6 @@ public class Robot extends LoggedRobot {
     public Joystick driverJoystick = new Joystick(0);
     public Joystick functionJoystick = new Joystick(1);
 
-    public double deadband = 0.06; // find deadband number;
     private CommandScheduler scheduler;
     private Command collectorTestCommand = new FuelCollectorTestCommand(robot, functionJoystick);
     private Command collectorTeleopCommand = new FuelCollectorTeleopCommand(robot, functionJoystick);
@@ -55,12 +54,10 @@ public class Robot extends LoggedRobot {
 
     private Command shooterTestCommand = new ShooterTestCommand(robot, driverJoystick, functionJoystick);
 
-    private Command shooterTeleopCommand = new ShooterTeleopCommand(robot, functionJoystick);
 
     private Command shooterTeleopAutoAimCommand = new ShooterTeleopAutoAimCommand(robot, functionJoystick);
 
 
-    public Command rotateCommand = new AutoRotateCommand(robot, driverJoystick);
     public Command ledBlinkingCommandRed = new LEDBlinkingCommand(kRed, robot);
     public Command ledBlinkingCommandGreen = new LEDBlinkingCommand(kGreen, robot);
     public Command ledSolidColorCommandRed = new LEDColorCommand(robot, kRed);
@@ -71,14 +68,11 @@ public class Robot extends LoggedRobot {
     public Command controllerVibrateTestCommand = new ControllerVIbrateTestCommand(driverJoystick, functionJoystick);
     public Command hubLoggingCommand = new HubLoggingCommand(driverJoystick);
 
+    public Command flywheelCalibration = new CalibrationCommand(robot);
 
-    public PathsFollower testPath = new PathsFollower("Curved Path");
 
-    public Command climberTeleopCommand = new ClimberTeleopCommand(robot, driverJoystick);
 
-    public Command climberAutoCommand = new ClimberAutoCommand(robot, true, 1.0, false);
 
-    public Command collectorAutoCommand = new FuelCollectorAutoCommand(robot, true, false, "out");
 
     //AutosChooser autoCommand = new AutosChooser();
     private Autos.CommandAndPose auto;
@@ -87,13 +81,9 @@ public class Robot extends LoggedRobot {
 
     // Toggle for setting our pose to starting pose while disabled
     public boolean autoSetpoint = true;
-    public boolean applyAutoPose = false;
 
 
-    // public AprilTagFieldLayout fieldLayout = new AprilTagFieldLayout();
 
-    //  public Transform3d robotToCam = new Transform3d(0,0,0 ,new Rotation3d(0,0,0));
-    //  public PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(fieldLayout,robotToCam );
 
     @Override
     public void robotInit() {
@@ -156,13 +146,17 @@ public class Robot extends LoggedRobot {
         @Override
         public void autonomousInit () {
 
-
             setFieldPose();
 
             scheduler.schedule(autoCommand.command());
 
 
-            /*
+
+        /*
+
+                   scheduler.schedule(flywheelCalibration);
+
+
             scheduler.schedule(Commands.sequence(
                 new FlywheelRatesCommand(robot,0.4),
                 new FlywheelRatesCommand(robot,0.5),
