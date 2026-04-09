@@ -42,13 +42,15 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
     public static final double MAX_DISTANCE = 5.0;
     public static final double MAX_AMBIGUITY = 0.25;
 
+    double num=2;
+
     Transform3d turretCamLocation = new Transform3d(
            Inches.of(-10.7472441),
             Inches.of(12.4905512),
             Inches.of(8.996732),
             new Rotation3d(
                     Degrees.of(0),
-                    Degrees.of(15),
+                    Degrees.of(-15),
                     Degrees.of(180)
             )
     );
@@ -57,7 +59,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
             Inches.of(-11.791497),
             Inches.of(8.021322),
             new Rotation3d(
-                    Degrees.of(-26),
+                    Degrees.of(0),
                     Degrees.of(-27),
                     Degrees.of(-135)
             )
@@ -165,7 +167,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
 
 
         if(!rejectUpdate){
-            this.robotOdometry.setVisionMeasurementStdDevs(VecBuilder.fill(0.9,0.9,999999));
+            this.robotOdometry.setVisionMeasurementStdDevs(VecBuilder.fill(0.9,0.9,1));
             if(getSensors().turretCamPose != null && getSensors().photon1 !=null) {
                 this.robotOdometry.addVisionMeasurement(getSensors().turretCamPose.toPose2d(), getSensors().photon1.getTimestampSeconds());
             }
@@ -239,6 +241,13 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
     @Override
     public ChassisSpeeds getChassisSpeed() {
         return robotKinematics.toChassisSpeeds(Arrays.stream(swerveModules).map(SwerveModuleSubsystem::getSpeedNDirectionOfMod).toArray(SwerveModuleState[]::new));
+    }
+
+   public double getPoseAverage(double oldAvg){
+
+       oldAvg = (oldAvg * ((num-1)/num)) + ((getPose().getRotation().getDegrees()- getSensors().turretCamPose.getRotation().getAngle()/num));
+       return oldAvg;
+
     }
 
     @Override

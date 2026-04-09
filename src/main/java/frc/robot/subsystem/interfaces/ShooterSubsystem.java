@@ -95,7 +95,7 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
 
     }
 
-     public Translation2d turretOffset =  new Translation2d(Inches.of(-6), Inches.of(8.375));
+     public Translation2d turretOffset =  new Translation2d(Inches.of(-5), Inches.of(7));
 
     public ShooterInputs getSensors();
 
@@ -203,13 +203,11 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
             return Meters.of(turretPos.getDistance(target)).in(Inches);
         }
 
-        default double getTurretAngle(Pose2d pose, Translation2d turretPos, Translation2d target) {
+        default double getTurretAimAngle(Pose2d pose, Translation2d turretPos, Translation2d target) {
             Rotation2d targetAngle = target.minus(turretPos).getAngle();
             Rotation2d robotHeading = pose.getRotation();
 
-            double angle = targetAngle.minus(robotHeading)
-                    .plus(Rotation2d.k180deg)
-                    .getDegrees();
+            double angle = targetAngle.minus(robotHeading).plus(Rotation2d.k180deg).getDegrees();
 
             while (angle > 180) angle -= 360;
             while (angle < -180) angle += 360;

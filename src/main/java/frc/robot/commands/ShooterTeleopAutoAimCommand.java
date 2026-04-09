@@ -93,6 +93,8 @@ public class ShooterTeleopAutoAimCommand extends Command {
     @Override
     public void execute() {
 
+
+
         if (joystick.getRawButtonPressed(2)) {
             isFlywheelOn = !isFlywheelOn;
             shooterPIDController.reset();
@@ -133,6 +135,11 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
         }
 
+        Logger.recordOutput("TurretPositionIThink", new Pose2d(turretPosition, pose.getRotation()));
+        Logger.recordOutput("TargetTurretAngle",  hubPosition.minus(turretPosition).getAngle());
+        Logger.recordOutput("Kevin's method1", hubPosition.minus(pose.plus(new Transform2d(turretOffset, Rotation2d.kZero)).getTranslation()).getAngle());
+        Logger.recordOutput("Kevin's method2", hubPosition.minus(pose.plus(new Transform2d(turretOffset, pose.getRotation())).getTranslation()).getAngle());
+        Logger.recordOutput("Distance", distance);
 
 
 
@@ -141,17 +148,12 @@ public class ShooterTeleopAutoAimCommand extends Command {
         if (currentPOV != -1) {
             switch (currentPOV) {
                 case 90:
-                    Logger.recordOutput("TurretPositionIThink", new Pose2d(turretPosition, pose.getRotation()));
                     distance = shooter.getDistance(turretPosition, hubPosition);
 
 
-                    desiredTurretAngle = shooter.getTurretAngle(pose, turretPosition, hubPosition);
+                    desiredTurretAngle = shooter.getTurretAimAngle(pose, turretPosition, hubPosition);
 
 
-                    Logger.recordOutput("TargetTurretAngle",  hubPosition.minus(turretPosition).getAngle());
-                    Logger.recordOutput("Kevin's method1", hubPosition.minus(pose.plus(new Transform2d(turretOffset, Rotation2d.kZero)).getTranslation()).getAngle());
-                    Logger.recordOutput("Kevin's method2", hubPosition.minus(pose.plus(new Transform2d(turretOffset, pose.getRotation())).getTranslation()).getAngle());
-                    Logger.recordOutput("Distance", distance);
 
 
                     //x, y are field coordinates of CoR
@@ -191,12 +193,13 @@ public class ShooterTeleopAutoAimCommand extends Command {
         Logger.recordOutput("Phi", phi);
 
 
-        Logger.recordOutput("ConstantTurretAngle", shooter.getTurretAngle(pose, turretPosition, hubPosition));
+        Logger.recordOutput("ConstantTurretAngle", shooter.getTurretAimAngle(pose, turretPosition, hubPosition)+180);
 
 
 
         Logger.recordOutput("HoodSetpoint", hoodSetpoint);
 
+        currDistance = shooter.getDistance(turretPosition, shooter.getHubPosition());
 
 
         Logger.recordOutput("CurrDistance", currDistance);

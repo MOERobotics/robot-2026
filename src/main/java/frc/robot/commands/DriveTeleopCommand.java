@@ -45,6 +45,8 @@ public class DriveTeleopCommand extends Command {
 
         // new averaging thing :]
 
+
+
         avgX = (avgX * ((num-1)/num)) + (joystick.getRawAxis(1)/num);
         avgY= (avgY * ((num-1)/num)) + (joystick.getRawAxis(0)/num);
         avgRotation = (avgRotation * ((num-1)/num)) + (joystick.getRawAxis(2)/num);
