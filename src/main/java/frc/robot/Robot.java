@@ -113,6 +113,8 @@ public class Robot extends LoggedRobot {
     public void robotPeriodic() {
         MOELogger.log();
         scheduler.run();
+        Logger.recordOutput("constantDistance", robot.getShooterSubsystem().getDistance(robot.getShooterSubsystem().getSensors().turretPosition, robot.getShooterSubsystem().getHubPosition()));
+
 
         if (autoCommand != null) {
             Logger.recordOutput("command", autoCommand.command().getName());
@@ -186,6 +188,8 @@ public class Robot extends LoggedRobot {
 
         @Override
         public void teleopInit () {
+
+
 
             scheduler.schedule(climberTestCommand);
 

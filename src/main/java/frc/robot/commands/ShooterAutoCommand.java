@@ -114,7 +114,7 @@ public class ShooterAutoCommand extends Command {
         double currTurretAngle = shooter.getSensors().turretRelativeAngle.in(Degrees);
 
 
-        double desiredAngle = shooter.getTurretAimAngle(pose, turretPosition, hubPosition);
+        double desiredAngle = shooter.getTurretAimAngle(pose.getRotation(), turretPosition, hubPosition);
 
 
 

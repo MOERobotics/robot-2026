@@ -8,6 +8,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import org.littletonrobotics.junction.AutoLog;
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 import static edu.wpi.first.units.Units.*;
@@ -203,10 +204,17 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
             return Meters.of(turretPos.getDistance(target)).in(Inches);
         }
 
-        default double getTurretAimAngle(Pose2d pose, Translation2d turretPos, Translation2d target) {
-            Rotation2d targetAngle = target.minus(turretPos).getAngle();
-            Rotation2d robotHeading = pose.getRotation();
+        default double getTurretAimAngle(
+                Rotation2d robotHeading,
+                Translation2d turretPosFieldRelative,
+                Translation2d targetPosFieldRelative
+        ) {
+            Rotation2d targetAngle = targetPosFieldRelative.minus(turretPosFieldRelative).getAngle();
 
+            Logger.recordOutput("FieldRelativeTurretPose", new Pose2d(turretPosFieldRelative, Rotation2d.kZero));
+            Logger.recordOutput("FieldRelativeTargetPose", new Pose2d(targetPosFieldRelative, Rotation2d.kZero));
+            Logger.recordOutput("FieldRelativeTargetPose", new Pose2d(targetPosFieldRelative, Rotation2d.kZero));
+            Logger.recordOutput("FieldRelativeTurretTargetAngle", targetAngle);
             double angle = targetAngle.minus(robotHeading).plus(Rotation2d.k180deg).getDegrees();
 
             while (angle > 180) angle -= 360;

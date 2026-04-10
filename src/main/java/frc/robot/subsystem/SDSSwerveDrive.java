@@ -61,14 +61,32 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
             new Rotation3d(
                     Degrees.of(0),
                     Degrees.of(-27),
-                    Degrees.of(-135)
-            )
+                    Degrees.of(225)
+            ).unaryMinus()
+//            new Rotation3d(
+//                    Degrees.of(20.5),
+//                    Degrees.of(0),
+//                    Degrees.of(0)
+//            ).rotateBy(new Rotation3d(
+//                    Degrees.of(0),
+//                    Degrees.of(-23),
+//                    Degrees.of(0)
+//            )).rotateBy(
+//                    new Rotation3d(
+//                            Degrees.of(0),
+//                            Degrees.of(0),
+//                            Degrees.of(135)
+//                    )
+//            )
     );
 
     AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
     PhotonPoseEstimator estimator1 = new PhotonPoseEstimator(fieldLayout, turretCamLocation);
     PhotonPoseEstimator estimator2 = new PhotonPoseEstimator(fieldLayout, swerveCamLocation);
+
+
+    double diffAngleAvg =0;
 
     // Pigeon2SimState simGyro;
 
@@ -121,6 +139,9 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
         turretCam.setFPSLimit(12);
         SwerveDriveSim swerveSim = new SwerveDriveSim(this);
         setSimulator(swerveSim);
+        diffAngleAvg = robotGyro.getRotation2d().getRadians();
+
+
 
 
     }
@@ -167,7 +188,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
 
 
         if(!rejectUpdate){
-            this.robotOdometry.setVisionMeasurementStdDevs(VecBuilder.fill(0.9,0.9,1));
+            this.robotOdometry.setVisionMeasurementStdDevs(VecBuilder.fill(0.9,0.9,10));
             if(getSensors().turretCamPose != null && getSensors().photon1 !=null) {
                 this.robotOdometry.addVisionMeasurement(getSensors().turretCamPose.toPose2d(), getSensors().photon1.getTimestampSeconds());
             }
@@ -175,7 +196,13 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
                 this.robotOdometry.addVisionMeasurement(getSensors().swerveCamPose.toPose2d(), getSensors().photon2.getTimestampSeconds());
             }
         }
+
+
+       // diffAngleAvg = (diffAngleAvg * ((num-1)/num)) + ((getPose().getRotation().getRadians()- getSensors().turretCamPose.getRotation().getAngle())/num);
+      //  this.setPose(new Pose2d(getPose().getX(), getPose().getY(), (getPose().getRotation().minus(new Rotation2d(diffAngleAvg)))));
+
     }
+
 
 
     @Override
@@ -243,12 +270,6 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
         return robotKinematics.toChassisSpeeds(Arrays.stream(swerveModules).map(SwerveModuleSubsystem::getSpeedNDirectionOfMod).toArray(SwerveModuleState[]::new));
     }
 
-   public double getPoseAverage(double oldAvg){
-
-       oldAvg = (oldAvg * ((num-1)/num)) + ((getPose().getRotation().getDegrees()- getSensors().turretCamPose.getRotation().getAngle()/num));
-       return oldAvg;
-
-    }
 
     @Override
     public void photonPoses(){

@@ -87,6 +87,8 @@ public class ShooterTeleopAutoAimCommand extends Command {
         shooterPIDController.setIZone(IZone);
         shooterPIDController.setIntegratorRange(-.05, .05);
 
+        hubPosition = shooter.getHubPosition();
+
 
     }
 
@@ -135,7 +137,12 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
         }
 
-        Logger.recordOutput("TurretPositionIThink", new Pose2d(turretPosition, pose.getRotation()));
+        Logger.recordOutput("TurretPositionIThink",
+                new Pose2d(
+                        turretPosition,
+                        new Rotation2d(pose.getRotation().plus(Rotation2d.kPi).getMeasure().plus(shooter.getSensors().turretRelativeAngle))
+                )
+        );
         Logger.recordOutput("TargetTurretAngle",  hubPosition.minus(turretPosition).getAngle());
         Logger.recordOutput("Kevin's method1", hubPosition.minus(pose.plus(new Transform2d(turretOffset, Rotation2d.kZero)).getTranslation()).getAngle());
         Logger.recordOutput("Kevin's method2", hubPosition.minus(pose.plus(new Transform2d(turretOffset, pose.getRotation())).getTranslation()).getAngle());
@@ -144,14 +151,14 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
 
         int currentPOV = joystick.getPOV();
+        distance = shooter.getDistance(turretPosition, hubPosition);
+        desiredTurretAngle = shooter.getTurretAimAngle(pose.getRotation(), turretPosition, hubPosition) +180;
 
         if (currentPOV != -1) {
             switch (currentPOV) {
                 case 90:
-                    distance = shooter.getDistance(turretPosition, hubPosition);
 
 
-                    desiredTurretAngle = shooter.getTurretAimAngle(pose, turretPosition, hubPosition);
 
 
 
@@ -193,7 +200,7 @@ public class ShooterTeleopAutoAimCommand extends Command {
         Logger.recordOutput("Phi", phi);
 
 
-        Logger.recordOutput("ConstantTurretAngle", shooter.getTurretAimAngle(pose, turretPosition, hubPosition)+180);
+//        Logger.recordOutput("ConstantTurretAngle", shooter.getTurretAimAngle(pose.getRotation(), turretPosition, hubPosition));
 
 
 
