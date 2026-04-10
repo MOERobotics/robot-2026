@@ -152,7 +152,7 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
         int currentPOV = joystick.getPOV();
         distance = shooter.getDistance(turretPosition, hubPosition);
-        desiredTurretAngle = shooter.getTurretAimAngle(pose.getRotation(), turretPosition, hubPosition) +180;
+        desiredTurretAngle = shooter.getTurretAimAngle(pose.getRotation(), turretPosition, hubPosition);
 
         if (currentPOV != -1) {
             switch (currentPOV) {
@@ -200,7 +200,7 @@ public class ShooterTeleopAutoAimCommand extends Command {
         Logger.recordOutput("Phi", phi);
 
 
-//        Logger.recordOutput("ConstantTurretAngle", shooter.getTurretAimAngle(pose.getRotation(), turretPosition, hubPosition));
+        Logger.recordOutput("ConstantTurretAngle", shooter.getTurretAimAngle(pose.getRotation(), turretPosition, hubPosition));
 
 
 
