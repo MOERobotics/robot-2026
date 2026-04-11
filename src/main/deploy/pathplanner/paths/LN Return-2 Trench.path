@@ -1,0 +1,75 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.7340228245363765,
+        "y": 7.3667047075606265
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.383341830722529,
+        "y": 7.36934634082962
+      },
+      "isLocked": false,
+      "linkedName": "L-Return1 Trench"
+    },
+    {
+      "anchor": {
+        "x": 3.4826961483645573,
+        "y": 7.3667047075606265
+      },
+      "prevControl": {
+        "x": 3.823565384189861,
+        "y": 7.57647039113775
+      },
+      "nextControl": {
+        "x": 3.146291012840972,
+        "y": 7.159686162630614
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.2237018694196427,
+        "y": 5.461982485288231
+      },
+      "prevControl": {
+        "x": 2.9263338088466777,
+        "y": 6.409243937238316
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "L-Return2"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 0.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 59.739992419501554
+  },
+  "reversed": false,
+  "folder": "Neutral",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": false
+}

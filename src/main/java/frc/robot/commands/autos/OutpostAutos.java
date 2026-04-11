@@ -38,14 +38,14 @@ public class OutpostAutos {
 
         Command auto = Commands.sequence(
                 plannerPath1,
-              //  Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
+                //Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
                 Commands.deadline(
                         plannerPath2),
-                      //  new FuelCollectorAutoCommand(robot, true, true, "in"),
-                Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
+                        new FuelCollectorAutoCommand(robot, true, true, "in"),
+                //Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
                 plannerPath3,
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
-                // new ShooterAutoCommand(robot),
+                 new ShooterAutoCommand(robot),
                 plannerPath4,
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop())
 

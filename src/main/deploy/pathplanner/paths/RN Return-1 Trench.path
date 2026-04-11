@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.791269614835947,
+        "y": 3.40747503566334
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.752453637655144,
+        "y": 2.0489158345147143
+      },
+      "isLocked": false,
+      "linkedName": "RN-Collecting"
+    },
+    {
+      "anchor": {
+        "x": 5.721084165477888,
+        "y": 0.6903566333808839
+      },
+      "prevControl": {
+        "x": 6.5620970042795985,
+        "y": 0.43158345221112593
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "R-Return1 Trench"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 1.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "Neutral",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 90.0
+  },
+  "useDefaultConstraints": true
+}

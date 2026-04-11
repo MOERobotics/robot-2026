@@ -36,7 +36,12 @@ public class Autos {
         autoChooser.addOption("Auto15: Drive 15ft", DriveForward.drive15Ft(robot));
 
         autoChooser.addOption("Auto16: FlywheelRates", FlywheelRates.percent10inc(robot));
-        autoChooser.setDefaultOption("Auto15: DepotCollect", DepotCollect.depot_Collect(robot));
+
+        autoChooser.addOption("Auto17: DepotCollect", DepotCollect.depot_Collect(robot));
+
+        autoChooser.addOption("Auto18: NeutralAuto Right", NeutralZone.NRT_Trench_Back_Trench(robot));
+
+        autoChooser.addOption("Auto19: NeutralAuto Left", NeutralZone.NLT_Trench_Back_Trench(robot));
 
 
         //  autoChooser.setDefaultOption("Auto15: Drive 15ft", DriveForward.drive15Ft(robot));

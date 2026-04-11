@@ -17,18 +17,24 @@ import frc.robot.container.RobotContainer;
 public class NeutralZone {
 
     public static Autos.CommandAndPose NLT_Back_Bump (RobotContainer robot) {
-        return buildNeutral(robot, "NLT-Neutral", "LN Collect", "LN Return-1", "LN Return-2", "LA-Rotation", "L BackToN Bump");
+        return buildNeutral(robot, "NLT-Neutral", "LN Collect", "LN Return-1 Bump", "LN Return-2 Bump", "LA-Rotation", "L BackToN Bump");
     }
-
     public static Autos.CommandAndPose NLT_Back_Trench(RobotContainer robot) {
-        return buildNeutral(robot, "NLT-Neutral", "LN Collect", "LN Return-1", "LN Return-2", "LA-Rotation", "L BackToN Trench");
+        return buildNeutral(robot, "NLT-Neutral", "LN Collect", "LN Return-1 Bump", "LN Return-2 Bump", "LA-Rotation", "L BackToN Trench");
     }
-
     public static Autos.CommandAndPose NRT_Back_Bump(RobotContainer robot) {
-        return buildNeutral(robot, "NRT-Neutral", "RN Collect", "RN Return-1", "RN Return-2", "RA-Rotation", "R BackToN Bump");
+        return buildNeutral(robot, "NRT-Neutral", "RN Collect", "RN Return-1 Bump", "RN Return-2 Bump", "RA-Rotation", "R BackToN Bump");
     }
     public static Autos.CommandAndPose NRT_Back_Trench(RobotContainer robot) {
-        return buildNeutral(robot, "ART-Neutral", "RN Collect", "RN Return-1","RN Return-2", "RA-Rotation", "R BackToN Trench");
+        return buildNeutral(robot, "ART-Neutral", "RN Collect", "RN Return-1 Bump","RN Return-2 Bump", "RA-Rotation", "R BackToN Trench");
+    }
+
+    public static Autos.CommandAndPose NRT_Trench_Back_Trench(RobotContainer robot) {
+        return buildNeutral(robot, "ART-Neutral", "RN Collect", "RN Return-1 Trench","RN Return-2 Trench", "RA-Rotation", "R BackToN Trench");
+    }
+
+    public static Autos.CommandAndPose NLT_Trench_Back_Trench(RobotContainer robot) {
+        return buildNeutral(robot, "ALT-Neutral", "LN Collect", "LN Return-1 Trench","LN Return-2 Trench", "LA-Rotation", "L BackToN Trench");
     }
     public static Autos.CommandAndPose buildNeutral(
             RobotContainer robot,
