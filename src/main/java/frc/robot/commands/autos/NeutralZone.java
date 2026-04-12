@@ -3,7 +3,6 @@ package frc.robot.commands.autos;
 
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -79,7 +78,7 @@ public class NeutralZone {
                 plannerPath5,
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
                 // TODO ADD SHOOT
-                new ShooterTeleopAutoAimCommand(robot),
+                new ShooterAutoAimCommand(robot),
                 plannerPath6,
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop())
         );

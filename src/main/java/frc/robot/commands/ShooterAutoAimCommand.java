@@ -18,7 +18,7 @@ import org.littletonrobotics.junction.Logger;
 import static edu.wpi.first.units.Units.*;
 import static java.lang.Math.sin;
 
-public class ShooterTeleopAutoAimCommand extends Command {
+public class ShooterAutoAimCommand extends Command {
 
     public final ShooterSubsystem shooter;
     public final Joystick joystick;
@@ -65,7 +65,7 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
     boolean auto = false;
 
-    public ShooterTeleopAutoAimCommand(RobotContainer robot, Joystick joystick, boolean auto) {
+    public ShooterAutoAimCommand(RobotContainer robot, Joystick joystick, boolean auto) {
         this.joystick = joystick;
         this.shooter = robot.getShooterSubsystem();
         this.drive = robot.getRobotSwerveDrive();
@@ -78,11 +78,11 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
     }
 
-    public ShooterTeleopAutoAimCommand(RobotContainer robot, Joystick joystick) {
+    public ShooterAutoAimCommand(RobotContainer robot, Joystick joystick) {
         this(robot, joystick, false);
     }
 
-    public ShooterTeleopAutoAimCommand(RobotContainer robot) {
+    public ShooterAutoAimCommand(RobotContainer robot) {
 
         this(robot, null, true);
     }

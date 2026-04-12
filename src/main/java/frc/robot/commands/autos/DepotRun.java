@@ -1,8 +1,6 @@
 package frc.robot.commands.autos;
 
-import com.pathplanner.lib.util.FlippingUtil;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -48,7 +46,7 @@ public class DepotRun{
 
                 ),
 
-                new ShooterTeleopAutoAimCommand(robot),
+                new ShooterAutoAimCommand(robot),
                 new PathsFollower("Depot Climb"),
                 Commands.runOnce(
                         () -> robot.getRobotSwerveDrive().stop()

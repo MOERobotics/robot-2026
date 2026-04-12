@@ -5,8 +5,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.util.FlippingUtil;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,13 +13,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.*;
 import frc.robot.container.ProMOEtheus;
 import frc.robot.container.RobotContainer;
-import frc.robot.container.SubMOErine;
-import frc.robot.subsystem.interfaces.LEDSubsystem;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
-import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.targeting.PhotonPipelineResult;
 
 /*
 import org.photonvision.EstimatedRobotPose;
@@ -32,11 +25,8 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
  */
 
-import java.sql.Driver;
-import java.util.List;
 import java.util.Optional;
 
-import static edu.wpi.first.units.Units.*;
 import static edu.wpi.first.wpilibj.util.Color.kGreen;
 import static edu.wpi.first.wpilibj.util.Color.kRed;
 
@@ -55,7 +45,7 @@ public class Robot extends LoggedRobot {
     private Command shooterTestCommand = new ShooterTestCommand(robot, driverJoystick, functionJoystick);
 
 
-    private Command shooterTeleopAutoAimCommand = new ShooterTeleopAutoAimCommand(robot, functionJoystick);
+    private Command shooterTeleopAutoAimCommand = new ShooterAutoAimCommand(robot, functionJoystick);
 
 
     public Command ledBlinkingCommandRed = new LEDBlinkingCommand(kRed, robot);

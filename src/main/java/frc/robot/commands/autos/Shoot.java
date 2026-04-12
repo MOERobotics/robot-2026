@@ -10,8 +10,6 @@ import frc.robot.Autos;
 import frc.robot.commands.*;
 import frc.robot.container.RobotContainer;
 
-import java.nio.file.Path;
-
 
 public class Shoot {
     public static Autos.CommandAndPose shoot(RobotContainer robot) {
@@ -30,7 +28,7 @@ public class Shoot {
 
         Command auto = Commands.sequence(
                 plannerPath1,
-                new ShooterTeleopAutoAimCommand(robot)
+                new ShooterAutoAimCommand(robot)
 
 
         );

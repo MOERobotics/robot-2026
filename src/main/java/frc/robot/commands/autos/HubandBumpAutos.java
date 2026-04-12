@@ -7,10 +7,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 import frc.robot.Autos;
-import frc.robot.commands.ClimberAutoCommand;
 import frc.robot.commands.PathsFollower;
-import frc.robot.commands.ShooterAutoCommand;
-import frc.robot.commands.ShooterTeleopAutoAimCommand;
+import frc.robot.commands.ShooterAutoAimCommand;
 import frc.robot.container.RobotContainer;
 
 
@@ -43,7 +41,7 @@ public class HubandBumpAutos {
 
 
         Command auto = Commands.sequence(
-                new ShooterTeleopAutoAimCommand(robot),
+                new ShooterAutoAimCommand(robot),
 
 
                 plannerPath1,

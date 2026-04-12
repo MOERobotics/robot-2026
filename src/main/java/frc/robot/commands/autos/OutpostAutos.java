@@ -42,7 +42,7 @@ public class OutpostAutos {
                 //Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
                 plannerPath3,
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
-                new ShooterTeleopAutoAimCommand(robot),
+                new ShooterAutoAimCommand(robot),
                 plannerPath4,
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop())
 

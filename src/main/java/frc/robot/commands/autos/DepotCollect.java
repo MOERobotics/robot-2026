@@ -41,7 +41,7 @@ public class DepotCollect {
                 Commands.deadline(plannerPath2,
                         new FuelCollectorAutoCommand(robot, true, true, "in")),
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
-                new ShooterTeleopAutoAimCommand(robot)
+                new ShooterAutoAimCommand(robot)
         );
 
 
