@@ -173,12 +173,15 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
     }
 
     default double calculateShooterSpeed(double distance) {
-        return 6.18842*distance+2429.32725;
+        return 7.4314*distance+1974.43849;
+        //y=7.4314x+1974.43849
     }
 // DELETE 10
     default double calcHoodAngle(double distance) {
-        return 0.000586636*Math.pow(distance, 2) - (0.0564512*distance) + 187.01223;
+        return -0.000507929*Math.pow(distance, 2) + (0.280891*distance) + 164.98172;
+        //y=-0.000507929x^{2}+0.280891x+164.98172
     }
+
 
     default Translation2d getHubPosition() {
         boolean isRed = false;
@@ -188,8 +191,8 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
         }
 
         return isRed
-                ? new Translation2d(Inches.of(469), (Inches.of(159)))
-                : new Translation2d((Inches.of(182)), (Inches.of(159)));
+                ? new Translation2d(Inches.of(469), (Inches.of(158)))
+                : new Translation2d((Inches.of(182)), (Inches.of(158)));
     }
 
 

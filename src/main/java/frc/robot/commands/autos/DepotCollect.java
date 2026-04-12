@@ -17,6 +17,12 @@ public class DepotCollect {
     public static Autos.CommandAndPose depot_Collect(RobotContainer robot) {
         return depotRunCollect(robot, "H-Shoot", "H Depot Collect");
     }
+    /*
+    public static Autos.CommandAndPose depot_front(RobotContainer robot){
+        return depotRunCollect(robot, "H-Depot", "Front Depot Collect");
+    }
+
+     */
 
 
 
@@ -37,7 +43,7 @@ public class DepotCollect {
                 plannerPath1,
 
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
-                new ShooterAutoCommand(robot).withTimeout(5),
+                //new ShooterAutoCommand(robot).withTimeout(5),
                 Commands.deadline(plannerPath2,
                         new FuelCollectorAutoCommand(robot, true, true, "in")),
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),

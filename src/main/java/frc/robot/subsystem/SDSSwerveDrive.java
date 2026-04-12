@@ -11,6 +11,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.*;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.MOESubsystem;
 import frc.robot.subsystem.interfaces.SwerveDriveInputsAutoLogged;
@@ -41,6 +42,9 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
 
     public static final double MAX_DISTANCE = 5.0;
     public static final double MAX_AMBIGUITY = 0.25;
+
+
+    private AnalogInput kevin_pi_voltage_monitor = new AnalogInput(3);
 
     double num=2;
 
@@ -184,6 +188,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
             Logger.recordOutput("photon2Timestamp", getSensors().photon2.getTimestampSeconds());
 
         }
+        Logger.recordOutput("kevin pi voltage", kevin_pi_voltage_monitor.getVoltage());
 
 
 

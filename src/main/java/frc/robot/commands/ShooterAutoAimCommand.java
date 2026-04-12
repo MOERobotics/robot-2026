@@ -65,7 +65,7 @@ public class ShooterAutoAimCommand extends Command {
 
     boolean auto = false;
 
-    public ShooterAutoAimCommand(RobotContainer robot, Joystick joystick, boolean auto) {
+    private ShooterAutoAimCommand(RobotContainer robot, Joystick joystick, boolean auto) {
         this.joystick = joystick;
         this.shooter = robot.getShooterSubsystem();
         this.drive = robot.getRobotSwerveDrive();
@@ -73,19 +73,19 @@ public class ShooterAutoAimCommand extends Command {
         shooterPIDController.setTolerance(100);
         this.auto = auto;
         addRequirements(shooter);
-
-
-
     }
 
     public ShooterAutoAimCommand(RobotContainer robot, Joystick joystick) {
         this(robot, joystick, false);
+        assert joystick != null;
     }
 
     public ShooterAutoAimCommand(RobotContainer robot) {
 
         this(robot, null, true);
     }
+
+
     @Override
     public void initialize() {
 
@@ -103,7 +103,7 @@ public class ShooterAutoAimCommand extends Command {
 
         shooterPIDController.reset();
         shooterPIDController.setIZone(IZone);
-        shooterPIDController.setIntegratorRange(-.15, .15);
+        shooterPIDController.setIntegratorRange(-.10, .10);
 
         hubPosition = shooter.getHubPosition();
 
@@ -132,13 +132,13 @@ public class ShooterAutoAimCommand extends Command {
 
 
 
+        distance =  shooter.getDistance(turretPosition, hubPosition);// - 20;
 
 
         if(auto){
-            distance = shooter.getDistance(turretPosition, hubPosition);
             autoAim(distance);
 
-        } else if(!auto && joystick!=null){
+        } else if(!auto){
 
             if (joystick.getRawButtonPressed(2)) {
                 isFlywheelOn = !isFlywheelOn;
@@ -146,10 +146,8 @@ public class ShooterAutoAimCommand extends Command {
             }
 
             if (joystick.getRawButtonPressed(1)) {
-                distance =  shooter.getDistance(turretPosition, hubPosition);// - 20;
                 hoodSetpoint = shooter.calcHoodAngle(distance);
                 shooterSetpoint = shooter.calculateShooterSpeed(distance);
-                Logger.recordOutput("Distance", distance);
 
             }
 

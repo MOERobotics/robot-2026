@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -56,16 +57,22 @@ public class FuelCollectorAutoCommand extends Command {
         collectorSubsystem.setRollerPower(rollerPower);
         currentArmPosition = collectorSubsystem.getArmAngle();
 
-        if (!collectPosition) {
+        if (collectPosition) {
             targetArmPosition = Degrees.of(215);
         } else {
             targetArmPosition = Degrees.of(135);
         }
+
         fuelCollectorArmPID.setSetpoint(targetArmPosition.in(Degrees));
 
-        double armCorrection = fuelCollectorArmPID.calculate(currentArmPosition.in(Degrees));
 
-        collectorSubsystem.setArmVelocity(RPM.of(armCorrection));
+        double armCorrection = MathUtil.clamp(fuelCollectorArmPID.calculate(currentArmPosition.in(Degrees)), -0.3, 0.6);
+        if(!fuelCollectorArmPID.atSetpoint()){
+            collectorSubsystem.setArmVelocity(RPM.of(armCorrection));
+        } else {
+            targetArmPosition = Degrees.of(currentArmPosition.in(Degrees));
+            collectorSubsystem.setArmVelocity(RPM.of(0));
+        }
             Logger.recordOutput("FuelCollector/ArmCorrection", armCorrection);
             Logger.recordOutput("FuelCollector/ArmCorrectionVel", DegreesPerSecond.of(armCorrection));
 

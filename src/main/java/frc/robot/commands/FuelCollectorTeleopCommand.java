@@ -44,8 +44,8 @@ public class FuelCollectorTeleopCommand extends Command {
     @Override
     public void execute() {
 
-        int collectorINButton = 6;
-        int collectorOUTButton = 5;
+        int collectorINButton = 5;
+        int collectorOUTButton = 6;
 
 
         //TODO: CHANGE THIS it is in
@@ -97,7 +97,8 @@ public class FuelCollectorTeleopCommand extends Command {
             collectorSubsystem.setArmVelocity(RPM.of(0));
         }
 
-        Logger.recordOutput("TargetArmPos", targetArmPosition);
+        Logger.recordOutput("TargetArmPos", targetArmPosition.in(Degrees));
+        Logger.recordOutput("armSetpoint", fuelCollectorArmPID.getSetpoint());
     }
 
     @Override
