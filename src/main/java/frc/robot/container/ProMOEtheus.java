@@ -190,7 +190,6 @@ public class ProMOEtheus extends RobotContainer {
         collectorArmConfig.smartCurrentLimit(40);
         collectorArmConfig.inverted(true);
         collectorArmMotor.configure(collectorArmConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-
         collectorRollerConfig.smartCurrentLimit(50);
 
         collectorRollerMotor.configure(collectorRollerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);

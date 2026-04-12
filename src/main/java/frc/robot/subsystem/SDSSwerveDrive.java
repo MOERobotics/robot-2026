@@ -119,7 +119,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
                 this::getChassisSpeed, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 (speeds, feedforwards) -> robotDrive(speeds, true), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
                 new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                        new PIDConstants(3, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(2, 0.0, 0.0), // Translation PID constants
                         new PIDConstants(1, 0.0, 0.0) // Rotation PID constants
                 ),
                 config, // The robot configuration
@@ -188,7 +188,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
 
 
         if(!rejectUpdate){
-            this.robotOdometry.setVisionMeasurementStdDevs(VecBuilder.fill(0.9,0.9,10));
+            this.robotOdometry.setVisionMeasurementStdDevs(VecBuilder.fill(0.7,0.7,5));
             if(getSensors().turretCamPose != null && getSensors().photon1 !=null) {
                 this.robotOdometry.addVisionMeasurement(getSensors().turretCamPose.toPose2d(), getSensors().photon1.getTimestampSeconds());
             }
@@ -213,12 +213,20 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
     @Override
     public void robotDrive(ChassisSpeeds robotChassisSpeed, boolean robotCentric) {
         if(!robotCentric){
-            robotChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(robotChassisSpeed,robotGyro.getRotation2d());
+            robotChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(robotChassisSpeed, getPose().getRotation());
         }
         getSensors().sensorsChassisSpeeds = robotChassisSpeed;
 
         SwerveModuleState[] robotModuleStateToChassisSpeed = robotKinematics.toSwerveModuleStates(robotChassisSpeed);
         this.setModuleStates(robotModuleStateToChassisSpeed);
+    }
+
+    @Override
+    public void brake() {
+        swerveModules[0].brake();
+        swerveModules[1].brake();
+        swerveModules[2].brake();
+        swerveModules[3].brake();
     }
 
     @Override

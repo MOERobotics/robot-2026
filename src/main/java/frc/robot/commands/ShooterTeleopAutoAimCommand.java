@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.container.RobotContainer;
 import frc.robot.subsystem.interfaces.ShooterSubsystem;
@@ -37,7 +38,7 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
     public double deadZone = 0.4;
 
-    public double turretKP = 0.055;
+    public double turretKP = 0.10;
     public double turretKI = 0;
     public double turretKD = 0;
 
@@ -57,23 +58,40 @@ public class ShooterTeleopAutoAimCommand extends Command {
     Translation2d hubPosition = new Translation2d();
 
 
+    private Timer shootTimer = new Timer();
+    boolean feeding = false;
 
-    public ShooterTeleopAutoAimCommand(RobotContainer robot, Joystick joystick) {
+
+
+    boolean auto = false;
+
+    public ShooterTeleopAutoAimCommand(RobotContainer robot, Joystick joystick, boolean auto) {
         this.joystick = joystick;
         this.shooter = robot.getShooterSubsystem();
         this.drive = robot.getRobotSwerveDrive();
 
         shooterPIDController.setTolerance(100);
-
-
+        this.auto = auto;
         addRequirements(shooter);
 
 
 
     }
 
+    public ShooterTeleopAutoAimCommand(RobotContainer robot, Joystick joystick) {
+        this(robot, joystick, false);
+    }
+
+    public ShooterTeleopAutoAimCommand(RobotContainer robot) {
+
+        this(robot, null, true);
+    }
     @Override
     public void initialize() {
+
+        feeding = false;
+        shootTimer.reset();
+        shootTimer.stop();
 
         turretSetpoint = shooter.getSensors().turretRelativeAngle.in(Degrees);
         hoodSetpoint = shooter.getHoodAngleFromThroughbore().in(Degrees);
@@ -85,7 +103,7 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
         shooterPIDController.reset();
         shooterPIDController.setIZone(IZone);
-        shooterPIDController.setIntegratorRange(-.05, .05);
+        shooterPIDController.setIntegratorRange(-.15, .15);
 
         hubPosition = shooter.getHubPosition();
 
@@ -94,48 +112,111 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
     @Override
     public void execute() {
-
-
-
-        if (joystick.getRawButtonPressed(2)) {
-            isFlywheelOn = !isFlywheelOn;
-            shooterPIDController.reset();
-        }
-
         Pose2d pose = drive.getPose();
 
         Translation2d turretOffset = ShooterSubsystem.turretOffset.rotateBy(pose.getRotation());
 
         shooter.getSensors().turretOffset = turretOffset;
+        turretPosition = shooter.getTurretPosition(pose,turretOffset);
 
-        
+
 
         // NOTE DUMMY NUMBER ADDITION - nvm
         currDistance = shooter.getDistance(turretPosition, hubPosition);//- 20;
 
-        turretPosition = shooter.getTurretPosition(pose,turretOffset);
 
         shooter.getSensors().turretPosition = turretPosition;
 
-        if (joystick.getRawButtonPressed(1)) {
+        desiredTurretAngle = shooter.getTurretAimAngle(pose.getRotation(), turretPosition, hubPosition);
 
-            distance =  shooter.getDistance(turretPosition, hubPosition);// - 20;
 
-            hoodSetpoint = shooter.calcHoodAngle(distance);
-            shooterSetpoint = shooter.calculateShooterSpeed(distance);
 
-// turretSetpoint = desiredAngle;
-//x, y are field coordinates of CoR
-// z is field centric angle of robot
-// a is distance from CoR to Center of turrent (front-back)
-// b is distance from CoR to CoT (left-right)
-// theta = z+180 where z is robot field angle
-// phi = atan2(ty-(y+a*sin(theta)-b*cos(theta),tx-(x+a*cos(theta)+b*sin(theta)) -theta
 
-            Logger.recordOutput("Distance", distance);
+
+
+        if(auto){
+            distance = shooter.getDistance(turretPosition, hubPosition);
+            autoAim(distance);
+
+        } else if(!auto && joystick!=null){
+
+            if (joystick.getRawButtonPressed(2)) {
+                isFlywheelOn = !isFlywheelOn;
+                shooterPIDController.reset();
+            }
+
+            if (joystick.getRawButtonPressed(1)) {
+                distance =  shooter.getDistance(turretPosition, hubPosition);// - 20;
+                hoodSetpoint = shooter.calcHoodAngle(distance);
+                shooterSetpoint = shooter.calculateShooterSpeed(distance);
+                Logger.recordOutput("Distance", distance);
+
+            }
+
+            if (joystick.getRawButton(3)) {
+                shooterSetpoint -=5;
+            }
+            if (joystick.getRawButton(4)) {
+                shooterSetpoint += 5;
+            }
+            int currentPOV = joystick.getPOV();
+
+            if (currentPOV != -1) {
+
+                switch (currentPOV) {
+                    case 90:
+                        autoAim(distance);
+                        break;
+                }
+            }
+
+
+
+            if (joystick.getRawAxis(3) > 0.3) {
+                shooter.setSpindexerPower(0.75);
+            } else if (joystick.getRawAxis(2) > 0.3) {
+                shooter.setSpindexerPower(-1);
+                shooter.setTransitionPower(-0.6);
+                shooter.setRampPower(-0.6);
+
+            } else {
+                shooter.setSpindexerPower(0);
+            }
+
+            if (joystick.getRawAxis(0) > deadZone) {
+                turretSetpoint -= 0.7;
+            }
+            if (joystick.getRawAxis(0) < -deadZone) {
+                turretSetpoint += 0.7;
+            }
+
+
+            double x = pose.getX();
+            double y = pose.getY();
+            double theta = (pose.getRotation().getDegrees() +180) % 360;
+            double a = Inches.of(Math.abs(-2.172)).in(Meters);
+            double b =  Inches.of(Math.abs(8.4375)).in(Meters);;
+
+            double phi = Math.atan2(
+                    // y1 = bubY - (y + a*sin(theta) - b*cos(theta))
+                    // x1 = hubX - (x + a*cos(theta) + b*sin(theta)) - theta(in degrees)
+                    hubPosition.getY()-(y+a*Math.sin(Degrees.of(theta).in(Radian))-b*Math.cos(Degrees.of(theta).in(Radians))),
+                    hubPosition.getX()-(x+a*Math.cos(Degrees.of(theta).in(Radian))+b*sin(Degrees.of(theta).in(Radians))))  -Degrees.of(theta).in(Radian);
+
+
+            if (joystick.getRawAxis(5) > deadZone) {
+                hoodSetpoint -= 5.5 / 10.0;
+            }
+            if (joystick.getRawAxis(5) < -deadZone) {
+                hoodSetpoint += 5.5 / 10.0;
+            }
+
+
+
 
 
         }
+
 
         Logger.recordOutput("TurretPositionIThink",
                 new Pose2d(
@@ -147,88 +228,41 @@ public class ShooterTeleopAutoAimCommand extends Command {
         Logger.recordOutput("Kevin's method1", hubPosition.minus(pose.plus(new Transform2d(turretOffset, Rotation2d.kZero)).getTranslation()).getAngle());
         Logger.recordOutput("Kevin's method2", hubPosition.minus(pose.plus(new Transform2d(turretOffset, pose.getRotation())).getTranslation()).getAngle());
         Logger.recordOutput("Distance", distance);
-
-
-
-        int currentPOV = joystick.getPOV();
-        distance = shooter.getDistance(turretPosition, hubPosition);
-        desiredTurretAngle = shooter.getTurretAimAngle(pose.getRotation(), turretPosition, hubPosition);
-
-        if (currentPOV != -1) {
-            switch (currentPOV) {
-                case 90:
-
-
-
-
-
-
-                    //x, y are field coordinates of CoR
-// z is field centric angle of robot
-// a is distance from CoR to Center of turret (front-back)
-// b is distance from CoR to CoT (left-right)
-// theta = z+180 where z is robot field angle
-// phi = atan2(ty-(y+a*sin(theta)-b*cos(theta),tx-(x+a*cos(theta)+b*sin(theta)) -theta
-
-                    turretSetpoint = desiredTurretAngle;
-                    hoodSetpoint = shooter.calcHoodAngle(distance);
-                    shooterSetpoint = shooter.calculateShooterSpeed(distance);
-
-                    break;
-            }
-
-
-
-
-
-        }
-
-        double x = pose.getX();
-        double y = pose.getY();
-        double theta = (pose.getRotation().getDegrees() +180) % 360;
-        double a = Inches.of(Math.abs(-2.172)).in(Meters);
-        double b =  Inches.of(Math.abs(8.4375)).in(Meters);;
-
-        double phi = Math.atan2(
-                // y1 = bubY - (y + a*sin(theta) - b*cos(theta))
-                // x1 = hubX - (x + a*cos(theta) + b*sin(theta)) - theta(in degrees)
-                hubPosition.getY()-(y+a*Math.sin(Degrees.of(theta).in(Radian))-b*Math.cos(Degrees.of(theta).in(Radians))),
-                hubPosition.getX()-(x+a*Math.cos(Degrees.of(theta).in(Radian))+b*sin(Degrees.of(theta).in(Radians))))  -Degrees.of(theta).in(Radian);
-
-
-
-        Logger.recordOutput("Phi", phi);
-
-
         Logger.recordOutput("ConstantTurretAngle", shooter.getTurretAimAngle(pose.getRotation(), turretPosition, hubPosition));
-
-
-
+        Logger.recordOutput("CurrDistance", currDistance);
+        Logger.recordOutput("FlywheelSetpoint", shooterSetpoint);
+        Logger.recordOutput("TurretSetpoint", turretSetpoint);
         Logger.recordOutput("HoodSetpoint", hoodSetpoint);
 
-        currDistance = shooter.getDistance(turretPosition, shooter.getHubPosition());
+        shooter.getSensors().atShooterSpeed = shooterPIDController.atSetpoint();
+        shooter.getSensors().hoodAtSetpoint = hoodPIDController.atSetpoint();
+        shooter.getSensors().turretAtSetpoint = turretPIDController.atSetpoint();
 
 
-        Logger.recordOutput("CurrDistance", currDistance);
 
 
 
-        if (joystick.getRawButton(3)) {
-            shooterSetpoint -=5;
-        }
-        if (joystick.getRawButton(4)) {
-            shooterSetpoint += 5;
-        }
+        turretSetpoint = MathUtil.clamp(turretSetpoint, shooter.getSensors().turretMinAngle, shooter.getSensors().turretMaxAngle);
+        turretPIDController.setSetpoint(turretSetpoint);
+        double turretOutput = turretPIDController.calculate(shooter.getSensors().turretRelativeAngle.in(Degrees));
+        // if (turretOutput > 0.6) turretOutput = 0.;
+        shooter.setTurretPower(turretOutput);
+
+
+
+        hoodSetpoint = MathUtil.clamp(hoodSetpoint, shooter.getSensors().hoodMinAngle, shooter.getSensors().hoodMaxAngle);
+        hoodPIDController.setSetpoint(hoodSetpoint);
+        double hoodOutput = hoodPIDController.calculate(shooter.getHoodAngleFromThroughbore().in(Degrees));
+        if (hoodOutput > 0.4) hoodOutput = 0.4;
+        shooter.setHoodPower(hoodOutput);
+
+
+
 
         shooterPIDController.setSetpoint(shooterSetpoint);
 
-        Logger.recordOutput("FlywheelSetpoint", shooterSetpoint);
-        Logger.recordOutput("TurretSetpoint", turretSetpoint);
 
-
-
-
-        if (isFlywheelOn) {
+        if (isFlywheelOn || auto) {
             double currentRPM = shooter.getFlywheelSpeed().in(RPM);
             Logger.recordOutput("FlywheelI", shooterPIDController.getAccumulatedError() * kI);
             double output = shooterPIDController.calculate(currentRPM, shooterSetpoint);
@@ -237,7 +271,7 @@ public class ShooterTeleopAutoAimCommand extends Command {
             double outputMax = 1 - feedforward;
 
             if (output > outputMax) output = outputMax;
-            if (output < 0) output = 0;
+            //if (output < 0) output = 0;
 
             shooter.setFlywheelPower(feedforward + output);
             shooter.setTransitionPower(0.7);
@@ -252,64 +286,22 @@ public class ShooterTeleopAutoAimCommand extends Command {
 
         }
 
-        shooter.getSensors().atShooterSpeed = shooterPIDController.atSetpoint();
 
-        if (joystick.getRawAxis(3) > 0.3) {
-            shooter.setSpindexerPower(0.75);
-        } else if (joystick.getRawAxis(2) > 0.3) {
-            shooter.setSpindexerPower(-1);
-            shooter.setTransitionPower(-0.6);
-            shooter.setRampPower(-0.6);
+        if (auto) {
+            boolean ready = shooterPIDController.atSetpoint() &&
+                            turretPIDController.atSetpoint() &&
+                            hoodPIDController.atSetpoint();
+            Logger.recordOutput("ready", ready);
+            if (ready) {
+                if (!feeding) {
+                    shootTimer.reset();
+                    shootTimer.start();
+                    feeding = true;
+                }
 
-        } else {
-            shooter.setSpindexerPower(0);
+                shooter.setSpindexerPower(1);
+            }
         }
-
-        if (joystick.getRawAxis(0) > deadZone) {
-            turretSetpoint -= 0.7;
-        }
-        if (joystick.getRawAxis(0) < -deadZone) {
-            turretSetpoint += 0.7;
-        }
-
-        turretSetpoint = MathUtil.clamp(turretSetpoint, shooter.getSensors().turretMinAngle, shooter.getSensors().turretMaxAngle);
-
-        turretPIDController.setSetpoint(turretSetpoint);
-
-        double turretOutput = turretPIDController.calculate(shooter.getSensors().turretRelativeAngle.in(Degrees));
-
-
-
-
-        if (turretOutput > 0.6) turretOutput = 0.6;
-
-
-
-        shooter.setTurretPower(turretOutput);
-
-        if (joystick.getRawAxis(5) > deadZone) {
-            hoodSetpoint -= 5.5 / 10.0;
-        }
-        if (joystick.getRawAxis(5) < -deadZone) {
-            hoodSetpoint += 5.5 / 10.0;
-        }
-
-
-
-        hoodSetpoint = MathUtil.clamp(hoodSetpoint, shooter.getSensors().hoodMinAngle, shooter.getSensors().hoodMaxAngle);
-
-        hoodPIDController.setSetpoint(hoodSetpoint);
-
-        double hoodOutput = hoodPIDController.calculate(shooter.getHoodAngleFromThroughbore().in(Degrees));
-
-        if (hoodOutput > 0.4) hoodOutput = 0.4;
-
-        shooter.setHoodPower(hoodOutput);
-
-
-
-
-
 
     }
 
@@ -323,11 +315,23 @@ public class ShooterTeleopAutoAimCommand extends Command {
         shooter.stopFeeding();
     }
 
+
+    public void autoAim(double dist){
+        hoodSetpoint = shooter.calcHoodAngle(dist);
+        shooterSetpoint = shooter.calculateShooterSpeed(dist);
+        turretSetpoint = MathUtil.clamp(desiredTurretAngle, shooter.getSensors().turretMinAngle, shooter.getSensors().turretMaxAngle);
+    }
     @Override
     public boolean isFinished() {
-        return false;
+        return auto && feeding && shootTimer.hasElapsed(4);
     }
 
+    //x, y are field coordinates of CoR
+// z is field centric angle of robot
+// a is distance from CoR to Center of turret (front-back)
+// b is distance from CoR to CoT (left-right)
+// theta = z+180 where z is robot field angle
+// phi = atan2(ty-(y+a*sin(theta)-b*cos(theta),tx-(x+a*cos(theta)+b*sin(theta)) -theta
 
 
 }

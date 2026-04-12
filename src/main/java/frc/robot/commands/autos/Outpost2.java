@@ -6,10 +6,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 import frc.robot.Autos;
-import frc.robot.commands.ClimberAutoCommand;
-import frc.robot.commands.FuelCollectorAutoCommand;
-import frc.robot.commands.PathsFollower;
-import frc.robot.commands.ShooterAutoCommand;
+import frc.robot.commands.*;
 import frc.robot.container.RobotContainer;
 
 import static edu.wpi.first.units.Units.Seconds;
@@ -45,15 +42,15 @@ public class Outpost2 {
                 ),
                 plannerPath2,
                 Commands.deadline(
-                        Commands.run(() -> robot.getRobotSwerveDrive().stop()).withTimeout(Seconds.of(5)),
-                        new FuelCollectorAutoCommand(robot, true, true, "in")
+                        Commands.run(() -> robot.getRobotSwerveDrive().stop()).withTimeout(Seconds.of(5))
+                        //,new FuelCollectorAutoCommand(robot, true, true, "in")
                         ),
 
                 // new FuelCollectorAutoCommand(robot, true, true, "in").withTimeout(5),
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
                 plannerPath3,
                 Commands.deadline(
-                    new ShooterAutoCommand(robot),
+                        new ShooterTeleopAutoAimCommand(robot),
                     Commands.runOnce(() -> robot.getRobotSwerveDrive().stop())
                 ).withTimeout(Seconds.of(5)),
                 plannerPath4,

@@ -137,6 +137,14 @@ public class SDSSwerveModule extends MOESubsystem<SwerveModuleInputsAutoLogged> 
     }
 
     @Override
+    public void brake(){
+        setPivot(new Rotation2d(moduleOffset.unaryMinus()));
+        setSpeed(0);
+    }
+
+
+
+    @Override
     public Translation2d getCoordsOfModule() {
         return new Translation2d(this.xCordinate, this.yCordinate);
 

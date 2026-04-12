@@ -18,7 +18,7 @@ public class DriveTeleopCommand extends Command {
     private final SwerveDriveSubsystem drive;
     private final Joystick joystick;
 
-    private final double num = 2;
+    private final double num = 3;
 
     double avgX =0;
 
@@ -64,7 +64,13 @@ public class DriveTeleopCommand extends Command {
         );
 
 
-        drive.robotDrive(speeds, false);
+
+
+        if(joystick.getRawAxis(4)>0.3){
+            drive.brake();
+        } else {
+            drive.robotDrive(speeds, false);
+        }
 
 
     }

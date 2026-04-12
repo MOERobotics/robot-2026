@@ -8,10 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 import frc.robot.Autos;
-import frc.robot.commands.ClimberAutoCommand;
-import frc.robot.commands.FuelCollectorAutoCommand;
-import frc.robot.commands.PathsFollower;
-import frc.robot.commands.ShooterAutoCommand;
+import frc.robot.commands.*;
 import frc.robot.container.RobotContainer;
 
 
@@ -44,7 +41,7 @@ public class DepotCollect {
                 Commands.deadline(plannerPath2,
                         new FuelCollectorAutoCommand(robot, true, true, "in")),
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
-                new ShooterAutoCommand(robot)
+                new ShooterTeleopAutoAimCommand(robot)
         );
 
 

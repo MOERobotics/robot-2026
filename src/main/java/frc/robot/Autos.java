@@ -33,6 +33,12 @@ public class Autos {
 
         autoChooser.addOption("Auto14: Neutral Zone NRT Trench", NeutralZone.NRT_Back_Trench(robot));
 
+
+        autoChooser.addOption("Auto13: Neutral Zone ART Bump", NeutralZone.ART_Back_Bump(robot));
+
+        autoChooser.addOption("Auto14: Neutral Zone ART Trench", NeutralZone.ART_Back_Trench(robot));
+
+
         autoChooser.addOption("Auto15: Drive 15ft", DriveForward.drive15Ft(robot));
 
         autoChooser.addOption("Auto16: FlywheelRates", FlywheelRates.percent10inc(robot));

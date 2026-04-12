@@ -29,6 +29,8 @@ public interface SwerveDriveSubsystem extends Subsystem, LoggableInputs {
 
     default void photonPoses(){}
 
+    void brake();
+
 
     @AutoLog
     public static class SwerveDriveInputs {

@@ -80,7 +80,7 @@ public class ShooterAutoCommand extends Command {
         shooter.getSensors().turretPosition = turretPosition;
 
 
-        double distance = shooter.getDistance(turretOffset,hubPosition);
+        double distance = shooter.getDistance(turretPosition,hubPosition);
 
 
 
@@ -99,9 +99,22 @@ public class ShooterAutoCommand extends Command {
 
         Logger.recordOutput("flywheelOutputAuto", flywheelOutput);
 
-        shooter.getSensors().atShooterSpeed = flywheelPID.atSetpoint();
+        Logger.recordOutput("flywheelSetpointAuto", flywheelSetpoint);
 
-        shooter.setFlywheelPower(feedforward + flywheelOutput);
+
+        shooter.getSensors().atShooterSpeed = flywheelPID.atSetpoint();
+        shooter.setTransitionPower(0.6);
+        shooter.setRampPower(0.7);
+
+        Logger.recordOutput("turretPositioninAuto",
+                new Pose2d(
+                        turretPosition,
+                        new Rotation2d(pose.getRotation().plus(Rotation2d.kPi).getMeasure().plus(shooter.getSensors().turretRelativeAngle))
+                )
+        );
+
+
+         shooter.setFlywheelPower(feedforward + flywheelOutput);
 
 
 
@@ -115,7 +128,6 @@ public class ShooterAutoCommand extends Command {
 
 
         double desiredAngle = shooter.getTurretAimAngle(pose.getRotation(), turretPosition, hubPosition);
-
 
 
 
@@ -190,8 +202,8 @@ public class ShooterAutoCommand extends Command {
             }
 
             shooter.setSpindexerPower(1);
-            shooter.setTransitionPower(0.6);
-            shooter.setRampPower(0.7);
+
+
 
         }
 
@@ -201,7 +213,7 @@ public class ShooterAutoCommand extends Command {
     @Override
     public boolean isFinished() {
       //  return false;
-        return feeding && shootTimer.hasElapsed(5 /*TODO PICK A TIME*/);
+        return feeding && shootTimer.hasElapsed(10 /*TODO PICK A TIME*/);
     }
 
     @Override
@@ -210,6 +222,8 @@ public class ShooterAutoCommand extends Command {
         shooter.setTurretPower(0);
         shooter.setHoodPower(0);
         shooter.stopFeeding();
+        shooter.setRampPower(0);
+
     }
 
 

@@ -3,14 +3,12 @@ package frc.robot.commands.autos;
 
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 import frc.robot.Autos;
-import frc.robot.commands.ClimberAutoCommand;
-import frc.robot.commands.FuelCollectorAutoCommand;
-import frc.robot.commands.PathsFollower;
-import frc.robot.commands.ShooterAutoCommand;
+import frc.robot.commands.*;
 import frc.robot.container.RobotContainer;
 
 
@@ -25,16 +23,24 @@ public class NeutralZone {
     public static Autos.CommandAndPose NRT_Back_Bump(RobotContainer robot) {
         return buildNeutral(robot, "NRT-Neutral", "RN Collect", "RN Return-1 Bump", "RN Return-2 Bump", "RA-Rotation", "R BackToN Bump");
     }
+
+    public static Autos.CommandAndPose ART_Back_Trench(RobotContainer robot) {
+        return buildNeutral(robot, "ART-Neutral", "LN Collect", "LN Return-1 Bump", "LN Return-2 Bump", "LA-Rotation", "L BackToN Trench");
+    }
+    public static Autos.CommandAndPose ART_Back_Bump(RobotContainer robot) {
+        return buildNeutral(robot, "ART-Neutral", "RN Collect", "RN Return-1 Bump", "RN Return-2 Bump", "RA-Rotation", "R BackToN Bump");
+    }
+
     public static Autos.CommandAndPose NRT_Back_Trench(RobotContainer robot) {
-        return buildNeutral(robot, "ART-Neutral", "RN Collect", "RN Return-1 Bump","RN Return-2 Bump", "RA-Rotation", "R BackToN Trench");
+        return buildNeutral(robot, "NRT-Neutral", "RN Collect", "RN Return-1 Bump","RN Return-2 Bump", "RA-Rotation", "R BackToN Trench");
     }
 
     public static Autos.CommandAndPose NRT_Trench_Back_Trench(RobotContainer robot) {
-        return buildNeutral(robot, "ART-Neutral", "RN Collect", "RN Return-1 Trench","RN Return-2 Trench", "RA-Rotation", "R BackToN Trench");
+        return buildNeutral(robot, "NRT-Neutral", "RN Collect", "RN Return-1 Trench","RN Return-2 Trench", "RA-Rotation", "R BackToN Trench");
     }
 
     public static Autos.CommandAndPose NLT_Trench_Back_Trench(RobotContainer robot) {
-        return buildNeutral(robot, "ALT-Neutral", "LN Collect", "LN Return-1 Trench","LN Return-2 Trench", "LA-Rotation", "L BackToN Trench");
+        return buildNeutral(robot, "NLT-Neutral", "LN Collect", "LN Return-1 Trench","LN Return-2 Trench", "LA-Rotation", "L BackToN Trench");
     }
     public static Autos.CommandAndPose buildNeutral(
             RobotContainer robot,
@@ -65,7 +71,7 @@ public class NeutralZone {
                                 plannerPath2
                                 //,Commands.runOnce(() -> robot.getRobotSwerveDrive().stop())
                                 ),
-                        new FuelCollectorAutoCommand(robot ,true, true, "in")),
+                new FuelCollectorAutoCommand(robot ,true, true, "in")),
                 plannerPath3,
                 //Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
                 plannerPath4,
@@ -73,7 +79,7 @@ public class NeutralZone {
                 plannerPath5,
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
                 // TODO ADD SHOOT
-                new ShooterAutoCommand(robot),
+                new ShooterTeleopAutoAimCommand(robot),
                 plannerPath6,
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop())
         );

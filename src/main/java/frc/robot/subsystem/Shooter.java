@@ -45,7 +45,7 @@ public class Shooter extends MOESubsystem<ShooterInputsAutoLogged> implements Sh
     public static double TURRET_CONVERSION_FACTOR = (
             Revolutions.of(1)
                     .div(100) // corner gear ratio
-                    .div(8.266) // chain ratio
+                    .div(8.3) // chain ratio 8.266
                     .in(Rotations)
     );
     ;

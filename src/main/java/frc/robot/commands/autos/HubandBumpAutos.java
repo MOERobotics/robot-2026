@@ -10,6 +10,7 @@ import frc.robot.Autos;
 import frc.robot.commands.ClimberAutoCommand;
 import frc.robot.commands.PathsFollower;
 import frc.robot.commands.ShooterAutoCommand;
+import frc.robot.commands.ShooterTeleopAutoAimCommand;
 import frc.robot.container.RobotContainer;
 
 
@@ -42,7 +43,7 @@ public class HubandBumpAutos {
 
 
         Command auto = Commands.sequence(
-               // new ShooterAutoCommand(robot).withTimeout(5),
+                new ShooterTeleopAutoAimCommand(robot),
 
 
                 plannerPath1,

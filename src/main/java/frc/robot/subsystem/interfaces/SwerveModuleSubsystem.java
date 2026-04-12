@@ -15,6 +15,8 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 import static edu.wpi.first.units.Units.Amps;
 
 public interface SwerveModuleSubsystem extends Subsystem, LoggableInputs {
+
+    public void brake();
     public SwerveModuleState getSpeedNDirectionOfMod();// check if state is correct
 
     public void setSpeed(double moduleSpeed);
