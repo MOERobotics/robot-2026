@@ -173,13 +173,13 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
     }
 
     default double calculateShooterSpeed(double distance) {
-        return 7.4314*distance+1974.43849;
-        //y=7.4314x+1974.43849
+        return 5.60364*distance+2117.85897;
+        //y=5.60364x+2117.85897
     }
 // DELETE 10
     default double calcHoodAngle(double distance) {
-        return -0.000507929*Math.pow(distance, 2) + (0.280891*distance) + 164.98172;
-        //y=-0.000507929x^{2}+0.280891x+164.98172
+        return -0.000468716*Math.pow(distance, 2) + (0.274275*distance) + 165.23959;
+        //y=-0.000468716x^{2}+0.274275x+165.23959
     }
 
 

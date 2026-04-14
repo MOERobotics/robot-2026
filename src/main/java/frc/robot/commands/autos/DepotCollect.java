@@ -14,41 +14,42 @@ import frc.robot.container.RobotContainer;
 
 public class DepotCollect {
 
-    public static Autos.CommandAndPose depot_Collect(RobotContainer robot) {
-        return depotRunCollect(robot, "H-Shoot", "H Depot Collect");
-    }
-    /*
+
+
     public static Autos.CommandAndPose depot_front(RobotContainer robot){
-        return depotRunCollect(robot, "H-Depot", "Front Depot Collect");
+        return depotRunCollect(robot, "H-Depot", "Front Depot Collect", "Slow Front Collect");
     }
 
-     */
 
 
 
     public static Autos.CommandAndPose depotRunCollect(
             RobotContainer robot,
             String path1,
-            String path2) {
+            String path2,
+            String path3) {
 
         PathsFollower plannerPath1 = new PathsFollower(path1);
         PathsFollower plannerPath2 = new PathsFollower(path2);
+        PathsFollower plannerPath3 = new PathsFollower(path3);
+
 
         Pose2d startingPose = plannerPath1.path.getStartingHolonomicPose().get();
 
 
         Command auto = Commands.sequence(
-
-
-                plannerPath1,
-
-                Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
-                //new ShooterAutoCommand(robot).withTimeout(5),
-                Commands.deadline(plannerPath2,
+                Commands.deadline(
+                        Commands.sequence(
+                                plannerPath1,
+                                Commands.run(() -> robot.getRobotSwerveDrive().stop()).withTimeout(1),
+                                plannerPath2,
+                                Commands.run(() -> robot.getRobotSwerveDrive().stop()).withTimeout(1),
+                                plannerPath3
+                        ),
                         new FuelCollectorAutoCommand(robot, true, true, "in")),
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
                 new ShooterAutoAimCommand(robot)
-        );
+                );
 
 
 

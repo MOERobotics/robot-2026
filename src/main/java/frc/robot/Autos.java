@@ -43,7 +43,7 @@ public class Autos {
 
         autoChooser.addOption("Auto16: FlywheelRates", FlywheelRates.percent10inc(robot));
 
-        autoChooser.addOption("Auto17: DepotCollect", DepotCollect.depot_Collect(robot));
+        autoChooser.addOption("Auto17: DepotCollect", DepotCollect.depot_front(robot));
 
         autoChooser.addOption("Auto18: NeutralAuto Right", NeutralZone.NRT_Trench_Back_Trench(robot));
 

@@ -58,9 +58,9 @@ public class FuelCollectorAutoCommand extends Command {
         currentArmPosition = collectorSubsystem.getArmAngle();
 
         if (collectPosition) {
-            targetArmPosition = Degrees.of(215);
-        } else {
             targetArmPosition = Degrees.of(135);
+        } else {
+            targetArmPosition = Degrees.of(215);
         }
 
         fuelCollectorArmPID.setSetpoint(targetArmPosition.in(Degrees));
