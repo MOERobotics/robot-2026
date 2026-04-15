@@ -4,12 +4,15 @@ package frc.robot.commands.autos;
 
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
 import frc.robot.Autos;
 import frc.robot.commands.*;
 import frc.robot.container.RobotContainer;
+
+import static edu.wpi.first.units.Units.Meters;
 
 
 public class DepotCollect {
@@ -42,9 +45,10 @@ public class DepotCollect {
                         Commands.sequence(
                                 plannerPath1,
                                 Commands.run(() -> robot.getRobotSwerveDrive().stop()).withTimeout(1),
-                                plannerPath2,
-                                Commands.run(() -> robot.getRobotSwerveDrive().stop()).withTimeout(1),
-                                plannerPath3
+                             new DistDriveCommand(robot, Meters.of(1),new ChassisSpeeds(1,0,0))
+                             //   plannerPath2,
+                              //  Commands.run(() -> robot.getRobotSwerveDrive().stop()).withTimeout(1),
+                              //  plannerPath3
                         ),
                         new FuelCollectorAutoCommand(robot, true, true, "in")),
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
