@@ -25,7 +25,6 @@ public class ShooterAutoCommand extends Command {
     // copied from teleop stuff
 
 
-    // TODO tune PID for flywheel/shooter thingy
     public double kP = 2.0 / 1500.0;
     public double kI = 0.00015;
     public double kD = 0.4 / 14000;
@@ -67,8 +66,7 @@ public class ShooterAutoCommand extends Command {
     @Override
     public void execute() {
 
-        // TODO fix all this up  because rn it's all messy and hardcoded with angle values
-        // TODO make an agitate function in auto?? for jamming?
+
         Pose2d pose = drive.getPose();
 
         Translation2d turretOffset = ShooterSubsystem.turretOffset.rotateBy(pose.getRotation());
