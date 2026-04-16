@@ -27,8 +27,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.util.Optional;
 
-import static edu.wpi.first.wpilibj.util.Color.kGreen;
-import static edu.wpi.first.wpilibj.util.Color.kRed;
+import static edu.wpi.first.wpilibj.util.Color.*;
 
 public class Robot extends LoggedRobot {
 
@@ -50,8 +49,12 @@ public class Robot extends LoggedRobot {
 
     public Command ledBlinkingCommandRed = new LEDBlinkingCommand(kRed, robot);
     public Command ledBlinkingCommandGreen = new LEDBlinkingCommand(kGreen, robot);
+    public Command ledBlinkingCommandPink = new LEDBlinkingCommand(kPink, robot);
+
+
     public Command ledSolidColorCommandRed = new LEDColorCommand(robot, kRed);
     public Command ledSolidColorCommandGreen = new LEDColorCommand(robot, kGreen);
+
     public Command driveTeleopCommand = new DriveTeleopCommand(robot, driverJoystick);
     public Command controllerVibrateCommandOn = new ControllerVibrateCommandOn(driverJoystick, functionJoystick);
     public Command controllerVibrateCommandOff = new ControllerVibrateCommandOff(driverJoystick, functionJoystick);
@@ -59,6 +62,8 @@ public class Robot extends LoggedRobot {
     public Command hubLoggingCommand = new HubLoggingCommand(driverJoystick);
 
     public Command flywheelCalibration = new CalibrationCommand(robot);
+
+    public SerialReader serialReader = new SerialReader();
 
 
 
@@ -78,6 +83,7 @@ public class Robot extends LoggedRobot {
     @Override
     public void robotInit() {
 
+        serialReader.start();
         if (isSimulation())
             DriverStation.silenceJoystickConnectionWarning(true);
         MOELogger.setupLogging(this);
@@ -105,7 +111,14 @@ public class Robot extends LoggedRobot {
         scheduler.run();
         Logger.recordOutput("constantDistance", robot.getShooterSubsystem().getDistance(robot.getShooterSubsystem().getSensors().turretPosition, robot.getShooterSubsystem().getHubPosition()));
 
-
+        if (serialReader.incomingData.peek() != null) {
+            StringBuilder piData = new StringBuilder();
+            String newData;
+            while ((newData = serialReader.incomingData.poll()) != null) {
+                piData.append(newData);
+            }
+            Logger.recordOutput("piData", piData.toString());
+        }
         if (autoCommand != null) {
             Logger.recordOutput("command", autoCommand.command().getName());
 
@@ -273,6 +286,12 @@ public class Robot extends LoggedRobot {
                 );
             }
 
+
+            if(robot.getShooterSubsystem().getSensors().atShooterSpeed){
+                scheduler.schedule(ledBlinkingCommandPink);
+            }else{
+                scheduler.cancel(ledBlinkingCommandPink);
+            }
 
 
         }

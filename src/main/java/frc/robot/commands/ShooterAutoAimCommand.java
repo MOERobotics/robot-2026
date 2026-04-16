@@ -149,9 +149,7 @@ public class ShooterAutoAimCommand extends Command {
             }
 
             if (joystick.getRawButtonPressed(1)) {
-                hoodSetpoint = shooter.calcHoodAngle(distance);
-                shooterSetpoint = shooter.calculateShooterSpeed(distance);
-
+                autoAim(distance);
             }
 
             if (joystick.getRawButton(3)) {

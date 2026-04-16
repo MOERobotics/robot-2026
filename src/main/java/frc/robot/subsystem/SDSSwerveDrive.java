@@ -186,8 +186,6 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
 
         }
         Logger.recordOutput("kevin pi voltage", kevin_pi_voltage_monitor.getVoltage());
-        //Logger.recordOutput("pi temp", kevin_pi_voltage_monitor.getT);
-
 
         if (!rejectUpdate) {
             this.robotOdometry.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 5));

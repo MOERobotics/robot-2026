@@ -8,7 +8,7 @@ import frc.robot.subsystem.interfaces.ClimberSubsystem;
 
 import static edu.wpi.first.units.Units.InchesPerSecond;
 
-public class ClimberAutoCommand extends Command {
+public class        ClimberAutoCommand extends Command {
     public ClimberSubsystem climber;
     public boolean direction;
     public double power;
