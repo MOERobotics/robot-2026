@@ -62,7 +62,7 @@ public class NeutralZone {
 
         Command auto = Commands.sequence(
 
-                new FuelCollectorAutoCommand(robot, true, true, "stop").withTimeout(1),
+                new FuelCollectorAutoCommand(robot, true, true, "stop").withTimeout(0.5),
                 Commands.deadline(
                         Commands.sequence(
                                 plannerPath1,

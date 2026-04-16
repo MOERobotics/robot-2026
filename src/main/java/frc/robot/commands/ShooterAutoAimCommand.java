@@ -98,8 +98,11 @@ public class ShooterAutoAimCommand extends Command {
         shooterSetpoint = 3000;
         isFlywheelOn = false;
 
+        turretPIDController.setTolerance(0.25);
         hoodPIDController.setSetpoint(hoodSetpoint);
         turretPIDController.setSetpoint(turretSetpoint);
+        hoodPIDController.setTolerance(0.25);
+
 
         shooterPIDController.reset();
         shooterPIDController.setIZone(IZone);

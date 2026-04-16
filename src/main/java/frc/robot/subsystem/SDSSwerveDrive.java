@@ -24,6 +24,7 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.util.Arrays;
 import java.util.List;
@@ -46,10 +47,10 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
 
     private AnalogInput kevin_pi_voltage_monitor = new AnalogInput(3);
 
-    double num=2;
+    double num = 2;
 
     Transform3d turretCamLocation = new Transform3d(
-           Inches.of(-10.7472441),
+            Inches.of(-10.7472441),
             Inches.of(12.4905512),
             Inches.of(8.996732),
             new Rotation3d(
@@ -90,7 +91,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
     PhotonPoseEstimator estimator2 = new PhotonPoseEstimator(fieldLayout, swerveCamLocation);
 
 
-    double diffAngleAvg =0;
+    double diffAngleAvg = 0;
 
     // Pigeon2SimState simGyro;
 
@@ -99,7 +100,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
         super(new SwerveDriveInputsAutoLogged());
         this.robotGyro = robotGyro;
         this.swerveModules = swerveModules;
-       // simGyro = robotGyro.getSimState();
+        // simGyro = robotGyro.getSimState();
         robotKinematics = new SwerveDriveKinematics(
                 Arrays.stream(swerveModules).map(SwerveModuleSubsystem::getCoordsOfModule).toArray(Translation2d[]::new)
         );
@@ -109,7 +110,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
                 new Pose2d()
         );
         RobotConfig config = null;
-        try{
+        try {
             config = RobotConfig.fromGUISettings();
         } catch (Exception e) {
             // Handle exception as needed
@@ -146,8 +147,6 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
         diffAngleAvg = robotGyro.getRotation2d().getRadians();
 
 
-
-
     }
 
     @Override
@@ -165,49 +164,46 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
         boolean rejectUpdate = false;
         photonPoses();
 
-        if(getSensors().photon1 == null &&getSensors().photon2 == null){
+        if (getSensors().photon1 == null && getSensors().photon2 == null) {
             rejectUpdate = true;
         }
 
 
-
-        if(robotGyro.getAngularVelocityZWorld().getValue().abs(DegreesPerSecond)>=360){
+        if (robotGyro.getAngularVelocityZWorld().getValue().abs(DegreesPerSecond) >= 360) {
             rejectUpdate = true;
         }
-
 
 
         Logger.recordOutput("rejectUpdate", rejectUpdate);
 
-        if(getSensors().photon1!=null){
+        if (getSensors().photon1 != null) {
             Logger.recordOutput("photon1Timestamp", getSensors().photon1.getTimestampSeconds());
 
         }
 
-        if(getSensors().photon2!=null){
+        if (getSensors().photon2 != null) {
             Logger.recordOutput("photon2Timestamp", getSensors().photon2.getTimestampSeconds());
 
         }
         Logger.recordOutput("kevin pi voltage", kevin_pi_voltage_monitor.getVoltage());
+        //Logger.recordOutput("pi temp", kevin_pi_voltage_monitor.getT);
 
 
-
-        if(!rejectUpdate){
-            this.robotOdometry.setVisionMeasurementStdDevs(VecBuilder.fill(0.7,0.7,5));
-            if(getSensors().turretCamPose != null && getSensors().photon1 !=null) {
+        if (!rejectUpdate) {
+            this.robotOdometry.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 5));
+            if (getSensors().turretCamPose != null && getSensors().photon1 != null) {
                 this.robotOdometry.addVisionMeasurement(getSensors().turretCamPose.toPose2d(), getSensors().photon1.getTimestampSeconds());
             }
-            if(getSensors().swerveCamPose != null && getSensors().photon2 !=null) {
+            if (getSensors().swerveCamPose != null && getSensors().photon2 != null) {
                 this.robotOdometry.addVisionMeasurement(getSensors().swerveCamPose.toPose2d(), getSensors().photon2.getTimestampSeconds());
             }
         }
 
 
-       // diffAngleAvg = (diffAngleAvg * ((num-1)/num)) + ((getPose().getRotation().getRadians()- getSensors().turretCamPose.getRotation().getAngle())/num);
-      //  this.setPose(new Pose2d(getPose().getX(), getPose().getY(), (getPose().getRotation().minus(new Rotation2d(diffAngleAvg)))));
+        // diffAngleAvg = (diffAngleAvg * ((num-1)/num)) + ((getPose().getRotation().getRadians()- getSensors().turretCamPose.getRotation().getAngle())/num);
+        //  this.setPose(new Pose2d(getPose().getX(), getPose().getY(), (getPose().getRotation().minus(new Rotation2d(diffAngleAvg)))));
 
     }
-
 
 
     @Override
@@ -217,7 +213,7 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
 
     @Override
     public void robotDrive(ChassisSpeeds robotChassisSpeed, boolean robotCentric) {
-        if(!robotCentric){
+        if (!robotCentric) {
             robotChassisSpeed = ChassisSpeeds.fromFieldRelativeSpeeds(robotChassisSpeed, getPose().getRotation());
         }
         getSensors().sensorsChassisSpeeds = robotChassisSpeed;
@@ -285,19 +281,19 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
 
 
     @Override
-    public void photonPoses(){
+    public void photonPoses() {
         List<PhotonPipelineResult> results1 = turretCam.getAllUnreadResults();
 
         if (!results1.isEmpty()) {
             Logger.recordOutput(
                     "turretCamResults",
                     PhotonPipelineResult.proto,
-                    results1.get(results1.size()-1)
+                    results1.get(results1.size() - 1)
             );
-            getSensors().photon1 = results1.get(results1.size()-1);
+            getSensors().photon1 = results1.get(results1.size() - 1);
             getSensors().hasNewPhoton1 = true;
 
-        } else{
+        } else {
 
 
             getSensors().hasNewPhoton1 = false;
@@ -310,12 +306,12 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
             Logger.recordOutput(
                     "swerveCamResults",
                     PhotonPipelineResult.proto,
-                    results2.get(results2.size()-1)
+                    results2.get(results2.size() - 1)
             );
-            getSensors().photon2 = results2.get(results2.size()-1);
+            getSensors().photon2 = results2.get(results2.size() - 1);
             getSensors().hasNewPhoton2 = true;
 
-        } else{
+        } else {
             getSensors().hasNewPhoton2 = false;
             getSensors().photon2 = null;
 
@@ -323,11 +319,10 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
         }
 
 
+        if (getSensors().hasNewPhoton1 && getSensors().photon1 != null && getSensors().photon1.hasTargets()) {
 
-        if(getSensors().hasNewPhoton1 && getSensors().photon1 != null && getSensors().photon1.hasTargets() ) {
 
-
-            var photonTargetTurret = getSensors().photon1.getBestTarget();
+            var photonTargetTurret = getBestTarget(getSensors().photon1);
             Pose3d photonBestTurret = null;
 
             if (photonTargetTurret != null) {
@@ -347,25 +342,18 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
             } else {
 
                 getSensors().turretCamPose = (
-                        estimator1.estimateCoprocMultiTagPose(getSensors().photon1).
-                                map((erp) -> erp.estimatedPose).orElse(photonBestTurret)
-                );
-
-                getSensors().turretCamPose = (
                         photonBestTurret
                 );
             }
-        } else{
-            getSensors().photon1 =null;
+        } else {
+            getSensors().photon1 = null;
 
         }
 
 
+        if (getSensors().hasNewPhoton2 && getSensors().photon2 != null && getSensors().photon2.hasTargets()) {
 
-
-        if(getSensors().hasNewPhoton2 && getSensors().photon2 != null && getSensors().photon2.hasTargets()) {
-
-            var photonTargetSwerve = getSensors().photon2.getBestTarget();
+            var photonTargetSwerve = getBestTarget(getSensors().photon2);
 
             Pose3d photonBestSwerve = null;
 
@@ -390,14 +378,40 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
 
             }
 
-        } else{
+        } else {
 
-            getSensors().photon2 =null;
+            getSensors().photon2 = null;
 
         }
 
 
     }
+
+    public PhotonTrackedTarget getBestTarget(PhotonPipelineResult photonPipelineResult) {
+
+        List<PhotonTrackedTarget> targets = photonPipelineResult.targets;
+        PhotonTrackedTarget bestTarget=null;
+
+        for (PhotonTrackedTarget target : targets){
+            if (bestTarget==null) {
+                bestTarget= target;
+                continue;
+            }
+            if(target.poseAmbiguity < bestTarget.poseAmbiguity){
+                bestTarget = target;
+            }
+
+        }
+
+
+
+
+
+        return bestTarget;
+
+    }
+
+
 
 
 }
