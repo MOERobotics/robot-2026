@@ -27,8 +27,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.util.Optional;
 
-import static edu.wpi.first.wpilibj.util.Color.kGreen;
-import static edu.wpi.first.wpilibj.util.Color.kRed;
+import static edu.wpi.first.wpilibj.util.Color.*;
 
 public class Robot extends LoggedRobot {
 
@@ -47,7 +46,7 @@ public class Robot extends LoggedRobot {
 
     private Command shooterTeleopAutoAimCommand = new ShooterAutoAimCommand(robot, functionJoystick);
 
-
+    public Command ledBlinkingCommandPink = new LEDBlinkingCommand(kPink, robot);
     public Command ledBlinkingCommandRed = new LEDBlinkingCommand(kRed, robot);
     public Command ledBlinkingCommandGreen = new LEDBlinkingCommand(kGreen, robot);
     public Command ledSolidColorCommandRed = new LEDColorCommand(robot, kRed);
@@ -199,6 +198,10 @@ public class Robot extends LoggedRobot {
             boolean teamAllianceWonB = DriverStation.getGameSpecificMessage().equals("B") && DriverStation.getAlliance().equals(Optional.of(DriverStation.Alliance.Blue));
             boolean teamAllianceWon = teamAllianceWonR || teamAllianceWonB;
             Logger.recordOutput("teamAllianceWon", teamAllianceWon);
+
+            if(robot.getShooterSubsystem().getSensors().atShooterSpeed)
+            {scheduler.schedule(ledBlinkingCommandPink);}
+            else{scheduler.cancel(ledBlinkingCommandPink);}
 
         if (!teamAllianceWon) {
             if (DriverStation.getMatchTime() <= 140/*2:20*/ && DriverStation.getMatchTime() > 110/*1:50*/) {
