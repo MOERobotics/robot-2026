@@ -209,11 +209,6 @@ public class ShooterAutoAimCommand extends Command {
             if (joystick.getRawAxis(5) < -deadZone) {
                 hoodSetpoint += 5.5 / 10.0;
             }
-
-
-
-
-
         }
 
 
@@ -322,7 +317,7 @@ public class ShooterAutoAimCommand extends Command {
     }
     @Override
     public boolean isFinished() {
-        return auto && feeding && shootTimer.hasElapsed(4);
+        return auto && feeding && shootTimer.hasElapsed(5);
     }
 
     //x, y are field coordinates of CoR

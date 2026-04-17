@@ -27,8 +27,6 @@ public class LED implements LEDSubsystem {
     private void setPattern(LEDPattern pattern) {
         pattern.applyTo(moeLEDBuffer);
         moeLED.setData(moeLEDBuffer);
-
-
     }
     public void setPatternBlinking(Color color){
         LEDPattern blinking = LEDPattern.solid(color);

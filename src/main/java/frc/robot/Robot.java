@@ -107,6 +107,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void robotPeriodic() {
+
         MOELogger.log();
         scheduler.run();
         Logger.recordOutput("constantDistance", robot.getShooterSubsystem().getDistance(robot.getShooterSubsystem().getSensors().turretPosition, robot.getShooterSubsystem().getHubPosition()));

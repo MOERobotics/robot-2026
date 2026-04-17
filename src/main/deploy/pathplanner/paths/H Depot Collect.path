@@ -3,53 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.9926264418810997,
+        "x": 2.3225909494232475,
         "y": 4.025
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.613682076688518,
-        "y": 4.985991440798859
+        "x": 2.523788819875776,
+        "y": 5.745181898846495
       },
       "isLocked": false,
       "linkedName": "H Shot"
     },
     {
       "anchor": {
-        "x": 1.1537375178316684,
-        "y": 5.115378031383738
+        "x": 0.7451996450754208,
+        "y": 7.274285714285714
       },
       "prevControl": {
-        "x": 1.2242790988295564,
-        "y": 4.875536655990921
-      },
-      "nextControl": {
-        "x": 0.9666512935525338,
-        "y": 5.751471193932791
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 0.9596576319543504,
-        "y": 7.107931526390871
-      },
-      "prevControl": {
-        "x": 0.9208416547788867,
-        "y": 6.771526390870188
+        "x": 3.481490683229813,
+        "y": 7.902023070097603
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1.0,
-      "rotationDegrees": 115.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -63,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 115.0
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": "Depot",
