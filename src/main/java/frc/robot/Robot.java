@@ -114,10 +114,12 @@ public class Robot extends LoggedRobot {
 
         if (serialReader.incomingData.peek() != null) {
             StringBuilder piData = new StringBuilder();
+            piData.append("New data: <<<<");
             String newData;
             while ((newData = serialReader.incomingData.poll()) != null) {
                 piData.append(newData);
             }
+            piData.append(">>>>");
             Logger.recordOutput("piData", piData.toString());
         }
         if (autoCommand != null) {

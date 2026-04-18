@@ -56,7 +56,7 @@ public class DepotCollect {
                         Commands.sequence(
                              plannerPath2,
                                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
-                             new DistDriveCommand(robot, Meters.of(1),new ChassisSpeeds(1,0,0))
+                             new DistDriveCommand(robot, Meters.of(1),new ChassisSpeeds(1.5,0,0))
                              //   plannerPath2,
                                 //  Commands.run(() -> robot.getRobotSwerveDrive().stop()).withTimeout(1),
                               //  plannerPath3
