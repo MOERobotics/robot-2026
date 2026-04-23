@@ -339,46 +339,47 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
     }
 
 
-    public void addVisionMeasurements(PhotonPipelineResult photonPipelineResult, Transform3d cameraPosition, Pose3d outputPose){
+    public void addVisionMeasurements(PhotonPipelineResult photonPipelineResult, Transform3d cameraPosition, Pose3d outputPose) {
 
-        assert photonPipelineResult !=null;
-        assert cameraPosition !=null;
+        if (photonPipelineResult != null) {
+            if (cameraPosition != null) {
 
-        if (photonPipelineResult.hasTargets()) {
+                if (photonPipelineResult.hasTargets()) {
 
-            var photonBestTarget = getBestTarget(photonPipelineResult);
+                    var photonBestTarget = getBestTarget(photonPipelineResult);
 
 
-            assert photonBestTarget != null;
+                    if (photonBestTarget != null) {
 
-            Pose3d photonBestPose = PhotonUtils.estimateFieldToRobotAprilTag(
-                    photonBestTarget.bestCameraToTarget,
-                    fieldLayout.getTagPose(photonBestTarget.fiducialId).get(),
-                    cameraPosition
-            );
+                        Pose3d photonBestPose = PhotonUtils.estimateFieldToRobotAprilTag(
+                                photonBestTarget.bestCameraToTarget,
+                                fieldLayout.getTagPose(photonBestTarget.fiducialId).get(),
+                                cameraPosition
+                        );
 
-            double ambiguity = photonBestTarget.poseAmbiguity;
-            double distance = photonBestTarget.bestCameraToTarget.getTranslation().getNorm();
+                        double ambiguity = photonBestTarget.poseAmbiguity;
+                        double distance = photonBestTarget.bestCameraToTarget.getTranslation().getNorm();
 
-            if (distance > MAX_DISTANCE || ambiguity > MAX_AMBIGUITY) {
-                outputPose = null;
-            } else {
-                outputPose = photonBestPose;
+                        if (distance > MAX_DISTANCE || ambiguity > MAX_AMBIGUITY) {
+                            outputPose = null;
+                        } else {
+                            outputPose = photonBestPose;
+                        }
+                    } else {
+                        photonPipelineResult = null;
+                    }
+                }
+
+                if (photonPipelineResult != null) {
+                    if (outputPose != null) {
+                        if (robotGyro.getAngularVelocityZWorld().getValue().abs(DegreesPerSecond) < 360) {
+                            this.robotOdometry.addVisionMeasurement(outputPose.toPose2d(), photonPipelineResult.getTimestampSeconds());
+                        }
+                    }
+                }
+
             }
-        } else {
-            photonPipelineResult = null;
-        }
-
-        assert photonPipelineResult !=null;
-        assert outputPose != null;
-
-
-        if (robotGyro.getAngularVelocityZWorld().getValue().abs(DegreesPerSecond) < 360) {
-            this.robotOdometry.addVisionMeasurement(outputPose.toPose2d(), photonPipelineResult.getTimestampSeconds());
         }
     }
-
-
-
 
 }
