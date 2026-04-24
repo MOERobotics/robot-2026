@@ -47,7 +47,7 @@ public class Autos {
 
         autoChooser.addOption("Auto18: NeutralAuto Right", NeutralZone.NRT_Trench_Back_Trench(robot));
 
-        autoChooser.addOption("Auto19: NeutralAuto Left", NeutralZone.NLT_Trench_Back_Trench(robot));
+        autoChooser.setDefaultOption("Auto19: NeutralAuto Left", NeutralZone.NLT_Trench_Back_Trench(robot));
 
 
         //  autoChooser.setDefaultOption("Auto15: Drive 15ft", DriveForward.drive15Ft(robot));

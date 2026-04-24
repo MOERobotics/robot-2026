@@ -27,7 +27,10 @@ public class Shoot {
 
 
         Command auto = Commands.sequence(
-                plannerPath1,
+                Commands.deadline(plannerPath1,
+                        new FuelCollectorAutoCommand(robot,true,true, "stop")
+                ),
+                Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
                 new ShooterAutoAimCommand(robot)
 
 

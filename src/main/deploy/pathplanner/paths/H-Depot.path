@@ -8,11 +8,27 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.628411712511091,
-        "y": 4.4977551020408155
+        "x": 3.4956348074179737,
+        "y": 5.4517831669044226
       },
       "isLocked": false,
       "linkedName": "H"
+    },
+    {
+      "anchor": {
+        "x": 2.5769900142653355,
+        "y": 5.993295454545455
+      },
+      "prevControl": {
+        "x": 3.246728144433214,
+        "y": 5.993295454545455
+      },
+      "nextControl": {
+        "x": 2.326990014265336,
+        "y": 5.993295454545455
+      },
+      "isLocked": false,
+      "linkedName": null
     },
     {
       "anchor": {
@@ -20,15 +36,20 @@
         "y": 5.993295454545455
       },
       "prevControl": {
-        "x": 2.8846875,
-        "y": 5.488261363636363
+        "x": 2.2719934629382608,
+        "y": 5.993295454545455
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "front-depot"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.9253731343283581,
+      "rotationDegrees": 180.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
