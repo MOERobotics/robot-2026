@@ -194,8 +194,8 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
         this.robotOdometry.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 5));
 
         // make sure cams work and decide if we trust to add them
-        addVisionMeasurements(getSensors().photon1, turretCamLocation, getSensors().turretCamPose);
-        addVisionMeasurements(getSensors().photon2, swerveCamLocation, getSensors().swerveCamPose);
+        addVisionMeasurements(getSensors().photon1, turretCamLocation, "turret");
+        addVisionMeasurements(getSensors().photon2, swerveCamLocation, "swerve");
 
         /*
         if (!rejectUpdate || true) {
@@ -339,14 +339,16 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
     }
 
 
-    public void addVisionMeasurements(PhotonPipelineResult photonPipelineResult, Transform3d cameraPosition, Pose3d outputPose) {
-
+    public void addVisionMeasurements(PhotonPipelineResult photonPipelineResult, Transform3d cameraPosition, String sensorPoseStr) {
+        Pose3d outputPose = null;
         if (photonPipelineResult != null) {
             if (cameraPosition != null) {
+                
 
                 if (photonPipelineResult.hasTargets()) {
 
                     var photonBestTarget = getBestTarget(photonPipelineResult);
+                    Logger.recordOutput("bestTarget", photonBestTarget);
 
 
                     if (photonBestTarget != null) {
@@ -357,15 +359,24 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
                                 cameraPosition
                         );
 
+                        Logger.recordOutput("bestPose", photonBestPose);
+
                         double ambiguity = photonBestTarget.poseAmbiguity;
                         double distance = photonBestTarget.bestCameraToTarget.getTranslation().getNorm();
-
+                        
                         if (distance > MAX_DISTANCE || ambiguity > MAX_AMBIGUITY) {
                             outputPose = null;
                         } else {
                             outputPose = photonBestPose;
                         }
-                    } else {
+                        if (sensorPoseStr.equals("turret")){
+                            getSensors().turretCamPose = outputPose;
+                        }
+                        if (sensorPoseStr.equals("swerve")){
+                            getSensors().swerveCamPose = outputPose;
+                        }
+                    }
+                    }else {
                         photonPipelineResult = null;
                     }
                 }
@@ -382,4 +393,4 @@ public class SDSSwerveDrive extends MOESubsystem<SwerveDriveInputsAutoLogged> im
         }
     }
 
-}
+

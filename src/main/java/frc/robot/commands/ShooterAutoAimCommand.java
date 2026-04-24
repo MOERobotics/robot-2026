@@ -16,6 +16,7 @@ import frc.robot.subsystem.interfaces.SwerveDriveSubsystem;
 import org.littletonrobotics.junction.Logger;
 
 import static edu.wpi.first.units.Units.*;
+import static java.lang.Math.floor;
 import static java.lang.Math.sin;
 
 public class ShooterAutoAimCommand extends Command {
@@ -122,9 +123,6 @@ public class ShooterAutoAimCommand extends Command {
         shooter.getSensors().turretOffset = turretOffset;
         turretPosition = shooter.getTurretPosition(pose,turretOffset);
 
-
-
-        // NOTE DUMMY NUMBER ADDITION - nvm
         currDistance = shooter.getDistance(turretPosition, hubPosition);//- 20;
 
 
@@ -189,20 +187,6 @@ public class ShooterAutoAimCommand extends Command {
                 turretSetpoint += 0.7;
             }
 
-
-            double x = pose.getX();
-            double y = pose.getY();
-            double theta = (pose.getRotation().getDegrees() +180) % 360;
-            double a = Inches.of(Math.abs(-2.172)).in(Meters);
-            double b =  Inches.of(Math.abs(8.4375)).in(Meters);;
-
-            double phi = Math.atan2(
-                    // y1 = bubY - (y + a*sin(theta) - b*cos(theta))
-                    // x1 = hubX - (x + a*cos(theta) + b*sin(theta)) - theta(in degrees)
-                    hubPosition.getY()-(y+a*Math.sin(Degrees.of(theta).in(Radian))-b*Math.cos(Degrees.of(theta).in(Radians))),
-                    hubPosition.getX()-(x+a*Math.cos(Degrees.of(theta).in(Radian))+b*sin(Degrees.of(theta).in(Radians))))  -Degrees.of(theta).in(Radian);
-
-
             if (joystick.getRawAxis(5) > deadZone) {
                 hoodSetpoint -= 5.5 / 10.0;
             }
@@ -218,15 +202,26 @@ public class ShooterAutoAimCommand extends Command {
                         new Rotation2d(pose.getRotation().plus(Rotation2d.kPi).getMeasure().plus(shooter.getSensors().turretRelativeAngle))
                 )
         );
+
+
+        shooter.getSensors().turretPose =  new Pose2d(
+                turretPosition,
+                new Rotation2d(pose.getRotation().plus(Rotation2d.kPi).getMeasure().plus(shooter.getSensors().turretRelativeAngle))
+        );
+
+
         Logger.recordOutput("TargetTurretAngle",  hubPosition.minus(turretPosition).getAngle());
-        Logger.recordOutput("Kevin's method1", hubPosition.minus(pose.plus(new Transform2d(turretOffset, Rotation2d.kZero)).getTranslation()).getAngle());
-        Logger.recordOutput("Kevin's method2", hubPosition.minus(pose.plus(new Transform2d(turretOffset, pose.getRotation())).getTranslation()).getAngle());
-        Logger.recordOutput("Distance", distance);
+
         Logger.recordOutput("ConstantTurretAngle", shooter.getTurretAimAngle(pose.getRotation(), turretPosition, hubPosition));
-        Logger.recordOutput("CurrDistance", currDistance);
-        Logger.recordOutput("FlywheelSetpoint", shooterSetpoint);
-        Logger.recordOutput("TurretSetpoint", turretSetpoint);
-        Logger.recordOutput("HoodSetpoint", hoodSetpoint);
+
+
+
+        shooter.getSensors().distanceFromHub = distance;
+
+        shooter.getSensors().flywheelSetpoint = shooterSetpoint;
+        shooter.getSensors().turretSetpoint = turretSetpoint;
+        shooter.getSensors().hoodSetpoint = hoodSetpoint;
+
 
         shooter.getSensors().atShooterSpeed = shooterPIDController.atSetpoint();
         shooter.getSensors().hoodAtSetpoint = hoodPIDController.atSetpoint();
@@ -239,7 +234,6 @@ public class ShooterAutoAimCommand extends Command {
         turretSetpoint = MathUtil.clamp(turretSetpoint, shooter.getSensors().turretMinAngle, shooter.getSensors().turretMaxAngle);
         turretPIDController.setSetpoint(turretSetpoint);
         double turretOutput = turretPIDController.calculate(shooter.getSensors().turretRelativeAngle.in(Degrees));
-        // if (turretOutput > 0.6) turretOutput = 0.;
         shooter.setTurretPower(turretOutput);
 
 
@@ -265,7 +259,6 @@ public class ShooterAutoAimCommand extends Command {
             double outputMax = 1 - feedforward;
 
             if (output > outputMax) output = outputMax;
-            //if (output < 0) output = 0;
 
             shooter.setFlywheelPower(feedforward + output);
             shooter.setTransitionPower(0.7);
