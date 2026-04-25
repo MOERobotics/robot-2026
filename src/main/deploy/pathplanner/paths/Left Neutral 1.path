@@ -1,0 +1,170 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.46,
+        "y": 7.325
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.002011412268189,
+        "y": 7.4702139800285305
+      },
+      "isLocked": false,
+      "linkedName": "NLT"
+    },
+    {
+      "anchor": {
+        "x": 7.66188302425107,
+        "y": 6.836219686162625
+      },
+      "prevControl": {
+        "x": 7.66188302425107,
+        "y": 7.086219686162625
+      },
+      "nextControl": {
+        "x": 7.66188302425107,
+        "y": 6.586219686162625
+      },
+      "isLocked": false,
+      "linkedName": "LN"
+    },
+    {
+      "anchor": {
+        "x": 7.804208273894435,
+        "y": 4.455506419400857
+      },
+      "prevControl": {
+        "x": 7.949517822324209,
+        "y": 4.658939787202541
+      },
+      "nextControl": {
+        "x": 6.698063870727461,
+        "y": 2.906904254967092
+      },
+      "isLocked": false,
+      "linkedName": "LN-Collecting"
+    },
+    {
+      "anchor": {
+        "x": 5.7340228245363765,
+        "y": 7.3667047075606265
+      },
+      "prevControl": {
+        "x": 6.42370793962388,
+        "y": 7.255862456921563
+      },
+      "nextControl": {
+        "x": 1.3866333808844509,
+        "y": 8.065392296718972
+      },
+      "isLocked": false,
+      "linkedName": "L-Return1 Trench"
+    },
+    {
+      "anchor": {
+        "x": 3.2237018694196427,
+        "y": 5.461982485288231
+      },
+      "prevControl": {
+        "x": 2.2237018694196427,
+        "y": 5.461982485288231
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "LB-Shoot"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.20469083155650758,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 1.0831556503198148,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 1.9360341151385931,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 2.9168443496801593,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 3.343283582089537,
+      "rotationDegrees": 180.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Start",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.9723160027008612,
+      "constraints": {
+        "maxVelocity": 1.5,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 360.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    },
+    {
+      "name": "Collect",
+      "minWaypointRelativePos": 0.9723160027008777,
+      "maxWaypointRelativePos": 2.0202565833895996,
+      "constraints": {
+        "maxVelocity": 0.5,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 360.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    },
+    {
+      "name": "End",
+      "minWaypointRelativePos": 2.020256583389571,
+      "maxWaypointRelativePos": 3.8568534773801515,
+      "constraints": {
+        "maxVelocity": 2.5,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 360.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Run Roller",
+      "waypointRelativePos": 1.1019581363943283,
+      "endWaypointRelativePos": 2.2363268062120016,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 1.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 360.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 145.0
+  },
+  "reversed": false,
+  "folder": "Megapaths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}
