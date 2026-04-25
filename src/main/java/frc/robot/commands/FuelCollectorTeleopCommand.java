@@ -87,6 +87,14 @@ public class FuelCollectorTeleopCommand extends Command {
         // -0.5 ,0.7
         if (!fuelCollectorArmPID.atSetpoint()) {
             double armCorrection = MathUtil.clamp(fuelCollectorArmPID.calculate(currentArmPosition.in(Degrees)), -0.3, 0.6);
+            /*
+            if(shouldGoToStartPosition){
+                armCorrection += 0.15;
+            }
+
+             */
+
+
 
             collectorSubsystem.setArmVelocity(RPM.of(armCorrection));
             Logger.recordOutput("FuelCollector/ArmCorrection", DegreesPerSecond.of(armCorrection));

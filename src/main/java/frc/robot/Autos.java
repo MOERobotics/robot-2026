@@ -4,6 +4,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.commands.FlywheelRatesCommand;
 import frc.robot.commands.autos.*;
 import frc.robot.container.RobotContainer;
 
@@ -12,6 +14,14 @@ import java.util.function.Consumer;
 public class Autos {
     public static SendableChooser<CommandAndPose> autoChooser = new SendableChooser<>();
     public static void setupAutos (RobotContainer robot){
+
+        CommandAndPose calibration = new CommandAndPose(Commands.sequence(
+                new FlywheelRatesCommand(robot,0.4),
+                new FlywheelRatesCommand(robot,0.5),
+                new FlywheelRatesCommand(robot,0.6),
+                new FlywheelRatesCommand(robot,0.7),
+                new FlywheelRatesCommand(robot,0.8),
+                new FlywheelRatesCommand(robot,0.9)), new Pose2d());
 
    //     autoChooser.setDefaultOption("Auto1: H_RC ", HubandBumpAutos.H_RC(robot));
      //   autoChooser.addOption("Auto2: H_LC ", HubandBumpAutos.H_LC(robot));
@@ -43,11 +53,15 @@ public class Autos {
 
      //   autoChooser.addOption("Auto16: FlywheelRates", FlywheelRates.percent10inc(robot));
 
-        autoChooser.addOption("Auto17: DepotCollect", DepotCollect.depot_front(robot));
+        autoChooser.addOption("Auto17: DepotCollect", DepotCollect.depot_front2(robot));
+
+        autoChooser.addOption("Hub shoot -> depot", ShootDepotCollect.shoot(robot));
 
         autoChooser.addOption("Auto18: NeutralAuto Right", NeutralZone.NRT_Trench_Back_Trench(robot));
 
         autoChooser.setDefaultOption("Auto19: NeutralAuto Left", NeutralZone.NLT_Trench_Back_Trench(robot));
+
+        autoChooser.addOption("Flywheel Calibration", calibration);
 
 
         //  autoChooser.setDefaultOption("Auto15: Drive 15ft", DriveForward.drive15Ft(robot));

@@ -107,16 +107,19 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void robotPeriodic() {
+
         MOELogger.log();
         scheduler.run();
         Logger.recordOutput("constantDistance", robot.getShooterSubsystem().getDistance(robot.getShooterSubsystem().getSensors().turretPosition, robot.getShooterSubsystem().getHubPosition()));
 
         if (serialReader.incomingData.peek() != null) {
             StringBuilder piData = new StringBuilder();
+            piData.append("New data: <<<<");
             String newData;
             while ((newData = serialReader.incomingData.poll()) != null) {
                 piData.append(newData);
             }
+            piData.append(">>>>");
             Logger.recordOutput("piData", piData.toString());
         }
         if (autoCommand != null) {

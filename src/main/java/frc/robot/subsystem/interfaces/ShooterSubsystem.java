@@ -1,5 +1,6 @@
 package frc.robot.subsystem.interfaces;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -65,6 +66,14 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
         public double transitionPower=  0;
         public double hoodPower=  0;
         public double rampPower=  0;
+
+        public double flywheelSetpoint=  0;
+        public double hoodSetpoint=  0;
+        public double turretSetpoint=  0;
+
+        public double distanceFromHub=  0;
+
+        public Pose2d turretPose=  new Pose2d();
 
 
 
@@ -169,7 +178,8 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
     default double feedForwardCalc(double rpm){
         // magic numbers obtained from linear regression model of optimal flywheel rpms & power
         // returns percentage power needed for obtaining inputted rpm
-        return ((rpm/5796.35)+0.0487);
+        return ((rpm/5813.89)+0.038818);
+                //((rpm/5796.35)+0.0487);
     }
 
     default double calculateShooterSpeed(double distance) {
@@ -223,8 +233,6 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
 
             return angle-7;
         }
-
-
 
 
 }
