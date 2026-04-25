@@ -63,6 +63,8 @@ public class Autos {
 
         autoChooser.addOption("Flywheel Calibration", calibration);
 
+        autoChooser.addOption("mega left", NeutralZoneSinglePath.NeutralMegaPathLeft(robot));
+
 
         //  autoChooser.setDefaultOption("Auto15: Drive 15ft", DriveForward.drive15Ft(robot));
 

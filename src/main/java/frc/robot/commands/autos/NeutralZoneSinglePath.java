@@ -10,6 +10,7 @@ import frc.robot.commands.FuelCollectorAutoCommand;
 import frc.robot.commands.PathsFollower;
 import frc.robot.commands.ShooterAutoAimCommand;
 import frc.robot.container.RobotContainer;
+import org.littletonrobotics.junction.Logger;
 
 import java.util.HashMap;
 
@@ -34,7 +35,17 @@ public class NeutralZoneSinglePath {
         Pose2d startingPose = plannerPath1.path.getStartingHolonomicPose().get();
 
         //triggerMap.put("Run Rollers", new FuelCollectorAutoCommand(robot, true, true, "in"))
-
+        new EventTrigger("Run Roller").whileTrue(
+                new FuelCollectorAutoCommand(
+                        robot,
+                        true,
+                        true,
+                        "in").alongWith(Commands.runOnce(() -> Logger.recordOutput("triggered", true)))).onFalse(
+                new FuelCollectorAutoCommand(
+                        robot,
+                        true,
+                        true,
+                        "stop"));
 
         Command auto = Commands.sequence(
 
@@ -42,22 +53,8 @@ public class NeutralZoneSinglePath {
 
                 new FuelCollectorAutoCommand(robot, true, true, "stop").withTimeout(0.5),
                 Commands.deadline(
-                plannerPath1,
-                /*
-                new EventTrigger("Run Rollers").whileTrue(
-                        new FuelCollectorAutoCommand(
-                                robot,
-                                true,
-                                true,
-                                "in")).onFalse(
-                                        new FuelCollectorAutoCommand(
-                                                robot,
-                                                true,
-                                                true,
-                                                "stop")),
-
-                 */
-                new FuelCollectorAutoCommand(robot ,true, true, "in")),
+                plannerPath1),
+                //new FuelCollectorAutoCommand(robot ,true, true, "in")),
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
                 // TODO ADD SHOOT
                 new ShooterAutoAimCommand(robot)
