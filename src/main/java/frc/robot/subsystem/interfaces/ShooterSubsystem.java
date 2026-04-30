@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import org.littletonrobotics.junction.AutoLog;
@@ -211,8 +212,8 @@ public interface ShooterSubsystem extends Subsystem, LoggableInputs {
             return pose.getTranslation().plus(offset);
         }
 
-        default double getDistance(Translation2d turretPos, Translation2d target) {
-            return Meters.of(turretPos.getDistance(target)).in(Inches);
+        default Distance getDistance(Translation2d turretPos, Translation2d target) {
+            return Meters.of(turretPos.getDistance(target));
         }
 
         default double getTurretAimAngle(

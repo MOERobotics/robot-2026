@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -116,6 +117,7 @@ public class ShooterAutoAimCommand extends Command {
 
     @Override
     public void execute() {
+        shootOnMove();
         Pose2d pose = drive.getPose();
 
         Translation2d turretOffset = ShooterSubsystem.turretOffset.rotateBy(pose.getRotation());
@@ -123,7 +125,7 @@ public class ShooterAutoAimCommand extends Command {
         shooter.getSensors().turretOffset = turretOffset;
         turretPosition = shooter.getTurretPosition(pose,turretOffset);
 
-        currDistance = shooter.getDistance(turretPosition, hubPosition);//- 20;
+        currDistance = shooter.getDistance(turretPosition, hubPosition).in(Inches);//- 20;
 
 
         shooter.getSensors().turretPosition = turretPosition;
@@ -133,7 +135,7 @@ public class ShooterAutoAimCommand extends Command {
 
 
 
-        distance =  shooter.getDistance(turretPosition, hubPosition);// - 20;
+        distance =  shooter.getDistance(turretPosition, hubPosition).in(Inches);// - 20;
 
 
         if(auto){
@@ -302,11 +304,16 @@ public class ShooterAutoAimCommand extends Command {
         shooter.stopFeeding();
     }
 
-
     public void autoAim(double dist){
         hoodSetpoint = shooter.calcHoodAngle(dist);
         shooterSetpoint = shooter.calculateShooterSpeed(dist);
         turretSetpoint = MathUtil.clamp(desiredTurretAngle, shooter.getSensors().turretMinAngle, shooter.getSensors().turretMaxAngle);
+    }
+
+    public void shootOnMove(){
+        double timeOfFlight = shooter.getSensors().distanceFromHub/160.0;
+        ChassisSpeeds offsets = ChassisSpeeds.fromRobotRelativeSpeeds(drive.getChassisSpeed().times(timeOfFlight), drive.getPose().getRotation());
+        hubPosition = shooter.getHubPosition().minus(new Translation2d(offsets.vxMetersPerSecond, offsets.vyMetersPerSecond));
     }
     @Override
     public boolean isFinished() {

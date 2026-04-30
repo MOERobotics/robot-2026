@@ -5,6 +5,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -78,11 +79,11 @@ public class ShooterAutoCommand extends Command {
         shooter.getSensors().turretPosition = turretPosition;
 
 
-        double distance = shooter.getDistance(turretPosition,hubPosition);
+        Distance distance = shooter.getDistance(turretPosition,hubPosition);
 
 
 
-        double flywheelSetpoint = shooter.calculateShooterSpeed(distance);
+        double flywheelSetpoint = shooter.calculateShooterSpeed(distance.in(Inches));
 
 
         flywheelPID.setSetpoint(flywheelSetpoint);
@@ -158,7 +159,7 @@ public class ShooterAutoCommand extends Command {
 
         double currHoodAngle = shooter.getHoodAngleFromThroughbore().in(Degrees);
 
-        double desHoodAngle = MathUtil.clamp(shooter.calcHoodAngle(distance), shooter.getSensors().hoodMinAngle,shooter.getSensors().hoodMaxAngle);
+        double desHoodAngle = MathUtil.clamp(shooter.calcHoodAngle(distance.in(Inches)), shooter.getSensors().hoodMinAngle,shooter.getSensors().hoodMaxAngle);
 
         Logger.recordOutput("hoodSetpointAuto", desHoodAngle);
 
