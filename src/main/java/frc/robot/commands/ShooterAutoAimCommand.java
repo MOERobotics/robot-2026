@@ -314,6 +314,7 @@ public class ShooterAutoAimCommand extends Command {
         double timeOfFlight = shooter.getSensors().distanceFromHub/160.0;
         ChassisSpeeds offsets = ChassisSpeeds.fromRobotRelativeSpeeds(drive.getChassisSpeed().times(timeOfFlight), drive.getPose().getRotation());
         hubPosition = shooter.getHubPosition().minus(new Translation2d(offsets.vxMetersPerSecond, offsets.vyMetersPerSecond));
+        Logger.recordOutput("targetPosition", new Pose2d(hubPosition, new Rotation2d(0)));
     }
     @Override
     public boolean isFinished() {
