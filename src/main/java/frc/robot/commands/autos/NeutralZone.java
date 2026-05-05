@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Autos;
 import frc.robot.commands.*;
 import frc.robot.container.RobotContainer;
+import org.littletonrobotics.junction.Logger;
 
 
 public class NeutralZone {
@@ -61,7 +62,7 @@ public class NeutralZone {
 
 
         Command auto = Commands.sequence(
-
+                Commands.runOnce(() -> Logger.recordOutput("Auto Target Poses", plannerPath1.path.getPathPoses().toArray(Pose2d[]::new))),
                 new FuelCollectorAutoCommand(robot, true, true, "stop").withTimeout(0.5),
                 Commands.deadline(
                         Commands.sequence(

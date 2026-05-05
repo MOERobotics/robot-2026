@@ -65,6 +65,11 @@ public class Autos {
 
         autoChooser.addOption("mega left", NeutralZoneSinglePath.NeutralMegaPathLeft(robot));
 
+        autoChooser.addOption("mega right", NeutralZoneSinglePath.NeutralMegaPathRight(robot));
+
+       // autoChooser.addOption("ZigZag", DriveForward.driveZigZag(robot));
+
+       // autoChooser.addOption("TEST right neutral drive", DriveForward.rightNeutralDrive(robot));
 
         //  autoChooser.setDefaultOption("Auto15: Drive 15ft", DriveForward.drive15Ft(robot));
 

@@ -16,6 +16,14 @@ public class DriveForward {
         return driveForward(robot, "DriveForward15Ft");
     }
 
+    public static Autos.CommandAndPose driveZigZag(RobotContainer robot) {
+        return driveForward(robot, "DriveZigZag");
+    }
+    public static Autos.CommandAndPose rightNeutralDrive(RobotContainer robot) {
+        return driveForward(robot, "Right Neutral 1");
+    }
+
+
 
     public static Autos.CommandAndPose driveForward(
             RobotContainer robot,

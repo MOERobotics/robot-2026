@@ -35,6 +35,7 @@ public class NeutralZoneSinglePath {
         Pose2d startingPose = plannerPath1.path.getStartingHolonomicPose().get();
 
         //triggerMap.put("Run Rollers", new FuelCollectorAutoCommand(robot, true, true, "in"))
+        /*
         new EventTrigger("Run Roller").whileTrue(
                 new FuelCollectorAutoCommand(
                         robot,
@@ -47,13 +48,17 @@ public class NeutralZoneSinglePath {
                         true,
                         "stop"));
 
+         */
+
+
         Command auto = Commands.sequence(
 
 
-
-                new FuelCollectorAutoCommand(robot, true, true, "stop").withTimeout(0.5),
+                Commands.runOnce(() -> Logger.recordOutput("Auto Target Poses", plannerPath1.path.getPathPoses().toArray(Pose2d[]::new))),
+                new FuelCollectorAutoCommand(robot, false, true, "stop").withTimeout(0.5),
                 Commands.deadline(
-                plannerPath1),
+                plannerPath1,
+                        new FuelCollectorAutoCommand(robot, true, true, "in")),
                 //new FuelCollectorAutoCommand(robot ,true, true, "in")),
                 Commands.runOnce(() -> robot.getRobotSwerveDrive().stop()),
                 // TODO ADD SHOOT
