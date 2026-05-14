@@ -163,8 +163,15 @@ public class ShooterAutoAimCommand extends Command {
             if (currentPOV != -1) {
 
                 switch (currentPOV) {
+                    case 0:
+                        shooterSetpoint 4000;
+                        hoodSetpoint=185;
+                        break;
                     case 90:
                         autoAim(distance);
+                        break;
+                    case 180:
+                        hoodSetpoint=185;
                         break;
                 }
             }
@@ -305,7 +312,7 @@ public class ShooterAutoAimCommand extends Command {
     }
 
     public void autoAim(double dist){
-        hoodSetpoint = shooter.calcHoodAngle(dist);
+        hoodSetpoint = 185 /*shooter.calcHoodAngle(dist)*/;
         shooterSetpoint = shooter.calculateShooterSpeed(dist);
         turretSetpoint = MathUtil.clamp(desiredTurretAngle, shooter.getSensors().turretMinAngle, shooter.getSensors().turretMaxAngle);
     }
