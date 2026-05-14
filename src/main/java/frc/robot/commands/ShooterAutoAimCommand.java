@@ -312,7 +312,7 @@ public class ShooterAutoAimCommand extends Command {
     }
 
     public void autoAim(double dist){
-        hoodSetpoint = 185 /*shooter.calcHoodAngle(dist)*/;
+        hoodSetpoint = shooter.calcHoodAngle(dist);
         shooterSetpoint = shooter.calculateShooterSpeed(dist);
         turretSetpoint = MathUtil.clamp(desiredTurretAngle, shooter.getSensors().turretMinAngle, shooter.getSensors().turretMaxAngle);
     }
