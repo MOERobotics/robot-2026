@@ -164,17 +164,23 @@ public class ShooterAutoAimCommand extends Command {
 
                 switch (currentPOV) {
                     case 0:
-                        shooterSetpoint 4000;
-                        hoodSetpoint=185;
+                        shooterSetpoint = 4000;
+                        hoodSetpoint= 185;
                         break;
                     case 90:
                         autoAim(distance);
                         break;
                     case 180:
-                        hoodSetpoint=185;
+                        autoAim(distance);
+                        hoodSetpoint= 185;
                         break;
+                    case 270:
+                        shooterSetpoint = 2730;
+                        hoodSetpoint= 188;
+                        break;
+
                 }
-            }
+            } // sweet sp[ot hood 188 flywheel 2730
 
 
 
