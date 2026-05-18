@@ -176,7 +176,7 @@ public class ShooterAutoAimCommand extends Command {
                         break;
                     case 270:
                         shooterSetpoint = 2730;
-                        hoodSetpoint= 188;
+                        hoodSetpoint= 183;
                         break;
 
                 }
